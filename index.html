@@ -1,17 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>BONGOBIZ Marketplace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BongoBiz - Nadia's Own Marketplace</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; }
+        header { background-color: #002f34; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: bold; color: #3a77ff; }
+        
+        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); 
+                height: 250px; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+        
+        .category-container { display: flex; justify-content: center; flex-wrap: wrap; padding: 20px; gap: 15px; background: white; }
+        .cat-card { width: 100px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .cat-card:hover { transform: scale(1.1); color: #3a77ff; }
+        .cat-icon { width: 60px; height: 60px; background: #e9f1ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 10px; }
+
+        .loan-banner { background-color: #ffce32; padding: 20px; text-align: center; margin: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-loan { background-color: #002f34; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 10px; }
+
+        .sell-btn { background: linear-gradient(to right, #ffce32, #ffad00); color: #002f34; padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; position: fixed; bottom: 20px; right: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 1000; font-size: 18px; border: 2px solid white; }
+
+        .products { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .product-card { background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .product-img { width: 100%; height: 150px; background: #eee; object-fit: cover; }
+        .product-info { padding: 10px; }
+        .price { font-size: 18px; font-weight: bold; color: #002f34; }
+    </style>
 </head>
-<body style="padding:20px; font-family: Arial, sans-serif;">
-    <h1>BONGOBIZ</h1>
-    <h2>Buy • Sell • Loan</h2>
-    <hr>
-    <div style="margin-top: 20px;">
-        <a href="pages/resale.html" style="font-size: 20px; color: blue; text-decoration: none;">👉 Browse Resale Items</a>
-        <br><br>
-        <a href="pages/loan.html" style="font-size: 20px; color: blue; text-decoration: none;">👉 Apply for Loan</a>
+<body>
+
+<header>
+    <div class="logo">BongoBiz</div>
+    <div>চাকদহ • রানাঘাট • নদীয়া</div>
+</header>
+
+<div class="hero">
+    <h1>নদীয়ার নিজস্ব অনলাইন বাজার</h1>
+    <p>পুরানো জিনিস কিনুন এবং লোন পান সহজেই</p>
+</div>
+
+<div class="category-container">
+    <div class="cat-card"> <div class="cat-icon">🚗</div> <span>গাড়ি</span> </div>
+    <div class="cat-card"> <div class="cat-icon">🏍️</div> <span>বাইক</span> </div>
+    <div class="cat-card"> <div class="cat-icon">📱</div> <span>মোবাইল</span> </div>
+    <div class="cat-card"> <div class="cat-icon">🏠</div> <span>বাড়ি</span> </div>
+    <div class="cat-card"> <div class="cat-icon">💻</div> <span>ল্যাপটপ</span> </div>
+</div>
+
+<div class="loan-banner">
+    <h2>জরুরি টাকার প্রয়োজন? লোন নিন দ্রুত!</h2>
+    <p>যেকোনো ধরণের লোনের জন্য আজই আবেদন করুন</p>
+    <a href="https://forms.google.com" target="_blank" class="btn-loan">APPLY FOR ANY TYPE OF LOAN</a>
+</div>
+
+<div class="products">
+    <div class="product-card">
+        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=500" class="product-img">
+        <div class="product-info">
+            <div class="price">₹ ১২,৫০০</div>
+            <div>iPhone 11 (2 Years Old)</div>
+            <small>চাকদহ, নদীয়া</small>
+        </div>
     </div>
+</div>
+
+<a href="https://forms.google.com" target="_blank" class="sell-btn">+ SELL (পোস্ট অ্যাড)</a>
+
 </body>
 </html>
