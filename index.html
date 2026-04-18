@@ -8,7 +8,6 @@
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #f2f4f5; }
         header { background-color: #ffffff; color: #002f34; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .logo-container { display: flex; align-items: center; }
-        /* লোগো চওড়া এবং ক্লিয়ার করার জন্য আপডেট */
         .logo-img { height: 60px; width: auto; max-width: 200px; object-fit: contain; margin-right: 15px; }
         .location { font-size: 14px; font-weight: bold; }
         
@@ -27,115 +26,10 @@
         .product-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
         .product-details { padding: 15px; }
         .product-price { font-size: 20px; font-weight: bold; color: #002f34; }
-        .product-title { font-size: 16px; color: #555; margin-top: 5px; }
+        .product-title { font-size: 16px; color: #555; margin-top: 5px; height: 40px; overflow: hidden; }
 
         .sell-btn { background: linear-gradient(to right, #ffce32, #ff9000); color: #002f34; padding: 14px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); z-index: 1001; font-size: 18px; border: 2px solid white; }
         .whatsapp-btn { background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; position: fixed; bottom: 100px; right: 30px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1001; }
 
         .loan-banner { background-color: #002f34; color: white; padding: 30px; text-align: center; border-radius: 8px; margin-bottom: 30px; }
-        .btn-loan { background-color: #ffce32; color: #002f34; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-top: 15px; }
-        
-        .lang-switch span { cursor: pointer; padding: 5px; border-radius: 3px; font-weight: bold; color: #555; }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo-container">
-        <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img">
-        <div class="location">Kolkata • West Bengal • India</div>
-    </div>
-    <div class="lang-switch">
-        <span onclick="changeLang('en')">English</span> | 
-        <span onclick="changeLang('hi')">हिन्दी</span> | 
-        <span onclick="changeLang('bn')">বাংলা</span>
-    </div>
-</header>
-
-<div class="hero">
-    <h1 id="hero-title">India's Own Classified Marketplace</h1>
-    <p id="hero-desc">Buy, Sell & Apply for Loans Instantly</p>
-</div>
-
-<div class="category-container">
-    <div class="cat-card" onclick="fetchProducts('Mobile')"> <div class="cat-icon">📱</div> <span class="cat-mob">Mobile</span> </div>
-    <div class="cat-card" onclick="fetchProducts('Laptop')"> <div class="cat-icon">💻</div> <span class="cat-lap">Laptop</span> </div>
-    <div class="cat-card" onclick="fetchProducts('House')"> <div class="cat-icon">🏠</div> <span class="cat-house">House</span> </div>
-    <div class="cat-card" onclick="fetchProducts('Camera')"> <div class="cat-icon">📷</div> <span class="cat-cam">Camera</span> </div>
-    <div class="cat-card" onclick="fetchProducts('Bike')"> <div class="cat-icon">🏍️</div> <span class="cat-bike">Bike</span> </div>
-    <div class="cat-card" onclick="fetchProducts('Car')"> <div class="cat-icon">🚗</div> <span class="cat-car">Car</span> </div>
-    <div class="cat-card" onclick="fetchProducts('Furniture')"> <div class="cat-icon">🪑</div> <span class="cat-furn">Furniture</span> </div>
-</div>
-
-<div class="products-section">
-    <div class="loan-banner">
-        <h2 id="loan-title">Need Financial Assistance? Get a Loan Faster!</h2>
-        <a href="https://forms.google.com" target="_blank" class="btn-loan" id="loan-btn">APPLY FOR LOAN</a>
-    </div>
-
-    <div class="section-title" id="rec-title">Fresh Recommendations</div>
-    <div class="products-grid" id="product-list">
-        <p style="text-align: center; grid-column: 1/-1;">Loading products...</p>
-    </div>
-</div>
-
-<a href="https://wa.me/917585999923?text=I%20am%20inquiring%20about%20BongoBiz%20marketplace" target="_blank" class="whatsapp-btn">💬 Contact Us</a>
-<a href="https://forms.google.com" target="_blank" class="sell-btn" id="sell-btn">+ SELL</a>
-
-<script>
-    // আপনার SheetDB API লিঙ্কটি নিচে বসান (একদম সঠিক লিঙ্কটি দেবেন)
-    const API_URL = 'আপনার_SHEETDB_লিঙ্ক_এখানে_পেস্ট_করুন';
-
-    async function fetchProducts(category = '') {
-        const productList = document.getElementById('product-list');
-        productList.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Searching products...</p>';
-        
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            
-            // শুধু এপ্রুভ করা প্রোডাক্ট ফিল্টার করা (শিটে 'status' কলামে 'Approved' থাকতে হবে)
-            let filteredData = data.filter(item => item.status === 'Approved');
-            
-            // ক্যাটাগরি অনুযায়ী ফিল্টার (যদি ক্যাটাগরি সিলেক্ট করা হয়)
-            if (category) {
-                filteredData = filteredData.filter(item => item.category === category);
-            }
-
-            productList.innerHTML = '';
-            
-            if (filteredData.length === 0) {
-                productList.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No products found in this category.</p>';
-                return;
-            }
-
-            filteredData.forEach(item => {
-                const card = `
-                    <div class="product-card">
-                        <img src="${item.image}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                        <div class="product-details">
-                            <div class="product-price">₹ ${item.price}</div>
-                            <div class="product-title">${item.title}</div>
-                            <div style="font-size:12px; color:#888; margin-top:5px;">${item.location}</div>
-                            <a href="https://wa.me/917585999923?text=Hi, I am interested in ${item.title}" target="_blank" style="display:block; margin-top:10px; color:#25d366; text-decoration:none; font-weight:bold;">Contact Seller</a>
-                        </div>
-                    </div>
-                `;
-                productList.insertAdjacentHTML('beforeend', card);
-            });
-        } catch (error) {
-            productList.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Error loading products. Please check API.</p>';
-        }
-    }
-
-    // ল্যাঙ্গুয়েজ ফাংশন আগের মতোই থাকবে
-    function changeLang(lang) {
-        // ... (আগের ল্যাঙ্গুয়েজ কোড এখানে থাকবে)
-    }
-
-    // পেজ লোড হলে সব প্রোডাক্ট দেখাবে
-    fetchProducts();
-</script>
-
-</body>
-</html>
+        .btn
