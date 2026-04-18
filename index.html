@@ -8,13 +8,13 @@
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #f2f4f5; }
         header { background-color: #ffffff; color: #002f34; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .logo-container { display: flex; align-items: center; }
-        .logo-img { height: 40px; margin-right: 15px; }
+        .logo-img { height: 45px; margin-right: 15px; border-radius: 5px; }
         .location { font-size: 14px; font-weight: bold; }
         
-        .hero { background-color: #002f34; height: 180px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero { background-color: #002f34; height: 150px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         
         .category-container { display: flex; justify-content: center; flex-wrap: wrap; padding: 25px 0; gap: 20px; background: white; border-bottom: 1px solid #ddd; }
-        .cat-card { width: 110px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .cat-card { width: 110px; text-align: center; cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit; }
         .cat-card:hover { transform: translateY(-5px); color: #002f34; font-weight: bold; }
         .cat-icon { width: 65px; height: 65px; background: #e9f1ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 12px; }
 
@@ -22,87 +22,111 @@
         .section-title { font-size: 24px; color: #002f34; margin-bottom: 25px; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 25px; }
         
-        .product-card { background: white; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
-        .product-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .product-img { width: 100%; height: 170px; object-fit: cover; }
+        .product-card { background: white; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .product-img { width: 100%; height: 170px; object-fit: cover; background: #eee; }
         .product-details { padding: 15px; }
-        .product-price { font-size: 20px; font-weight: bold; color: #002f34; margin-bottom: 5px; }
-        .product-title { font-size: 16px; color: #555; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
-        .product-location-date { font-size: 12px; color: #888; display: flex; justify-content: space-between; margin-top: 10px; }
+        .product-price { font-size: 20px; font-weight: bold; color: #002f34; }
 
-        .sell-btn { background: linear-gradient(to right, #ffce32, #ff9000); color: #002f34; padding: 14px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); z-index: 1001; font-size: 18px; border: 2px solid white; text-transform: uppercase; }
-        .sell-btn:hover { background: linear-gradient(to right, #ffce32, #ffad00); }
-        .loan-banner { background-color: #002f34; color: white; padding: 30px; text-align: center; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .loan-banner h2 { margin-top: 0; }
-        .btn-loan { background-color: #ffce32; color: #002f34; padding: 14px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-top: 15px; text-transform: uppercase; }
+        .sell-btn { background: linear-gradient(to right, #ffce32, #ff9000); color: #002f34; padding: 14px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); z-index: 1001; font-size: 18px; border: 2px solid white; }
 
-        .lang-switch { display: flex; gap: 10px; font-size: 14px; }
-        .lang-switch span { cursor: pointer; color: #555; }
-        .lang-switch span.active { color: #002f34; font-weight: bold; }
+        /* WhatsApp Button */
+        .whatsapp-btn { background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; position: fixed; bottom: 100px; right: 30px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1001; }
+
+        .loan-banner { background-color: #002f34; color: white; padding: 30px; text-align: center; border-radius: 8px; margin-bottom: 30px; }
+        .btn-loan { background-color: #ffce32; color: #002f34; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-top: 15px; }
+
+        .lang-switch span { cursor: pointer; padding: 5px; border-radius: 3px; }
+        .lang-switch span:hover { background: #eee; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo-container">
-        <img src="YOUR_LOGO_URL_HERE" alt="BongoBiz Logo" class="logo-img">
+        <img src="logo.jpg" alt="BongoBiz" class="logo-img">
         <div class="location">Kolkata • West Bengal • India</div>
     </div>
     <div class="lang-switch">
-        <span class="active">English</span> | <span>हिन्दी</span> | <span>বাংলা</span>
+        <span onclick="changeLang('en')">English</span> | 
+        <span onclick="changeLang('hi')">हिन्दी</span> | 
+        <span onclick="changeLang('bn')">বাংলা</span>
     </div>
 </header>
 
 <div class="hero">
-    <h1>India's Own Classified Marketplace</h1>
-    <p>Buy, Sell & Apply for Loans Instantly</p>
+    <h1 id="hero-title">India's Own Classified Marketplace</h1>
+    <p id="hero-desc">Buy, Sell & Apply for Loans Instantly</p>
 </div>
 
 <div class="category-container">
-    <div class="cat-card"> <div class="cat-icon">📱</div> <span>Mobile</span> </div>
-    <div class="cat-card"> <div class="cat-icon">💻</div> <span>Laptop</span> </div>
-    <div class="cat-card"> <div class="cat-icon">🏠</div> <span>House</span> </div>
-    <div class="cat-card"> <div class="cat-icon">📷</div> <span>Camera</span> </div>
-    <div class="cat-card"> <div class="cat-icon">🏍️</div> <span>Bike</span> </div>
-    <div class="cat-card"> <div class="cat-icon">🚗</div> <span>Car</span> </div>
-    <div class="cat-card"> <div class="cat-icon">🪑</div> <span>Furniture</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Mobiles...')"> <div class="cat-icon">📱</div> <span class="cat-text">Mobile</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Laptops...')"> <div class="cat-icon">💻</div> <span class="cat-text">Laptop</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Houses...')"> <div class="cat-icon">🏠</div> <span class="cat-text">House</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Cameras...')"> <div class="cat-icon">📷</div> <span class="cat-text">Camera</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Bikes...')"> <div class="cat-icon">🏍️</div> <span class="cat-text">Bike</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Cars...')"> <div class="cat-icon">🚗</div> <span class="cat-text">Car</span> </div>
+    <div class="cat-card" onclick="alert('Filtering Furniture...')"> <div class="cat-icon">🪑</div> <span class="cat-text">Furniture</span> </div>
 </div>
 
 <div class="products-section">
     <div class="loan-banner">
-        <h2>Need Financial Assistance? Get a Loan Faster!</h2>
-        <p>Apply for any type of loan with ease.</p>
-        <a href="https://forms.google.com" target="_blank" class="btn-loan">APPLY FOR ANY TYPE OF LOAN</a>
+        <h2 id="loan-title">Need Financial Assistance? Get a Loan Faster!</h2>
+        <a href="https://forms.google.com" target="_blank" class="btn-loan" id="loan-btn">APPLY FOR LOAN</a>
     </div>
 
-    <div class="section-title">Fresh Recommendations</div>
-    <div class="products-grid">
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=500" class="product-img">
-            <div class="product-details">
-                <div class="product-price">₹ ۴۵,۰۰۰</div>
-                <div class="product-title">HP Pavilion Gaming Laptop (Like New)</div>
-                <div class="product-location-date">
-                    <span>New Town, Kolkata</span>
-                    <span>OCT 28</span>
-                </div>
-            </div>
-        </div>
-        <div class="product-card">
-            <img src="https://images.unsplash.com/photo-1620021303276-f8d8393e1177?q=80&w=500" class="product-img">
-            <div class="product-details">
-                <div class="product-price">₹ ۱,۲৫,০০০</div>
-                <div class="product-title">Royal Enfield Classic 350 (2021)</div>
-                <div class="product-location-date">
-                    <span>Howrah, Kolkata</span>
-                    <span>OCT 29</span>
-                </div>
-            </div>
-        </div>
+    <div class="section-title" id="rec-title">Fresh Recommendations</div>
+    <div class="products-grid" id="product-list">
+        <p style="text-align: center; grid-column: 1/-1;">Loading awesome products for you...</p>
     </div>
 </div>
 
-<a href="https://forms.google.com" target="_blank" class="sell-btn">+ SELL</a>
+<a href="https://wa.me/917585999923?text=I%20am%20inquiring%20about%20BongoBiz%20marketplace" target="_blank" class="whatsapp-btn">
+    💬 Contact Us
+</a>
+
+<a href="https://forms.google.com" target="_blank" class="sell-btn" id="sell-btn">+ SELL</a>
+
+<script>
+    // ল্যাঙ্গুয়েজ চেঞ্জ করার ফাংশন
+    function changeLang(lang) {
+        const translations = {
+            'en': {
+                'title': "India's Own Classified Marketplace",
+                'desc': "Buy, Sell & Apply for Loans Instantly",
+                'loan': "Need Financial Assistance? Get a Loan Faster!",
+                'apply': "APPLY FOR LOAN",
+                'rec': "Fresh Recommendations",
+                'sell': "+ SELL"
+            },
+            'bn': {
+                'title': "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস",
+                'desc': "কিনুন, বিক্রি করুন এবং লোনের জন্য আবেদন করুন",
+                'loan': "আর্থিক সাহায্যের প্রয়োজন? দ্রুত লোন পান!",
+                'apply': "লোনের জন্য আবেদন করুন",
+                'rec': "নতুন বিজ্ঞাপন",
+                'sell': "+ বিক্রি করুন"
+            },
+            'hi': {
+                'title': "भारत का अपना क्लासिफाइड मार्केटप्लेस",
+                'desc': "खरीदें, बेचें और तुरंत ऋण के लिए आवेदन करें",
+                'loan': "वित्तीय सहायता चाहिए? तेजी से ऋण प्राप्त करें!",
+                'apply': "ऋण के लिए आवेदन करें",
+                'rec': "नया विज्ञापन",
+                'sell': "+ बेचें"
+            }
+        };
+
+        document.getElementById('hero-title').innerText = translations[lang].title;
+        document.getElementById('hero-desc').innerText = translations[lang].desc;
+        document.getElementById('loan-title').innerText = translations[lang].loan;
+        document.getElementById('loan-btn').innerText = translations[lang].apply;
+        document.getElementById('rec-title').innerText = translations[lang].rec;
+        document.getElementById('sell-btn').innerText = translations[lang].sell;
+    }
+
+    // আপনার SheetDB API লিঙ্কটি এখানে বসাতে হবে (পরের ধাপে)
+    // fetch('YOUR_SHEETDB_API_LINK').then(...)
+</script>
 
 </body>
 </html>
