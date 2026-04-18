@@ -1,35 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BongoBiz - India's Classified Marketplace</title>
+    <title>BongoBiz - Buy/Sell & Loan Services</title>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; background-color: #f2f4f5; }
-        header { background-color: #ffffff; color: #002f34; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .logo-container { display: flex; align-items: center; }
-        .logo-img { height: 60px; width: auto; max-width: 200px; object-fit: contain; margin-right: 15px; }
-        .location { font-size: 14px; font-weight: bold; }
+        :root { --primary-color: #002f34; --secondary-color: #ffce32; --whatsapp-green: #25d366; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background-color: #f2f4f5; color: var(--primary-color); }
         
-        .hero { background-color: #002f34; height: 150px; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        /* Header & Language Setup */
+        header { background: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-size: 28px; font-weight: bold; color: var(--primary-color); text-decoration: none; }
+        .lang-switch select { padding: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 14px; }
+
+        /* Hero Section */
+        .hero { background: var(--primary-color); color: white; padding: 40px 20px; text-align: center; }
+        .hero h2 { margin: 0; font-size: 26px; }
         
-        .category-container { display: flex; justify-content: center; flex-wrap: wrap; padding: 25px 0; gap: 20px; background: white; border-bottom: 1px solid #ddd; }
-        .cat-card { width: 110px; text-align: center; cursor: pointer; transition: 0.3s; color: inherit; text-decoration: none; }
-        .cat-card:hover { transform: translateY(-5px); color: #002f34; font-weight: bold; }
-        .cat-icon { width: 65px; height: 65px; background: #e9f1ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 12px; }
+        /* Category Grid */
+        .category-bar { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; border-bottom: 1px solid #ddd; }
+        .cat-item { text-align: center; min-width: 80px; font-size: 13px; cursor: pointer; text-decoration: none; color: inherit; }
+        .cat-icon { font-size: 24px; background: #f0f7ff; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; }
 
-        .products-section { padding: 30px 20px; max-width: 1200px; margin: 0 auto; }
-        .section-title { font-size: 24px; color: #002f34; margin-bottom: 25px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 25px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+
+        /* Loan Application Section */
+        .loan-banner { background: white; border: 2px solid var(--primary-color); border-radius: 10px; padding: 25px; text-align: center; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .loan-banner h3 { margin-top: 0; color: var(--primary-color); }
+        .apply-loan-btn { background: var(--primary-color); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; transition: 0.3s; }
+        .apply-loan-btn:hover { background: #004a52; }
+
+        /* Product Section */
+        .section-title { font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .img-box { height: 150px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+        .details { padding: 12px; }
+        .price { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .title { font-size: 14px; color: #555; }
+
+        /* Floating Buttons */
+        .float-btns { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
+        .btn-main { padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 2px solid white; color: white; }
+        .sell-btn { background: linear-gradient(45deg, #ffce32, #ff9000); color: #002f34 !important; }
+        .wa-btn { background: var(--whatsapp-green); }
+
+        footer { background: var(--primary-color); color: white; text-align: center; padding: 30px; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">BongoBiz</a>
+        <div class="lang-switch">
+            <select id="langSelect">
+                <option value="bn">Bengali (বাংলা)</option>
+                <option value="en">English</option>
+                <option value="hi">Hindi (हिन्दी)</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h2 id="heroText">পশ্চিমবঙ্গের সেরা কেনা-বেচা ও লোন প্ল্যাটফর্ম</h2>
+        <p id="subHero">চাকদহ • রানাঘাট • কলকাতা</p>
+    </div>
+
+    <div class="category-bar">
+        <div class="cat-item"><div class="cat-icon">📱</div><span>Mobile</span></div>
+        <div class="cat-item"><div class="cat-icon">🚗</div><span>Car</span></div>
+        <div class="cat-item"><div class="cat-icon">🏠</div><span>Property</span></div>
+        <div class="cat-item"><div class="cat-icon">🚲</div><span>Bike</span></div>
+        <div class="cat-item"><div class="cat-icon">🛋️</div><span>Furniture</span></div>
+    </div>
+
+    <div class="container">
+        <div class="loan-banner">
+            <h3 id="loanTitle">🏦 লোন প্রয়োজন? (Personal / Business)</h3>
+            <p id="loanDesc">সহজ শর্তে লোন পেতে আপনার নাম ও তথ্য জমা দিন।</p>
+            <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="apply-loan-btn" id="loanBtn">আবেদন করুন</a>
+        </div>
+
+        <h3 class="section-title">✨ নতুন বিজ্ঞাপন</h3>
+        <div class="grid">
+            <div class="card">
+                <div class="img-box">📸</div>
+                <div class="details">
+                    <div class="price">₹ 18,000</div>
+                    <div class="title">Canon DSLR Camera</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="img-box">🚗</div>
+                <div class="details">
+                    <div class="price">₹ 3,50,000</div>
+                    <div class="title">Maruti Suzuki Swift (2018)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="float-btns">
+        <a href="https://wa.me/91YOUR_NUMBER" target="_blank" class="btn-main wa-btn">
+            <span>💬</span> WhatsApp
+        </a>
         
-        .product-card { background: white; border-radius: 4px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .product-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
-        .product-details { padding: 15px; }
-        .product-price { font-size: 20px; font-weight: bold; color: #002f34; }
-        .product-title { font-size: 16px; color: #555; margin-top: 5px; height: 40px; overflow: hidden; }
+        <a href="https://forms.gle/suLga82FsjGgQHam6" target="_blank" class="btn-main sell-btn">
+            <span>➕</span> বিজ্ঞাপনের ফটো আপলোড করুন
+        </a>
+    </div>
 
-        .sell-btn { background: linear-gradient(to right, #ffce32, #ff9000); color: #002f34; padding: 14px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; position: fixed; bottom: 30px; right: 30px; box-shadow: 0 6px 18px rgba(0,0,0,0.25); z-index: 1001; font-size: 18px; border: 2px solid white; }
-        .whatsapp-btn { background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-weight: bold; position: fixed; bottom: 100px; right: 30px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1001; }
+    <footer>
+        <p>&copy; 2026 BongoBiz | Chakdaha, West Bengal</p>
+    </footer>
 
-        .loan-banner { background-color: #002f34; color: white; padding: 30px; text-align: center; border-radius: 8px; margin-bottom: 30px; }
-        .btn
+    <script>
+        const langSelect = document.getElementById('langSelect');
+        const translations = {
+            bn: {
+                hero: "পশ্চিমবঙ্গের সেরা কেনা-বেচা ও লোন প্ল্যাটফর্ম",
+                loanTitle: "🏦 লোন প্রয়োজন? (Personal / Business)",
+                loanBtn: "আবেদন করুন"
+            },
+            en: {
+                hero: "West Bengal's Best Buy/Sell & Loan Platform",
+                loanTitle: "🏦 Need a Loan? (Personal / Business)",
+                loanBtn: "Apply Now"
+            },
+            hi: {
+                hero: "पश्चिम बंगाल का सबसे अच्छा खरीद-बिक्री और ऋण मंच",
+                loanTitle: "🏦 ऋण चाहिए? (पर्सनल / बिजनेस)",
+                loanBtn: "अभी आवेदन करें"
+            }
+        };
+
+        langSelect.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            document.getElementById('heroText').innerText = translations[lang].hero;
+            document.getElementById('loanTitle').innerText = translations[lang].loanTitle;
+            document.getElementById('loanBtn').innerText = translations[lang].loanBtn;
+        });
+    </script>
+</body>
+</html>
