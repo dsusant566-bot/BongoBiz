@@ -261,3 +261,77 @@
     </script>
 </body>
 </html>
+<style>
+/* ইনপুট বক্স বড় এবং সুন্দর করার জন্য CSS */
+.modal-content input, .modal-content textarea {
+    width: 100%;
+    padding: 12px; /* বক্সের ভেতরের জায়গা বাড়ানো হলো */
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px; /* টেক্সট বড় করা হলো */
+    box-sizing: border-box;
+}
+
+.ad-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.edit-btn { background-color: #ffc107; color: black; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.delete-btn { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+</style>
+
+<script>
+// My Ads এ অ্যাড দেখানোর ফাংশন
+async function loadMyAds() {
+    const myAdsContainer = document.getElementById('myAdsList');
+    myAdsContainer.innerHTML = "Loading...";
+
+    try {
+        const response = await fetch('YOUR_SHEETDB_API_URL'); // আপনার API URL এখানে দিন
+        const ads = await response.json();
+        
+        // এখানে আপনার ফোন নম্বর বা ইমেইল দিয়ে ফিল্টার করতে পারেন
+        // আপাতত সব অ্যাড দেখাচ্ছে
+        if (ads.length === 0) {
+            myAdsContainer.innerHTML = "No ads found.";
+            return;
+        }
+
+        myAdsContainer.innerHTML = ""; // কন্টেইনার খালি করা
+        ads.forEach((ad, index) => {
+            const adHtml = `
+                <div style="border-bottom: 1px solid #ddd; padding: 10px;">
+                    <strong>${ad.product_name}</strong> - ₹${ad.price}
+                    <div class="ad-card-actions">
+                        <button class="edit-btn" onclick="editAd('${ad.id}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteAd('${ad.id}')">Delete</button>
+                    </div>
+                </div>
+            `;
+            myAdsContainer.innerHTML += adHtml;
+        });
+    } catch (error) {
+        myAdsContainer.innerHTML = "Error loading ads.";
+    }
+}
+
+// অ্যাড ডিলিট করার ফাংশন
+async function deleteAd(id) {
+    if(confirm("আপনি কি নিশ্চিত যে এই অ্যাডটি ডিলিট করতে চান?")) {
+        await fetch(`YOUR_SHEETDB_API_URL/id/${id}`, {
+            method: 'DELETE'
+        });
+        alert("Ad Deleted Successfully");
+        loadMyAds(); // লিস্ট রিফ্রেশ করা
+    }
+}
+
+// অ্যাড এডিট করার জন্য (এটি ফরমটি আবার ওপেন করবে)
+function editAd(id) {
+    alert("এডিট করার জন্য ফরমটি ওপেন করা হচ্ছে (Id: " + id + ")");
+    // এখানে আপনি এডিট করার লজিক বা পপআপ ওপেন করতে পারেন
+}
+</script>
