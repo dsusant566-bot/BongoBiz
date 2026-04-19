@@ -4,206 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BongoBiz - India's Classified Marketplace</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #f2f4f5; color: var(--primary); }
         
-        /* Header */
         header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
-        .logo-box { display: flex; align-items: center; gap: 15px; }
+        .logo-img { height: 60px; width: auto; object-fit: contain; }
         
-        /* লোগো সাইজ বাড়িয়ে ৮০ পিক্সেল করা হয়েছে */
-        .logo-img { height: 80px; width: auto; object-fit: contain; }
-        
-        .location-text { font-size: 14px; font-weight: bold; color: #555; }
-        .lang-dropdown select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; }
-
-        /* Hero Section */
         .hero { 
             background: linear-gradient(rgba(0, 47, 52, 0.75), rgba(0, 47, 52, 0.75)), 
                         url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop'); 
-            background-size: cover; background-position: center;
-            color: white; padding: 100px 20px; text-align: center; 
+            background-size: cover; padding: 60px 20px; text-align: center; color: white;
         }
-        .hero h2 { margin: 0; font-size: 42px; font-weight: 800; text-shadow: 2px 4px 8px rgba(0,0,0,0.6); }
-        .hero p { margin: 15px 0 0; font-size: 22px; font-weight: 500; text-shadow: 1px 2px 4px rgba(0,0,0,0.5); }
 
-        /* Categories */
-        .categories { display: flex; justify-content: center; gap: 20px; padding: 30px; background: white; border-bottom: 1px solid #ddd; overflow-x: auto; }
-        .cat-card { text-align: center; min-width: 90px; text-decoration: none; color: inherit; transition: 0.3s; cursor: pointer; }
-        .cat-card:hover { transform: translateY(-5px); color: #00a49f; }
-        .cat-icon { width: 64px; height: 64px; background: #f0f7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 12px; border: 1px solid #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-
-        .content { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-
-        /* Poster Boxes */
-        .poster-box { 
-            position: relative; color: white; border-radius: 20px; padding: 80px 40px; 
-            text-align: center; margin-bottom: 40px; overflow: hidden; background-size: cover; background-position: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
+        /* Modal Style for Upload Form */
+        #uploadModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;
         }
-        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); z-index: 1; }
-        .poster-content { position: relative; z-index: 2; }
-        
-        .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop'); }
-        .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop'); }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-content input, .modal-content select {
+            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
+        }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; }
 
-        .poster-box h3 { font-size: 36px; margin: 0 0 15px; font-weight: 800; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
-        .poster-box p { font-size: 20px; margin-bottom: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; border-bottom: 1px solid #ddd; }
+        .cat-card { text-align: center; min-width: 80px; font-size: 13px; font-weight: bold; }
+        .cat-icon { font-size: 28px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; }
 
-        /* Buttons */
-        .btn-action { padding: 18px 50px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; transition: 0.3s; display: inline-block; border: none; cursor: pointer; text-transform: uppercase; }
-        .btn-yellow { background: var(--secondary); color: var(--primary); }
-        .btn-wa { background: var(--wa-green); color: white; display: flex; align-items: center; gap: 10px; margin: 0 auto; width: fit-content; }
-        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .content { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .btn-action { padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
+        .btn-yellow { background: var(--secondary); color: var(--primary); width: 100%; margin-top: 10px; }
 
-        .section-head { font-size: 26px; font-weight: bold; margin-bottom: 30px; border-left: 6px solid var(--secondary); padding-left: 15px; }
-
-        /* Floating Buttons */
-        .float-wrap { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
-        .f-btn { padding: 18px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 12px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border: 2px solid white; transition: 0.3s; }
+        .float-wrap { position: fixed; bottom: 25px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 2000; }
+        .f-btn { padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 10px; color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .wa-float { background: var(--wa-green); }
-        .sell-float { background: linear-gradient(135deg, #ffce32 0%, #ff9000 100%); color: #002f34 !important; }
-
-        footer { background: #fff; text-align: center; padding: 50px; border-top: 1px solid #ddd; color: #666; font-weight: 500; }
+        .sell-float { background: linear-gradient(135deg, #ffce32 0%, #ff9000 100%); color: #002f34; border: 2px solid white; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-box">
-            <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=BongoBiz'">
-            <div class="location-text" id="locText">Kolkata • West Bengal • India</div>
+            <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/150x60?text=BongoBiz'">
         </div>
-        <div class="lang-dropdown">
-            <select id="langSwitcher">
-                <option value="en">English</option>
-                <option value="bn">বাংলা (Bengali)</option>
-                <option value="hi">हिन्दी (Hindi)</option>
-            </select>
+        <div id="g_id_onload"
+             data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
         </div>
+        <div class="g_id_signin" data-type="standard"></div>
     </header>
 
     <div class="hero">
-        <h2 id="hTitle">India's Own Classified Marketplace</h2>
-        <p id="hSub">Buy, Sell & Apply for Loans Instantly</p>
+        <h2>BongoBiz Marketplace</h2>
+        <p>Buy & Sell in West Bengal instantly</p>
+    </div>
+
+    <div id="uploadModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 style="margin-top:0;">Post Your Ad</h3>
+            <input type="text" id="itemName" placeholder="Product Name (যেমন: iPhone 12)">
+            <input type="number" id="itemPrice" placeholder="Price (৳)">
+            <select id="itemCat">
+                <option value="Mobile">Mobile</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Bike">Bike</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="file" id="fileInput" accept="image/*">
+            <button onclick="processUpload()" class="btn-action btn-yellow" id="uploadBtn">Publish Ad</button>
+            <p id="status" style="font-size: 12px; color: #666; text-align: center;"></p>
+        </div>
     </div>
 
     <div class="categories">
-        <div class="cat-card"><div class="cat-icon">📱</div><div id="c1">Mobile</div></div>
-        <div class="cat-card"><div class="cat-icon">💻</div><div id="c2">Laptop</div></div>
-        <div class="cat-card"><div class="cat-icon">🏠</div><div id="c3">House</div></div>
-        <div class="cat-card"><div class="cat-icon">📷</div><div id="c4">Camera</div></div>
-        <div class="cat-card"><div class="cat-icon">🚲</div><div id="c5">Bike</div></div>
-        <div class="cat-card"><div class="cat-icon">🚗</div><div id="c6">Car</div></div>
-        <div class="cat-card"><div class="cat-icon">🪑</div><div id="c7">Furniture</div></div>
+        <div class="cat-card"><div class="cat-icon">📱</div>Mobile</div>
+        <div class="cat-card"><div class="cat-icon">💻</div>Laptop</div>
+        <div class="cat-card"><div class="cat-icon">🚲</div>Bike</div>
+        <div class="cat-card"><div class="cat-icon">🏠</div>Property</div>
     </div>
 
     <div class="content">
-        <div class="poster-box loan-poster">
-            <div class="poster-content">
-                <h3 id="lTitle">Need Financial Assistance? Get a Loan Faster!</h3>
-                <p id="lDesc">Apply for Personal or Business loans with minimum documentation.</p>
-                <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</a>
-            </div>
-        </div>
-
-        <div class="poster-box web-poster">
-            <div class="poster-content">
-                <h3 id="wTitle">Professional Website for Your Business?</h3>
-                <p id="wDesc">Build your digital identity with our expert AI & Web solutions.</p>
-                <a href="https://wa.me/917585999923?text=Hi, I am interested in building a website." target="_blank" class="btn-action btn-wa" id="wBtn">
-                    <span>💬</span> WhatsApp Us
-                </a>
-            </div>
-        </div>
-
-        <div class="section-head" id="sHead">Fresh Recommendations</div>
-        <div style="text-align: center; padding: 70px; color: #999; background: white; border-radius: 20px; border: 3px dashed #ddd;">
-            No ads found. Be the first to post!
+        <div style="background: white; padding: 40px; border-radius: 15px; text-align: center; border: 2px dashed #ccc;">
+            <h3>Looking for something?</h3>
+            <p>New ads will appear here soon.</p>
         </div>
     </div>
 
     <div class="float-wrap">
-        <a href="https://wa.me/917585999923" target="_blank" class="f-btn wa-float">
-            <span>💬</span> <span id="waText">Contact Us</span>
-        </a>
-        <a href="https://forms.gle/suLga82FsjGgQHam6" target="_blank" class="f-btn sell-float">
-            <span id="sBtnText">➕ Post Product Photos</span>
-        </a>
+        <a href="https://wa.me/917585999923" class="f-btn wa-float"><span>💬</span> Support</a>
+        <a href="javascript:void(0)" onclick="openModal()" class="f-btn sell-float">➕ Sell Now</a>
     </div>
 
-    <footer>
-        <p>&copy; 2026 BongoBiz - Digital Partner of West Bengal, India</p>
-    </footer>
-
     <script>
-        const langData = {
-            en: {
-                loc: "Kolkata • West Bengal • India",
-                title: "India's Own Classified Marketplace",
-                sub: "Buy, Sell & Apply for Loans Instantly",
-                lTitle: "Need Financial Assistance? Get a Loan Faster!",
-                lDesc: "Apply for Personal or Business loans with minimum documentation.",
-                lBtn: "APPLY FOR LOAN",
-                wTitle: "Professional Website for Your Business?",
-                wDesc: "Build your digital identity with our expert AI & Web solutions.",
-                wBtn: "WhatsApp Us",
-                sHead: "Fresh Recommendations",
-                sBtn: "➕ Post Product Photos",
-                wa: "Contact Us",
-                cats: ["Mobile", "Laptop", "House", "Camera", "Bike", "Car", "Furniture"]
-            },
-            bn: {
-                loc: "কলকাতা • পশ্চিমবঙ্গ • ভারত",
-                title: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস",
-                sub: "কেনা-বেচা এবং লোনের জন্য আজই আবেদন করুন",
-                lTitle: "লোন প্রয়োজন? দ্রুত লোন পেতে আবেদন করুন!",
-                lDesc: "সহজ শর্তে পার্সোনাল বা বিজনেস লোনের জন্য তথ্য জমা দিন।",
-                lBtn: "লোনের জন্য আবেদন করুন",
-                wTitle: "বিজনেসের জন্য ওয়েবসাইট বানাতে চান?",
-                wDesc: "আমাদের এআই এবং ওয়েব সলিউশন দিয়ে আপনার ডিজিটাল পরিচয় তৈরি করুন।",
-                wBtn: "হোয়াটসঅ্যাপ করুন",
-                sHead: "নতুন বিজ্ঞাপনসমূহ",
-                sBtn: "➕ প্রোডাক্টের ফটো আপলোড করুন",
-                wa: "যোগাযোগ করুন",
-                cats: ["মোবাইল", "ল্যাপটপ", "বাড়ি", "ক্যামেরা", "বাইক", "গাড়ি", "ফার্নিচার"]
-            },
-            hi: {
-                loc: "कोलकाता • पश्चिम बंगाल • भारत",
-                title: "भारत का अपना क्लासिफाइड मार्केटप्लेस",
-                sub: "तुरंत खरीदें, बेचें और ऋण के लिए आवेदन करें",
-                lTitle: "ऋण की आवश्यकता है? तेजी से ऋण प्राप्त करें!",
-                lDesc: "न्यूनतम दस्तावेजों के साथ व्यक्तिगत या व्यावसायिक ऋण के लिए आवेदन करें।",
-                lBtn: "ऋण के लिए आवेदन करें",
-                wTitle: "व्यापार के लिए प्रोफेशनल वेबसाइट चाहिए?",
-                wDesc: "हमारे एआई और वेब समाधानों के साथ अपनी डिजिटल पहचान बनाएं।",
-                wBtn: "व्हाट्सएप करें",
-                sHead: "नई सिफारिशें",
-                sBtn: "➕ उत्पाद की फोटो अपलोड करें",
-                wa: "संपর্ক करें",
-                cats: ["मोबाइल", "लैपटॉप", "घर", "कैमरा", "बाइक", "कार", "फर्नीचर"]
-            }
-        };
+        const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
+        const SHEETDB_RESALE_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
 
-        document.getElementById('langSwitcher').addEventListener('change', function(e) {
-            const l = langData[e.target.value] || langData.en;
-            document.getElementById('locText').innerText = l.loc;
-            document.getElementById('hTitle').innerText = l.title;
-            document.getElementById('hSub').innerText = l.sub;
-            document.getElementById('lTitle').innerText = l.lTitle;
-            document.getElementById('lDesc').innerText = l.lDesc;
-            document.getElementById('lBtn').innerText = l.lBtn;
-            document.getElementById('wTitle').innerText = l.wTitle;
-            document.getElementById('wDesc').innerText = l.wDesc;
-            document.getElementById('wBtn').innerHTML = `<span>💬</span> ${l.wBtn}`;
-            document.getElementById('sHead').innerText = l.sHead;
-            document.getElementById('sBtnText').innerText = l.sBtn;
-            document.getElementById('waText').innerText = l.wa;
-            for(let i=1; i<=7; i++) {
-                document.getElementById('c'+i).innerText = l.cats[i-1];
+        function openModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('uploadModal').style.display = 'none'; }
+
+        async function processUpload() {
+            const name = document.getElementById('itemName').value;
+            const price = document.getElementById('itemPrice').value;
+            const cat = document.getElementById('itemCat').value;
+            const file = document.getElementById('fileInput').files[0];
+            const btn = document.getElementById('uploadBtn');
+            const status = document.getElementById('status');
+
+            if(!name || !price || !file) { alert("সব তথ্য পূরণ করুন!"); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Uploading Image...";
+            status.innerText = "ইমেজ সার্ভারে পাঠানো হচ্ছে...";
+
+            // 1. Upload to ImgBB
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const imgData = await imgRes.json();
+                
+                if(imgData.success) {
+                    const finalImageUrl = imgData.data.url;
+                    status.innerText = "Saving to Database...";
+                    
+                    // 2. Save to SheetDB
+                    const sheetRes = await fetch(SHEETDB_RESALE_URL, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            "data": [{
+                                "Name": name,
+                                "Price": price,
+                                "Category": cat,
+                                "Image_URL": finalImageUrl,
+                                "Date": new Date().toLocaleString()
+                            }]
+                        })
+                    });
+
+                    if(sheetRes.ok) {
+                        alert("আপনার বিজ্ঞাপনটি সফলভাবে পোস্ট হয়েছে!");
+                        location.reload();
+                    }
+                }
+            } catch (err) {
+                alert("ভুল হয়েছে! আবার চেষ্টা করুন।");
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Publish Ad";
             }
-        });
+        }
+
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            // এখানে গুগল লগইন সফল হলে ইউজার প্রোফাইল সেভ করার কোড লেখা যাবে
+        }
     </script>
 </body>
 </html>
