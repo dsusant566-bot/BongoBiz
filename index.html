@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BongoBiz - Advanced Classifieds</title>
+    <title>BongoBiz - Classified Marketplace</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
@@ -11,13 +11,13 @@
         
         header { background: #fff; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
         .logo-img { height: 40px; }
-        .search-box { flex-grow: 1; margin: 0 15px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; }
-        .search-box input { border: none; padding: 8px; width: 100%; outline: none; }
+        .search-box { flex-grow: 1; margin: 0 15px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; max-width: 500px; }
+        .search-box input { border: none; padding: 10px; width: 100%; outline: none; }
         .search-box button { background: var(--primary); color: white; border: none; padding: 0 15px; cursor: pointer; }
 
         .nav-right { display: flex; align-items: center; gap: 10px; }
         #userProfile { display: none; align-items: center; gap: 8px; }
-        #userImg { width: 30px; height: 30px; border-radius: 50%; }
+        #userImg { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
 
         .categories { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; overflow-x: auto; border-bottom: 1px solid #ddd; }
         @media (max-width: 768px) { .categories { justify-content: flex-start; } }
@@ -25,23 +25,30 @@
         .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; display: block; margin-bottom: 5px; }
 
         .content { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
-        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .ad-card { background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; position: relative; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .ad-card { background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.3s; }
         .ad-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .ad-card img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
         .ad-info { padding: 12px; }
-        .ad-price { font-size: 20px; font-weight: bold; color: var(--primary); }
-        .ad-title { font-size: 15px; margin: 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ad-price { font-size: 20px; font-weight: bold; }
 
-        /* Detail & Upload Modal */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
+        /* Modal & Pop-up Fix */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; max-height: 85vh; overflow-y: auto; }
+        
+        /* ক্রস চিহ্ন বড় এবং লাল করা হয়েছে */
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 35px; cursor: pointer; color: red; font-weight: bold; z-index: 10001; }
+
         .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-
-        .btn-main { background: var(--primary); color: white; padding: 12px; border: none; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-main { background: var(--primary); color: white; padding: 12px; border: none; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; text-align: center; display: block; text-decoration: none; margin-top: 10px; }
         .btn-wa { background: var(--wa-green); color: white; text-decoration: none; padding: 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; margin-top: 10px; }
         
-        #sellBtn { display: none; position: fixed; bottom: 25px; right: 25px; background: var(--secondary); color: var(--primary); padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; }
+        #sellBtn { display: none; position: fixed; bottom: 25px; right: 25px; background: var(--secondary); color: var(--primary); padding: 15px 30px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000; border: 2px solid white; }
+
+        /* Poster */
+        .poster { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 30px; background: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071') center/cover; overflow: hidden; }
+        .poster::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+        .p-content { position: relative; z-index: 2; }
     </style>
 </head>
 <body>
@@ -56,40 +63,48 @@
             <select id="langSwitcher" onchange="updateLang(this.value)">
                 <option value="en">English</option>
                 <option value="bn">বাংলা</option>
-                <option value="hi">हिन्दी</option>
             </select>
             <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
             <div class="g_id_signin" data-type="icon"></div>
             <div id="userProfile">
                 <img id="userImg" src="">
-                <button onclick="showMyAds()" style="border:none; background:none; color:blue; cursor:pointer; font-size:12px;">My Ads</button>
+                <button onclick="showMyAds()" style="border:none; background:none; color:blue; cursor:pointer; font-weight:bold; font-size:12px;">My Ads</button>
+                <button onclick="location.reload()" style="border:none; background:none; color:red; cursor:pointer; font-size:11px;">Logout</button>
             </div>
         </div>
     </header>
 
-    <div class="categories" id="catBox">
+    <div class="categories">
         <div class="cat-card" onclick="filterCat('Mobile')"><span class="cat-icon">📱</span><span class="cat-name">Mobile</span></div>
         <div class="cat-card" onclick="filterCat('Laptop')"><span class="cat-icon">💻</span><span class="cat-name">Laptop</span></div>
         <div class="cat-card" onclick="filterCat('Electronics')"><span class="cat-icon">❄️</span><span class="cat-name">Electronics</span></div>
         <div class="cat-card" onclick="filterCat('Bike')"><span class="cat-icon">🚲</span><span class="cat-name">Bike</span></div>
-        <div class="cat-card" onclick="filterCat('Furniture')"><span class="cat-icon">🪑</span><span class="cat-name">Furniture</span></div>
+        <div class="cat-card" onclick="filterCat('Property')"><span class="cat-icon">🏠</span><span class="cat-name">Property</span></div>
     </div>
 
     <div class="content">
+        <div class="poster">
+            <div class="p-content">
+                <h3 id="lTitle">Need Financial Assistance?</h3>
+                <p id="lDesc">Apply for Personal or Business loans easily.</p>
+                <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-main" style="background:var(--secondary); color:var(--primary); width:auto; display:inline-block; padding:10px 30px;">APPLY FOR LOAN</a>
+            </div>
+        </div>
+
         <h3 id="vTitle">Fresh Recommendations</h3>
-        <div class="ads-grid" id="adsGrid">Loading BongoBiz...</div>
+        <div class="ads-grid" id="adsGrid">Loading BongoBiz Marketplace...</div>
     </div>
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
-            <span onclick="closeModal('detailModal')" style="float:right; cursor:pointer;">&times;</span>
-            <img id="detImg" src="" style="width:100%; border-radius:8px; height:250px; object-fit:cover;">
-            <h2 id="detPrice" style="margin:10px 0; color:var(--primary);"></h2>
-            <h3 id="detTitle"></h3>
-            <p id="detDesc" style="color:#666;"></p>
-            <div style="border-top:1px solid #eee; padding-top:15px;">
-                <p><strong>Seller:</strong> <span id="detSeller"></span></p>
-                <a id="detCall" href="" class="btn-main" style="display:block; text-align:center; text-decoration:none; margin-bottom:10px;">📞 Call Seller</a>
+            <span class="close-btn" onclick="closeModal('detailModal')">&times;</span>
+            <img id="detImg" src="" style="width:100%; border-radius:8px; height:250px; object-fit:cover; background:#eee;">
+            <h2 id="detPrice" style="margin:15px 0; color:var(--primary);"></h2>
+            <h3 id="detTitle" style="margin-bottom:10px;"></h3>
+            <p id="detDesc" style="color:#555; line-height:1.6; background:#f9f9f9; padding:10px; border-radius:5px;"></p>
+            <div style="border-top:1px solid #eee; margin-top:20px; padding-top:15px;">
+                <p style="font-size:14px;"><strong>Seller:</strong> <span id="detSeller"></span></p>
+                <a id="detCall" href="" class="btn-main">📞 Call Seller</a>
                 <a id="detWA" href="" target="_blank" class="btn-wa">💬 WhatsApp Now</a>
             </div>
         </div>
@@ -97,20 +112,22 @@
 
     <div id="uploadModal" class="modal">
         <div class="modal-content">
-            <span onclick="closeModal('uploadModal')" style="float:right; cursor:pointer;">&times;</span>
-            <h3 id="formTitle">Post Your Ad</h3>
-            <input type="text" id="itemName" placeholder="Product Title">
+            <span class="close-btn" onclick="closeModal('uploadModal')">&times;</span>
+            <h3>Post Your Ad</h3>
+            <input type="text" id="itemName" placeholder="Product Title (যেমন: iPhone 13)">
             <input type="number" id="itemPrice" placeholder="Price (৳)">
-            <input type="tel" id="itemPhone" placeholder="Your Phone Number">
+            <input type="tel" id="itemPhone" placeholder="Contact Phone Number">
             <select id="itemCat">
                 <option value="Mobile">Mobile</option>
                 <option value="Laptop">Laptop</option>
                 <option value="Electronics">Electronics</option>
                 <option value="Bike">Bike</option>
+                <option value="Property">Property</option>
             </select>
-            <textarea id="itemDesc" placeholder="Product Details..."></textarea>
+            <textarea id="itemDesc" rows="4" placeholder="Description (পণ্যটির অবস্থা কেমন, কতদিন ব্যবহার করেছেন ইত্যাদি লিখুন)"></textarea>
             <input type="file" id="fileInput" accept="image/*">
             <button onclick="processUpload()" id="uploadBtn" class="btn-main">Publish Ad</button>
+            <p id="status" style="text-align:center; font-size:12px; color:blue;"></p>
         </div>
     </div>
 
@@ -119,53 +136,43 @@
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
-        let allAds = [], userEmail = "", currentLang = "en";
-
-        const langData = {
-            en: { vTitle: "Fresh Recommendations", sBtn: "➕ Sell Now", call: "Call Seller", seller: "Seller", cats: ["Mobile", "Laptop", "Electronics", "Bike", "Furniture"] },
-            bn: { vTitle: "নতুন বিজ্ঞাপনসমূহ", sBtn: "➕ বিক্রি করুন", call: "বিক্রেতাকে কল করুন", seller: "বিক্রেতা", cats: ["মোবাইল", "ল্যাপটপ", "ইলেকট্রনিক্স", "বাইক", "ফার্নিচার"] },
-            hi: { vTitle: "नई सिफारिशें", sBtn: "➕ बेचें", call: "विक्रेता को कॉल करें", seller: "विक्रेता", cats: ["मोबाइल", "लैपटॉप", "इलेक्ट्रॉनिक्स", "बाइक", "फर्नीचर"] }
-        };
-
-        function updateLang(l) {
-            currentLang = l; const d = langData[l];
-            document.getElementById('vTitle').innerText = d.vTitle;
-            document.getElementById('sellBtn').innerText = d.sBtn;
-            document.querySelectorAll('.cat-name').forEach((n, i) => n.innerText = d.cats[i]);
-            renderAds(allAds);
-        }
+        let allAds = [], userEmail = "";
 
         async function fetchAds() {
-            const res = await fetch(SHEETDB_URL);
-            allAds = await res.json();
-            renderAds(allAds);
+            try {
+                const res = await fetch(SHEETDB_URL);
+                allAds = await res.json();
+                renderAds(allAds);
+            } catch (e) { document.getElementById('adsGrid').innerHTML = "Check Connection."; }
         }
 
         function renderAds(data) {
             const grid = document.getElementById('adsGrid'); grid.innerHTML = "";
             data.reverse().forEach(ad => {
+                // ডেটা রিড করার সময় ব্যাকআপ লজিক (ছোট বা বড় হাতের অক্ষর যাই হোক)
                 const name = ad.Name || ad.name || "Untitled";
                 const price = ad.Price || ad.price || "0";
                 const img = ad.Image || ad.image || "https://via.placeholder.com/200";
                 
                 const card = document.createElement('div');
                 card.className = 'ad-card';
-                card.innerHTML = `<img src="${img}"><div class="ad-info"><div class="ad-price">৳ ${price}</div><div class="ad-title">${name}</div></div>`;
+                card.innerHTML = `<img src="${img}" onerror="this.src='https://via.placeholder.com/200'"><div class="ad-info"><div class="ad-price">৳ ${price}</div><div class="ad-title">${name}</div></div>`;
                 card.onclick = () => showDetails(ad);
                 grid.appendChild(card);
             });
         }
 
         function showDetails(ad) {
-            document.getElementById('detImg').src = ad.Image || ad.image;
-            document.getElementById('detPrice').innerText = "৳ " + (ad.Price || ad.price);
-            document.getElementById('detTitle').innerText = ad.Name || ad.name;
-            document.getElementById('detDesc').innerText = ad.Description || ad.description || "No details provided.";
-            document.getElementById('detSeller').innerText = ad.Email || "Anonymous";
+            // পপ-আপে ডেটা পুশ করা হচ্ছে
+            document.getElementById('detImg').src = ad.Image || ad.image || "";
+            document.getElementById('detPrice').innerText = "৳ " + (ad.Price || ad.price || "0");
+            document.getElementById('detTitle').innerText = ad.Name || ad.name || "Untitled";
+            document.getElementById('detDesc').innerText = ad.Description || ad.description || "No details provided by the seller.";
+            document.getElementById('detSeller').innerText = ad.Email || ad.email || "Verified Seller";
             
             const phone = ad.Phone || ad.phone || "";
             document.getElementById('detCall').href = "tel:" + phone;
-            document.getElementById('detWA').href = `https://wa.me/${phone}?text=Hi, interested in ${ad.Name}`;
+            document.getElementById('detWA').href = `https://wa.me/${phone}?text=Hi, I am interested in your ${ad.Name || 'Product'} on BongoBiz.`;
             
             openModal('detailModal');
         }
@@ -181,37 +188,59 @@
 
         async function processUpload() {
             const file = document.getElementById('fileInput').files[0];
+            const name = document.getElementById('itemName').value;
+            const price = document.getElementById('itemPrice').value;
             const phone = document.getElementById('itemPhone').value;
-            if(!file || !phone) return alert("Photo and Phone Number required!");
+            const desc = document.getElementById('itemDesc').value;
+
+            if(!file || !name || !price || !phone) return alert("Please fill Title, Price, Phone, and Photo!");
             
             const btn = document.getElementById('uploadBtn');
-            btn.innerText = "Processing..."; btn.disabled = true;
+            const status = document.getElementById('status');
+            btn.innerText = "Processing Image..."; btn.disabled = true;
 
-            const fd = new FormData(); fd.append('image', file);
-            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
-            const imgData = await imgRes.json();
+            try {
+                const fd = new FormData(); fd.append('image', file);
+                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+                const imgData = await imgRes.json();
 
-            if(imgData.success) {
-                await fetch(SHEETDB_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ data: [{ 
-                        Email: userEmail, Name: document.getElementById('itemName').value, 
-                        Price: document.getElementById('itemPrice').value, Phone: phone,
-                        Category: document.getElementById('itemCat').value, Description: document.getElementById('itemDesc').value,
-                        Image: imgData.data.url, Date: new Date().toLocaleDateString()
-                    }]})
-                });
-                location.reload();
-            }
+                if(imgData.success) {
+                    status.innerText = "Saving to Database...";
+                    await fetch(SHEETDB_URL, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ data: [{ 
+                            Email: userEmail, Name: name, Price: price, Phone: phone,
+                            Category: document.getElementById('itemCat').value, 
+                            Description: desc, Image: imgData.data.url, Date: new Date().toLocaleDateString()
+                        }]})
+                    });
+                    alert("Ad Posted Successfully!"); location.reload();
+                }
+            } catch(e) { alert("Error Occured!"); btn.disabled = false; btn.innerText = "Publish Ad"; }
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
         function searchAds() {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            renderAds(allAds.filter(ad => (ad.Name||ad.name||"").toLowerCase().includes(q)));
+            renderAds(allAds.filter(ad => (ad.Name||ad.name||"").toLowerCase().includes(q) || (ad.Category||ad.category||"").toLowerCase().includes(q)));
         }
+
+        function filterCat(cat) {
+            renderAds(allAds.filter(ad => (ad.Category||ad.category) === cat));
+            document.getElementById('vTitle').innerText = cat + " Recommendations";
+        }
+
+        function updateLang(l) {
+            const d = {en: ["Mobile","Laptop","Electronics","Bike","Property","Fresh Recommendations"], bn: ["মোবাইল","ল্যাপটপ","ইলেকট্রনিক্স","বাইক","প্রপার্টি","নতুন বিজ্ঞাপনসমূহ"]};
+            const active = d[l] || d.en;
+            const names = document.querySelectorAll('.cat-name');
+            names.forEach((n, i) => n.innerText = active[i]);
+            document.getElementById('vTitle').innerText = active[5];
+        }
+
         window.onload = fetchAds;
     </script>
 </body>
