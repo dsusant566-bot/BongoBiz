@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BongoBiz - Classified Marketplace</title>
+    <title>BongoBiz - Marketplace</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
@@ -23,17 +23,17 @@
         .content { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
-        .ad-card img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
+        .ad-card img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
         .ad-info { padding: 10px; }
-        .ad-price { font-size: 18px; font-weight: 900; }
+        .ad-price { font-size: 18px; font-weight: 900; color: #002f34; }
         #uploadModal, #myAdsModal, #detailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; }
-        .modal-content input, .modal-content textarea { width: 100%; padding: 15px !important; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 18px !important; box-sizing: border-box; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 18px; box-sizing: border-box; }
         .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
         .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
         .wa-float { background: var(--wa-green); }
-        .sell-float { display: none; background: #ffce32; color: #002f34; }
+        .sell-float { display: none; background: var(--secondary); color: var(--primary); }
         .my-ad-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
         .del-btn { color: white; background: red; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
         .edit-btn { color: white; background: orange; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
@@ -43,7 +43,7 @@
     <header>
         <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search Mobiles, Laptops...">
+            <input type="text" id="searchInput" placeholder="খুঁজুন...">
             <button onclick="searchAds()">🔍</button>
         </div>
         <div class="nav-right">
@@ -56,44 +56,175 @@
         </div>
     </header>
     <div class="hero">
-        <h2>India's Own Classified Marketplace</h2>
-        <p>Buy, Sell & Apply for Loans</p>
+        <h2>ভারতের নিজস্ব মার্কেটপ্লেস</h2>
+        <p>কেনা-বেচা এবং লোনের আবেদন করুন</p>
     </div>
     <div class="categories">
-        <div class="cat-card" onclick="filterCat('Mobile')"><div class="cat-icon">📱</div><div>Mobile</div></div>
-        <div class="cat-card" onclick="filterCat('Laptop')"><div class="cat-icon">💻</div><div>Laptop</div></div>
-        <div class="cat-card" onclick="filterCat('Bike')"><div class="cat-icon">🚲</div><div>Bike</div></div>
-        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div>Property</div></div>
+        <div class="cat-card" onclick="filterCat('Mobile')"><div class="cat-icon">📱</div><div>মোবাইল</div></div>
+        <div class="cat-card" onclick="filterCat('Laptop')"><div class="cat-icon">💻</div><div>ল্যাপটপ</div></div>
+        <div class="cat-card" onclick="filterCat('Bike')"><div class="cat-icon">🚲</div><div>বাইক</div></div>
+        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div>প্রপার্টি</div></div>
     </div>
     <div class="content">
-        <h3>Fresh Recommendations</h3>
-        <div class="ads-grid" id="adsGrid">Loading...</div>
+        <h3>নতুন বিজ্ঞাপন</h3>
+        <div class="ads-grid" id="adsGrid">লোড হচ্ছে...</div>
     </div>
-    <div id="detailModal"><div class="modal-content"><span class="close-x" onclick="closeModal('detailModal')">&times;</span><img id="detImg" style="width:100%; height:200px; object-fit:cover; border-radius:8px;"><h2 id="detPrice" style="color:var(--primary); margin:15px 0;"></h2><h3 id="detTitle"></h3><p id="detDesc"></p><hr><a id="detCall" href="" class="f-btn" style="background:var(--secondary); color:black; justify-content:center; margin-bottom:10px;">📞 Call</a><a id="detWA" href="" target="_blank" class="f-btn wa-float" style="justify-content:center;">💬 WhatsApp</a></div></div>
-    <div id="uploadModal"><div class="modal-content"><span class="close-x" onclick="closeModal('uploadModal')">&times;</span><h3 id="postTitle">Post Your Ad</h3><input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><textarea id="itemDesc" placeholder="Details"></textarea><input type="file" id="fileInput" accept="image/*"><button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Submit Ad</button></div></div>
-    <div id="myAdsModal"><div class="modal-content"><span class="close-x" onclick="closeMyAds()">&times;</span><h3>My Ads</h3><div id="myAdsList"></div></div></div>
-    <div class="float-wrap"><a href="https://wa.me/917585999923" class="f-btn wa-float">Contact Us</a><a href="javascript:void(0)" onclick="openModal('uploadModal')" class="f-btn sell-float" id="sellBtn">➕ Sell Now</a></div>
+    <div id="detailModal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
+            <img id="detImg" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            <h2 id="detPrice" style="color:var(--primary); margin:15px 0;"></h2>
+            <h3 id="detTitle"></h3>
+            <p id="detDesc"></p>
+            <hr>
+            <a id="detCall" href="" class="f-btn" style="background:var(--secondary); color:black; justify-content:center; margin-bottom:10px;">📞 কল করুন</a>
+            <a id="detWA" href="" target="_blank" class="f-btn wa-float" style="justify-content:center;">💬 হোয়াটসঅ্যাপ</a>
+        </div>
+    </div>
+    <div id="uploadModal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('uploadModal')">&times;</span>
+            <h3 id="postTitle">বিজ্ঞাপন দিন</h3>
+            <input type="text" id="itemName" placeholder="পণ্যের নাম">
+            <input type="number" id="itemPrice" placeholder="দাম">
+            <input type="tel" id="itemPhone" placeholder="ফোন নম্বর">
+            <textarea id="itemDesc" placeholder="বিস্তারিত বিবরণ"></textarea>
+            <input type="file" id="fileInput" accept="image/*">
+            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">সাবমিট করুন</button>
+        </div>
+    </div>
+    <div id="myAdsModal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeMyAds()">&times;</span>
+            <h3>আমার বিজ্ঞাপন</h3>
+            <div id="myAdsList"></div>
+        </div>
+    </div>
+    <div class="float-wrap">
+        <a href="https://wa.me/917585999923" class="f-btn wa-float">যোগাযোগ করুন</a>
+        <a href="javascript:void(0)" onclick="openModal('uploadModal')" class="f-btn sell-float" id="sellBtn">➕ বিক্রি করুন</a>
+    </div>
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
         let allAds = []; let userEmail = ""; let editingAdName = null;
-        async function fetchAds() { try { const res = await fetch(SHEETDB_URL); allAds = await res.json(); renderAds(allAds); } catch (e) { document.getElementById('adsGrid').innerHTML = "Error!"; } }
-        function renderAds(data) { const grid = document.getElementById('adsGrid'); grid.innerHTML = ""; const activeAds = data.filter(ad => ad.Status !== 'Deleted'); [...activeAds].reverse().forEach(ad => { const card = document.createElement('div'); card.className = 'ad-card'; card.onclick = () => showDetails(ad); card.innerHTML = `<img src="${ad.Image || ''}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price || '0'}</div><div class="ad-title">${ad.Name || 'Untitled'}</div></div>`; grid.appendChild(card); }); }
-        function showDetails(ad) { document.getElementById('detImg').src = ad.Image || ""; document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); document.getElementById('detTitle').innerText = ad.Name || ""; document.getElementById('detDesc').innerText = ad.Description || ""; document.getElementById('detCall').href = "tel:" + ad.Phone; document.getElementById('detWA').href = `https://wa.me/${ad.Phone}?text=Interest in ${ad.Name}`; openModal('detailModal'); }
-        function handleCredentialResponse(response) { const payload = JSON.parse(atob(response.credential.split('.')[1])); userEmail = payload.email.toLowerCase(); document.querySelector(".g_id_signin").style.display = "none"; document.getElementById('userProfile').style.display = "flex"; document.getElementById('userImg').src = payload.picture; document.getElementById('sellBtn').style.display = "flex"; }
-        async function processUpload() { const name = document.getElementById('itemName').value; const price = document.getElementById('itemPrice').value; const phone = document.getElementById('itemPhone').value; const desc = document.getElementById('itemDesc').value; const file = document.getElementById('fileInput').files[0]; const btn = document.getElementById('uploadBtn'); btn.disabled = true; btn.innerText = "Processing..."; let imageUrl = ""; if(file) { const fd = new FormData(); fd.append('image', file); const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd }); const imgData = await imgRes.json(); if(imgData.success) imageUrl = imgData.data.url; } else if(editingAdName) { imageUrl = allAds.find(a => a.Name === editingAdName).Image; }
-        const payload = { Email: userEmail, Name: name, Price: price, Phone: phone, Description: desc, Image: imageUrl, Status: "Active" };
-        if(editingAdName) { await fetch(`${SHEETDB_URL}/Name/${editingAdName}`, { method: 'DELETE' }); }
-        await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: [payload] }) });
-        alert("Done!"); location.reload(); }
-        function showMyAds() { const myAds = allAds.filter(ad => (ad.Email || "").toLowerCase() === userEmail && ad.Status !== 'Deleted'); const list = document.getElementById('myAdsList'); list.innerHTML = myAds.length ? "" : "No ads."; myAds.forEach(ad => { list.innerHTML += `<div class="my-ad-row"><span>${ad.Name} (Rs ${ad.Price})</span><div><button onclick="editAd('${ad.Name}')" class="edit-btn">Edit</button><button onclick="deleteAd('${ad.Name}')" class="del-btn">Delete</button></div></div>`; }); openModal('myAdsModal'); }
-        function editAd(name) { const ad = allAds.find(a => a.Name === name); editingAdName = name; document.getElementById('itemName').value = ad.Name; document.getElementById('itemPrice').value = ad.Price; document.getElementById('itemPhone').value = ad.Phone; document.getElementById('itemDesc').value = ad.Description; closeMyAds(); openModal('uploadModal'); document.getElementById('uploadBtn').innerText = "Update"; }
-        async function deleteAd(name) { if(confirm("Are you sure?")) { await fetch(`${SHEETDB_URL}/Name/${name}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: { Status: "Deleted" } }) }); alert("Deleted!"); location.reload(); } }
+
+        async function fetchAds() {
+            try {
+                const res = await fetch(SHEETDB_URL);
+                allAds = await res.json();
+                renderAds(allAds);
+            } catch (e) { document.getElementById('adsGrid').innerHTML = "এরর!"; }
+        }
+
+        function renderAds(data) {
+            const grid = document.getElementById('adsGrid'); grid.innerHTML = "";
+            const activeAds = data.filter(ad => ad.Status !== 'Deleted');
+            [...activeAds].reverse().forEach(ad => {
+                const card = document.createElement('div');
+                card.className = 'ad-card';
+                card.onclick = () => showDetails(ad);
+                card.innerHTML = `<img src="${ad.Image || ''}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price || '0'}</div><div class="ad-title">${ad.Name || 'Untitled'}</div></div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        function showDetails(ad) {
+            document.getElementById('detImg').src = ad.Image || "";
+            document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0");
+            document.getElementById('detTitle').innerText = ad.Name || "";
+            document.getElementById('detDesc').innerText = ad.Description || "";
+            document.getElementById('detCall').href = "tel:" + ad.Phone;
+            document.getElementById('detWA').href = `https://wa.me/${ad.Phone}?text=Interest in ${ad.Name}`;
+            openModal('detailModal');
+        }
+
+        function handleCredentialResponse(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            userEmail = payload.email.toLowerCase();
+            document.querySelector(".g_id_signin").style.display = "none";
+            document.getElementById('userProfile').style.display = "flex";
+            document.getElementById('userImg').src = payload.picture;
+            document.getElementById('sellBtn').style.display = "flex";
+        }
+
+        async function processUpload() {
+            const btn = document.getElementById('uploadBtn');
+            btn.disabled = true; btn.innerText = "প্রসেসিং...";
+            const file = document.getElementById('fileInput').files[0];
+            let imageUrl = "";
+
+            if(file) {
+                const fd = new FormData(); fd.append('image', file);
+                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+                const imgData = await imgRes.json();
+                if(imgData.success) imageUrl = imgData.data.url;
+            } else if(editingAdName) {
+                imageUrl = allAds.find(a => a.Name === editingAdName).Image;
+            }
+
+            const payload = {
+                Email: userEmail,
+                Name: document.getElementById('itemName').value,
+                Price: document.getElementById('itemPrice').value,
+                Phone: document.getElementById('itemPhone').value,
+                Description: document.getElementById('itemDesc').value,
+                Image: imageUrl,
+                Status: "Active"
+            };
+
+            if(editingAdName) { await fetch(`${SHEETDB_URL}/Name/${editingAdName}`, { method: 'DELETE' }); }
+            await fetch(SHEETDB_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ data: [payload] })
+            });
+
+            alert("সফল হয়েছে!");
+            location.reload();
+        }
+
+        function showMyAds() {
+            const myAds = allAds.filter(ad => (ad.Email || "").toLowerCase() === userEmail && ad.Status !== 'Deleted');
+            const list = document.getElementById('myAdsList');
+            list.innerHTML = myAds.length ? "" : "কোনো অ্যাড নেই।";
+            myAds.forEach(ad => {
+                list.innerHTML += `<div class="my-ad-row"><span>${ad.Name} (Rs ${ad.Price})</span><div><button onclick="editAd('${ad.Name}')" class="edit-btn">Edit</button><button onclick="deleteAd('${ad.Name}')" class="del-btn">Delete</button></div></div>`;
+            });
+            openModal('myAdsModal');
+        }
+
+        function editAd(name) {
+            const ad = allAds.find(a => a.Name === name);
+            editingAdName = name;
+            document.getElementById('itemName').value = ad.Name;
+            document.getElementById('itemPrice').value = ad.Price;
+            document.getElementById('itemPhone').value = ad.Phone;
+            document.getElementById('itemDesc').value = ad.Description;
+            closeMyAds(); openModal('uploadModal');
+            document.getElementById('uploadBtn').innerText = "আপডেট করুন";
+        }
+
+        async function deleteAd(name) {
+            if(confirm("আপনি কি নিশ্চিত?")) {
+                await fetch(`${SHEETDB_URL}/Name/${name}`, {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ data: { Status: "Deleted" } })
+                });
+                alert("ডিলিট হয়েছে!");
+                location.reload();
+            }
+        }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'uploadModal') editingAdName = null; }
         function closeMyAds() { document.getElementById('myAdsModal').style.display='none'; }
-        function searchAds() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAds(allAds.filter(ad => (ad.Name || "").toLowerCase().includes(q))); }
-        function filterCat(cat) { renderAds(allAds.filter(ad => ad.Status !== 'Deleted' && ad.Category === cat)); }
+        function searchAds() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderAds(allAds.filter(ad => (ad.Name || "").toLowerCase().includes(q)));
+        }
+        function filterCat(cat) { renderAds(allAds.filter(ad => ad.Category === cat)); }
         window.onload = fetchAds;
     </script>
 </body>
