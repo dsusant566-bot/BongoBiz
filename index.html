@@ -13,24 +13,21 @@
         .search-container { flex-grow: 1; max-width: 500px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; }
         .search-container input { border: none; padding: 10px; width: 100%; outline: none; }
         .search-container button { background: var(--primary); color: white; border: none; padding: 10px 15px; cursor: pointer; }
-        
-        /* কোণার লগইন বাটনের স্টাইল (Deep Login) */
         .login-btn-box { display: flex; align-items: center; gap: 8px; background: #fff; border: 3px solid #002f34; padding: 4px 15px; border-radius: 25px; cursor: pointer; }
-        .login-text-bold { font-size: 15px; font-weight: 900; color: #002f34; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        #userProfile { display: none; align-items: center; gap: 8px; font-size: 12px; }
+        .login-text-bold { font-size: 15px; font-weight: 900; color: #002f34; text-transform: uppercase; }
+        #userProfile { display: none; align-items: center; gap: 8px; }
         #userImg { width: 35px; height: 35px; border-radius: 50%; border: 2.5px solid #002f34; }
         .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
+        .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; }
+        .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; }
+        .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; padding: 0 15px; }
         .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
         .ad-card img { width: 100%; height: 160px; object-fit: cover; }
-        .ad-info { padding: 10px; }
-        .ad-price { font-size: 18px; font-weight: 900; }
-        
         #uploadModal, #myAdsModal, #detailModal, #loginPromptModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; text-align: center; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; }
-        .btn-contact { padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; border: none; cursor: pointer; margin-bottom: 10px; display: block; text-decoration: none; text-align: center; }
+        .btn-contact { padding: 15px; border-radius: 50px; font-weight: bold; width: 100%; border: none; cursor: pointer; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -50,14 +47,14 @@
             </div>
             <div id="userProfile">
                 <img id="userImg" src="">
-                <button onclick="showMyAds()" id="myAdsBtn" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">আমার বিজ্ঞাপন</button>
+                <button onclick="showMyAds()" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">My Ads</button>
             </div>
         </div>
     </header>
 
     <div class="hero">
         <h2>BongoBiz Marketplace</h2>
-        <p>কেনা-বেচা এবং লোনের জন্য ভারতের সেরা প্ল্যাটফর্ম</p>
+        <p>Buy, Sell & Contact Sellers</p>
     </div>
 
     <div id="adsGrid" class="ads-grid">লোডিং...</div>
@@ -67,9 +64,9 @@
             <span class="close-x" onclick="closeModal('loginPromptModal')">&times;</span>
             <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
             <h3>লগইন প্রয়োজন</h3>
-            <p style="color: #666; margin-bottom: 25px;">বিক্রেতার নম্বর দেখতে হলে নিচে ক্লিক করে জিমেইল দিয়ে লগইন করুন।</p>
+            <p style="color: #666; margin-bottom: 25px;">বিক্রেতার সাথে যোগাযোগ করতে গুগল দিয়ে লগইন করুন।</p>
             <div style="display: flex; justify-content: center;">
-                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large"></div>
             </div>
         </div>
     </div>
@@ -81,14 +78,13 @@
             <h2 id="detPrice" style="color:var(--primary); margin:15px 0; text-align:left;"></h2>
             <h3 id="detTitle" style="text-align:left;"></h3>
             <p id="detDesc" style="text-align:left;"></p>
-            <button onclick="handleContact('call')" class="btn-contact" style="background:var(--secondary); color:black;">📞 কল করুন</button>
-            <button onclick="handleContact('wa')" class="btn-contact" style="background:var(--wa-green); color:white;">💬 হোয়াটসঅ্যাপ</button>
+            <button onclick="handleContact('call')" class="btn-contact" style="background:var(--secondary); color:black;">📞 Call</button>
+            <button onclick="handleContact('wa')" class="btn-contact" style="background:var(--wa-green); color:white;">💬 WhatsApp</button>
         </div>
     </div>
-
     <script>
         const ADS_API = "https://sheetdb.io/api/v1/cioz6pe7gyldq"; 
-        const USERS_API = "https://sheetdb.io/api/v1/ra14x7n0mlrk8"; // আপনার নতুন API
+        const USERS_API = "https://sheetdb.io/api/v1/ra14x7n0mlrk8"; 
         let allAds = []; let userEmail = ""; let currentAd = null;
 
         async function fetchAds() {
@@ -96,7 +92,7 @@
                 const res = await fetch(ADS_API);
                 allAds = await res.json();
                 renderAds(allAds);
-            } catch (e) { document.getElementById('adsGrid').innerHTML = "ডেটা লোড করতে সমস্যা হচ্ছে"; }
+            } catch (e) { }
         }
 
         function renderAds(data) {
@@ -105,18 +101,12 @@
             activeAds.reverse().forEach(ad => {
                 const card = document.createElement('div'); card.className = 'ad-card';
                 card.onclick = () => { currentAd = ad; showDetails(ad); };
-                card.innerHTML = `<img src="${ad.Image}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price}</div><div>${ad.Name}</div></div>`;
+                card.innerHTML = `<img src="${ad.Image}"><div style="padding:10px;"><div style="font-weight:900;">Rs ${ad.Price}</div><div>${ad.Name}</div></div>`;
                 grid.appendChild(card);
             });
         }
 
-        function showDetails(ad) { 
-            document.getElementById('detImg').src = ad.Image; 
-            document.getElementById('detPrice').innerText = "Rs " + ad.Price; 
-            document.getElementById('detTitle').innerText = ad.Name; 
-            document.getElementById('detDesc').innerText = ad.Description; 
-            openModal('detailModal'); 
-        }
+        function showDetails(ad) { document.getElementById('detImg').src = ad.Image; document.getElementById('detPrice').innerText = "Rs " + ad.Price; document.getElementById('detTitle').innerText = ad.Name; document.getElementById('detDesc').innerText = ad.Description; openModal('detailModal'); }
 
         function handleContact(type) {
             if(!userEmail) { closeModal('detailModal'); openModal('loginPromptModal'); return; }
@@ -127,14 +117,11 @@
         async function handleCredentialResponse(response) {
             const payload = JSON.parse(atob(response.credential.split('.')[1]));
             userEmail = payload.email.toLowerCase();
-            
-            // UI পরিবর্তন
             document.getElementById("loginSection").style.display = "none";
             document.getElementById('userProfile').style.display = "flex";
             document.getElementById('userImg').src = payload.picture;
             closeModal('loginPromptModal');
 
-            // নতুন USERS API-তে ডাটা পাঠানো
             const today = new Date().toLocaleDateString();
             fetch(USERS_API, {
                 method: 'POST',
