@@ -9,6 +9,7 @@
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg); color: var(--primary); }
         
+        /* Header Fix: ল্যাপটপ এবং মোবাইলে লোগো ও সার্চ ঠিক রাখবে */
         header { background: #fff; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); gap: 10px; }
         .logo-img { height: 45px; width: auto; }
         .search-container { flex-grow: 1; max-width: 500px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; }
@@ -20,6 +21,10 @@
         #userProfile { display: none; align-items: center; gap: 8px; font-size: 12px; }
         #userProfile img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
 
+        /* Hero Image Fix */
+        .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; background-position: center; padding: 30px 20px; text-align: center; color: white; }
+        
+        /* Categories - ল্যাপটপে সেন্টার এবং মোবাইলে স্ক্রোল হবে */
         .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; }
         @media (max-width: 768px) { .categories { justify-content: flex-start; } }
         .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; text-decoration: none; color: inherit; }
@@ -34,29 +39,33 @@
         .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
         .btn-yellow { background: var(--secondary); color: var(--primary); }
 
+        /* Ads Grid Fix: Image and Details */
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
         .ad-card img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
         .ad-info { padding: 10px; }
         .ad-price { font-size: 18px; font-weight: 900; }
 
-        /* পপ-আপ স্টাইল */
-        #uploadModal, #myAdsModal, #detailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
+        /* পপ-আপ ও লার্জ লাল ক্রস */
+        #uploadModal, #myAdsModal, #detailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; }
-        .close-x { position: absolute; top: 5px; right: 15px; font-size: 40px; color: red; cursor: pointer; font-weight: bold; }
+        .close-x { position: absolute; top: 5px; right: 15px; font-size: 40px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
+
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
         .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
         .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
         .wa-float { background: var(--wa-green); }
+        /* Sell button: লগইন ছাড়া হাইড থাকবে */
         .sell-float { display: none; background: #ffce32; color: #002f34; }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img">
+        <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/120x40?text=BongoBiz'">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search...">
+            <input type="text" id="searchInput" placeholder="Search Mobiles, Laptops...">
             <button onclick="searchAds()">🔍</button>
         </div>
         <div class="nav-right">
@@ -66,20 +75,26 @@
                 <option value="hi">हिन्दी</option>
             </select>
             <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
-            <div class="g_id_signin" data-type="icon"></div>
+            <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
             <div id="userProfile">
                 <img id="userImg" src="">
-                <button onclick="showMyAds()" style="border:none; background:none; color:blue; cursor:pointer; font-weight:bold;">My Ads</button>
+                <button onclick="showMyAds()" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">My Ads</button>
+                <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer; font-size:11px;">Logout</button>
             </div>
         </div>
     </header>
 
+    <div class="hero">
+        <h2 id="hTitle">India's Own Classified Marketplace</h2>
+        <p id="hSub">Buy, Sell & Apply for Loans</p>
+    </div>
+
     <div class="categories">
         <div class="cat-card" onclick="filterCat('Mobile')"><div class="cat-icon">📱</div><div id="c1">Mobile</div></div>
         <div class="cat-card" onclick="filterCat('Laptop')"><div class="cat-icon">💻</div><div id="c2">Laptop</div></div>
-        <div class="cat-card" onclick="filterCat('Electronics')"><div class="cat-icon">❄️</div><div id="c3">Electronics</div></div>
-        <div class="cat-card" onclick="filterCat('Bike')"><div class="cat-icon">🚲</div><div id="c4">Bike</div></div>
-        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c5">Property</div></div>
+        <div class="cat-card" onclick="filterCat('Electronics')"><div class="cat-icon">❄️</div><div id="c4">Electronics</div></div>
+        <div class="cat-card" onclick="filterCat('Bike')"><div class="cat-icon">🚲</div><div id="c6">Bike</div></div>
+        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c7">Property</div></div>
     </div>
 
     <div class="content">
@@ -91,14 +106,14 @@
             </div>
         </div>
         <h3 id="viewTitle">Fresh Recommendations</h3>
-        <div class="ads-grid" id="adsGrid">Loading...</div>
+        <div class="ads-grid" id="adsGrid">Loading data...</div>
     </div>
 
     <div id="detailModal">
         <div class="modal-content">
             <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
             <img id="detImg" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-            <h2 id="detPrice" style="margin:10px 0;"></h2>
+            <h2 id="detPrice" style="color:var(--primary); margin:15px 0;"></h2>
             <h3 id="detTitle"></h3>
             <p id="detDesc" style="background:#f9f9f9; padding:10px; border-radius:5px;"></p>
             <hr>
@@ -106,6 +121,8 @@
             <a id="detWA" href="" target="_blank" class="f-btn wa-float" style="justify-content:center;">💬 WhatsApp</a>
         </div>
     </div>
+
+    <div id="myAdsModal"><div class="modal-content"><span class="close-x" onclick="closeMyAds()">&times;</span><h3>My Ads</h3><div id="myAdsList"></div></div></div>
 
     <div id="uploadModal">
         <div class="modal-content">
@@ -116,15 +133,13 @@
             <input type="tel" id="itemPhone" placeholder="Phone Number">
             <select id="itemCat">
                 <option value="Mobile">Mobile</option><option value="Laptop">Laptop</option>
-                <option value="Electronics">Electronics</option><option value="Bike">Bike</option>
+                <option value="Electronics">Electronics</option><option value="Bike">Bike</option><option value="Property">Property</option>
             </select>
             <textarea id="itemDesc" rows="3" placeholder="Description"></textarea>
             <input type="file" id="fileInput" accept="image/*">
             <button onclick="processUpload()" id="uploadBtn" class="btn-action btn-yellow" style="width:100%;">Submit Ad</button>
         </div>
     </div>
-
-    <div id="myAdsModal"><div class="modal-content"><span class="close-x" onclick="closeMyAds()">&times;</span><h3>My Ads</h3><div id="myAdsList"></div></div></div>
 
     <div class="float-wrap">
         <a href="https://wa.me/917585999923" class="f-btn wa-float"><span id="waText">Contact Us</span></a>
@@ -151,13 +166,17 @@
                 const card = document.createElement('div');
                 card.className = 'ad-card';
                 card.onclick = () => showDetails(ad);
-                card.innerHTML = `<img src="${ad.Image || ad.image || ''}"><div class="ad-info"><div class="ad-price">৳ ${ad.Price || ad.price}</div><div class="ad-title">${ad.Name || ad.name}</div></div>`;
+                // ডেটা রিড করার সময় ব্যাকআপ লজিক (ছোট বা বড় হাতের যাই হোক)
+                const name = ad.Name || ad.name || "Untitled";
+                const price = ad.Price || ad.price || "0";
+                const img = ad.Image || ad.image || ad.image_url || 'https://via.placeholder.com/150';
+                card.innerHTML = `<img src="${img}"><div class="ad-info"><div class="ad-price">৳ ${price}</div><div class="ad-title">${name}</div></div>`;
                 grid.appendChild(card);
             });
         }
 
         function showDetails(ad) {
-            document.getElementById('detImg').src = ad.Image || ad.image || '';
+            document.getElementById('detImg').src = ad.Image || ad.image || ad.image_url || '';
             document.getElementById('detPrice').innerText = "৳ " + (ad.Price || ad.price || '0');
             document.getElementById('detTitle').innerText = ad.Name || ad.name || 'Untitled';
             document.getElementById('detDesc').innerText = ad.Description || ad.description || 'No description.';
@@ -202,7 +221,7 @@
             const banners = {en: ["Need Financial Assistance?", "Apply for loans."], bn: ["লোন প্রয়োজন?", "সহজে লোনের আবেদন করুন।"], hi: ["ऋण चाहिए?", "आसानी से आवेदन करें।"]};
             document.getElementById('lTitle').innerText = banners[l][0];
             document.getElementById('lDesc').innerText = banners[l][1];
-            document.getElementById('vTitle').innerText = (l === 'bn' ? "নতুন বিজ্ঞাপন" : (l === 'hi' ? "नई सिफारिशें" : "Fresh Recommendations"));
+            document.getElementById('viewTitle').innerText = (l === 'bn' ? "নতুন বিজ্ঞাপন" : "Fresh Recommendations");
         });
 
         function openModal(id) { document.getElementById(id).style.display='flex'; }
@@ -215,11 +234,6 @@
         }
         async function deleteAd(name) { if(confirm("Delete?")) { await fetch(`${SHEETDB_URL}/Name/${name}`, { method: 'DELETE' }); location.reload(); } }
         function closeMyAds() { document.getElementById('myAdsModal').style.display='none'; }
-        function searchAds() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderAds(allAds.filter(ad => (ad.Name || ad.name || "").toLowerCase().includes(q)));
-        }
-        function filterCat(cat) { renderAds(allAds.filter(ad => (ad.Category||ad.category) === cat)); }
         window.onload = fetchAds;
     </script>
 </body>
