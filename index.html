@@ -4,7 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BongoBiz - Classified Marketplace</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
+        const ADS_API = "https://sheetdb.io/api/v1/cioz6pe7gyldq"; // বিজ্ঞাপনের জন্য
+        const USERS_API = "https://sheetdb.io/api/v1/ra14x7n0mlrk8"; // শুধুমাত্র ইউজার ডিটেইলস এর জন্য
+        
+        let allAds = []; let userEmail = ""; let currentAd = null; let editingAdName = null;
+
+        async function fetchAds() { try { const res = await fetch(ADS_API); allAds = await res.json(); renderAds(allAds); } catch (e) { document.getElementById('adsGrid').innerHTML = "Error!"; } }
+        
+        function renderAds(data) { 
+            const grid = document.getElementById('adsGrid'); grid.innerHTML = ""; 
+            const activeAds = data.filter(ad => ad.Status !== 'Deleted');
+            [...activeAds].reverse().forEach(ad => { 
+                const card = document.createElement('div'); card.className = 'ad-card'; card.onclick = () => showDetails(ad); 
+                card.innerHTML = `<img src="${ad.Image || ''}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price || '0'}</div><div class="ad-title">${ad.Name || 'Untitled'}</div></div>`; 
+                grid.appendChild(card); 
+            }); 
+        }
+
+        function showDetails(ad) { currentAd = ad; document.getElementById('detImg').src = ad.Image || ""; document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); document.getElementById('detTitle').innerText = ad.Name || ""; document.getElementById('detDesc').innerText = ad.Description || ""; openModal('detailModal'); }
+        
+        function handleContact(type) {
+            if(!userEmail) { closeModal('detailModal'); openModal('loginPromptModal'); return; }
+            if(type === 'call') window.location.href = "tel:" + currentAd.Phone;
+            else window.open(`https://wa.me/${currentAd.Phone}?text=Interest in ${currentAd.Name}`, '_blank');
+        }
+
+        async function handleCredentialResponse(response) { 
+            const payload = JSON.parse(atob(response.credential.split('.')[1])); 
+            userEmail = payload.email.toLowerCase(); 
+            document.getElementById("loginSection").style.display = "none"; 
+            document.getElementById('userProfile').style.display = "flex"; 
+            document.getElementById('userImg').src = payload.picture; 
+            document.getElementById('sellBtn').style.display = "flex"; 
+            closeModal('loginPromptModal');
+
+            // ফিক্সড: এখন থেকে ইউজারের তথ্য USERS_API তে যাবে
+            const today = new Date().toLocaleDateString();
+            fetch(USERS_API, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({ data: [{ Name: payload.name, Email: userEmail, Date: today }] }) 
+            });
+        }
+
+        const translations = { en: { search: "Search Mobiles...", myAds: "My Ads", hT: "BongoBiz Marketplace", hS: "Buy, Sell & Loans", lT: "Need Help?", lD: "Apply for loans easily.", lB: "APPLY", wT: "Website?", wD: "Build your identity.", wB: "WhatsApp", vT: "Fresh Recommendations", sell: "➕ Sell Now", contact: "Contact", postT: "Post Ad", myAdsT: "My Ads", cats: ["Mobile", "Laptop", "Camera", "Electronics", "Furniture", "Bike", "Property"] }, bn: { search: "খুঁজুন...", myAds: "আমার বিজ্ঞাপন", hT: "বঙ্গবিজ মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোন", lT: "লোন প্রয়োজন?", lD: "সহজে লোনের আবেদন করুন।", lB: "আবেদন", wT: "ওয়েবসাইট?", wD: "ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ", vT: "নতুন বিজ্ঞাপন", sell: "➕ বিক্রি করুন", contact: "যোগাযোগ", postT: "বিজ্ঞাপন দিন", myAdsT: "আমার বিজ্ঞাপন", cats: ["মোবাইল", "ল্যাপটপ", "ক্যামেরা", "ইলেকট্রনিক্স", "ফার্নিচার", "বাইক", "প্রপার্টি"] }, hi: { search: "खोजें...", myAds: "मेरे विज्ञापन", hT: "बोंगोबिज मार्केटप्लेस", hS: "खरीदें এবং बेचें", lT: "ऋण चाहिए?", lD: "ऋण के लिए आवेदन करें।", lB: "आवेदन", wT: "वेबसाइट?", wD: "अपनी पहचान बनाएं।", wB: "व्हाट्सएप", vT: "नई सिफारिशें", sell: "➕ बेचें", contact: "संपর্ক", postT: "विज्ञापन दें", myAdsT: "मेरे विज्ञापन", cats: ["मोबाइल", "लैपटॉप", "कैमरा", "इलेक्ट्रॉनिक्स", "फर्नीचर", "बाइक", "प्रॉपर्टी"] } };
+        document.getElementById('langSwitcher').addEventListener('change', (e) => { const lang = translations[e.target.value]; document.getElementById('searchInput').placeholder = lang.search; document.getElementById('myAdsBtn').innerText = lang.myAds; document.getElementById('hTitle').innerText = lang.hT; document.getElementById('hSub').innerText = lang.hS; document.getElementById('lTitle').innerText = lang.lT; document.getElementById('lDesc').innerText = lang.lD; document.getElementById('lBtn').innerText = lang.lB; document.getElementById('wTitle').innerText = lang.wT; document.getElementById('wDesc').innerText = lang.wD; document.getElementById('wBtn').innerText = lang.wB; document.getElementById('viewTitle').innerText = lang.vT; document.getElementById('sellBtn').innerText = lang.sell; document.getElementById('waFloatBtn').innerText = lang.contact; document.getElementById('postTitle').innerText = lang.postT; document.getElementById('myAdsTitle').innerText = lang.myAdsT; for(let i=1; i<=7; i++) document.getElementById('c'+i).innerText = lang.cats[i-1]; });
+
+        async function processUpload() { const file = document.getElementById('fileInput').files[0]; const btn = document.getElementById('uploadBtn'); btn.disabled = true; btn.innerText = "Processing..."; let finalImageUrl = ""; if(file) { const fd = new FormData(); fd.append('image', file); const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd }); const imgData = await imgRes.json(); if(imgData.success) finalImageUrl = imgData.data.url; } else if(editingAdName) { finalImageUrl = allAds.find(a => a.Name === editingAdName).Image; }
+        const payload = { Email: userEmail, Name: document.getElementById('itemName').value, Price: document.getElementById('itemPrice').value, Phone: document.getElementById('itemPhone').value, Description: document.getElementById('itemDesc').value, Image: finalImageUrl, Status: "Active" };
+        if(editingAdName) { await fetch(`${ADS_API}/Name/${editingAdName}`, { method: 'DELETE' }); }
+        await fetch(ADS_API, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: [payload]}) });
+        alert("Done!"); location.reload(); }
+
+        function showMyAds() { const myAds = allAds.filter(ad => (ad.Email || "").toLowerCase() === userEmail && ad.Status !== 'Deleted'); const list = document.getElementById('myAdsList'); list.innerHTML = myAds.length ? "" : "No ads found."; myAds.forEach(ad => { list.innerHTML += `<div class="my-ad-row"><span><strong>${ad.Name}</strong></span><div><button onclick="editAd('${ad.Name}')" class="edit-btn">Edit</button><button onclick="deleteAd('${ad.Name}')" class="del-btn">Delete</button></div></div>`; }); openModal('myAdsModal'); }
+        function editAd(name) { const ad = allAds.find(a => a.Name === name); editingAdName = name; document.getElementById('itemName').value = ad.Name; document.getElementById('itemPrice').value = ad.Price; document.getElementById('itemPhone').value = ad.Phone; document.getElementById('itemDesc').value = ad.Description; closeMyAds(); openModal('uploadModal'); document.getElementById('uploadBtn').innerText = "Update Ad"; }
+        async function deleteAd(name) { if(confirm("Are you sure?")) { await fetch(`${ADS_API}/Name/${name}`, { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: { Status: "Deleted" } }) }); alert("Deleted!"); location.reload(); } }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'uploadModal') editingAdName = null; }
+        function closeMyAds() { document.getElementById('myAdsModal').style.display='none'; }
+        function searchAds() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAds(allAds.filter(ad => (ad.Name || "").toLowerCase().includes(q))); }
+        function filterCat(cat) { renderAds(allAds.filter(ad => ad.Category === cat)); }
+        window.onload = fetchAds;
+    </script>
     <style>
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg); color: var(--primary); }
