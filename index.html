@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BongoBiz - India's Classified Marketplace</title>
     <style>
-        :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; }
+        :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --web-blue: #007bff; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #f2f4f5; color: var(--primary); }
         
         /* Header */
         header { background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-img { height: 45px; width: auto; border-radius: 4px; }
+        /* লোগো সাইজ এখানে কন্ট্রোল করা যাবে */
+        .logo-img { height: 40px; width: auto; object-fit: contain; }
         .location-text { font-size: 14px; font-weight: bold; color: #555; }
         .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
 
@@ -28,12 +29,18 @@
 
         .content { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
 
-        /* Loan Section */
-        .loan-box { background: linear-gradient(135deg, #002f34 0%, #004a52 100%); color: white; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 40px; }
-        .loan-box h3 { font-size: 28px; margin: 0 0 10px; }
-        .loan-box p { font-size: 16px; margin-bottom: 25px; opacity: 0.9; }
-        .btn-loan { background: var(--secondary); color: var(--primary); padding: 14px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; transition: 0.3s; display: inline-block; }
-        .btn-loan:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,206,50,0.4); }
+        /* Feature Boxes (Loan & Website) */
+        .feature-box { color: white; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15); margin-bottom: 25px; }
+        .loan-box { background: linear-gradient(135deg, #002f34 0%, #004a52 100%); }
+        .web-box { background: linear-gradient(135deg, #0056b3 0%, #003d80 100%); }
+        
+        .feature-box h3 { font-size: 28px; margin: 0 0 10px; }
+        .feature-box p { font-size: 16px; margin-bottom: 25px; opacity: 0.9; }
+        
+        .btn-action { padding: 14px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; transition: 0.3s; display: inline-block; border: none; cursor: pointer; }
+        .btn-yellow { background: var(--secondary); color: var(--primary); }
+        .btn-wa-light { background: var(--wa-green); color: white; }
+        .btn-action:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         .section-head { font-size: 22px; font-weight: bold; margin-bottom: 25px; border-left: 5px solid var(--secondary); padding-left: 15px; }
 
@@ -51,7 +58,7 @@
 
     <header>
         <div class="logo-box">
-            <div style="background: #eee; padding: 5px 15px; border-radius: 4px; font-weight: bold; color: #002f34;">BongoBiz</div>
+            <img src="https://via.placeholder.com/150x50?text=BongoBiz" alt="BongoBiz Logo" class="logo-img">
             <div class="location-text" id="locText">Kolkata • West Bengal • India</div>
         </div>
         <div class="lang-dropdown">
@@ -79,10 +86,16 @@
     </div>
 
     <div class="content">
-        <div class="loan-box">
+        <div class="feature-box loan-box">
             <h3 id="lTitle">Need Financial Assistance? Get a Loan Faster!</h3>
             <p id="lDesc">Apply for Personal or Business loans with minimum documentation.</p>
-            <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-loan" id="lBtn">APPLY FOR LOAN</a>
+            <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</a>
+        </div>
+
+        <div class="feature-box web-box">
+            <h3 id="wTitle">Want a Website for Business or Personal use?</h3>
+            <p id="wDesc">Contact us to build a professional website at an affordable price.</p>
+            <a href="https://wa.me/91YOUR_NUMBER?text=Hi, I want to build a website for my business." target="_blank" class="btn-action btn-wa-light" id="wBtn">WhatsApp Us</a>
         </div>
 
         <div class="section-head" id="sHead">Fresh Recommendations</div>
@@ -93,7 +106,7 @@
 
     <div class="float-wrap">
         <a href="https://wa.me/91YOUR_NUMBER" target="_blank" class="f-btn wa">
-            <span>💬</span> WhatsApp
+            <span>💬</span> <span id="waText">Contact Us</span>
         </a>
         <a href="https://forms.gle/suLga82FsjGgQHam6" target="_blank" class="f-btn sell">
             <span id="sBtnText">➕ Post Product Photos</span>
@@ -113,8 +126,12 @@
                 lTitle: "Need Financial Assistance? Get a Loan Faster!",
                 lDesc: "Apply for Personal or Business loans with minimum documentation.",
                 lBtn: "APPLY FOR LOAN",
+                wTitle: "Want a Website for Business or Personal use?",
+                wDesc: "Contact us to build a professional website at an affordable price.",
+                wBtn: "WhatsApp Us",
                 sHead: "Fresh Recommendations",
                 sBtn: "➕ Post Product Photos",
+                wa: "Contact Us",
                 cats: ["Mobile", "Laptop", "House", "Camera", "Bike", "Car", "Furniture"]
             },
             bn: {
@@ -124,8 +141,12 @@
                 lTitle: "লোন প্রয়োজন? দ্রুত লোন পেতে আবেদন করুন!",
                 lDesc: "সহজ শর্তে পার্সোনাল বা বিজনেস লোনের জন্য তথ্য জমা দিন।",
                 lBtn: "লোনের জন্য আবেদন করুন",
+                wTitle: "পার্সোনাল বা বিজনেসের জন্য ওয়েবসাইট বানাতে চান?",
+                wDesc: "সাশ্রয়ী মূল্যে প্রফেশনাল ওয়েবসাইট বানাতে আমাদের সাথে যোগাযোগ করুন।",
+                wBtn: "হোয়াটসঅ্যাপ করুন",
                 sHead: "নতুন বিজ্ঞাপনসমূহ",
                 sBtn: "➕ প্রোডাক্টের ফটো আপলোড করুন",
+                wa: "যোগাযোগ করুন",
                 cats: ["মোবাইল", "ল্যাপটপ", "বাড়ি", "ক্যামেরা", "বাইক", "গাড়ি", "ফার্নিচার"]
             },
             hi: {
@@ -135,9 +156,13 @@
                 lTitle: "ऋण की आवश्यकता है? तेजी से ऋण प्राप्त करें!",
                 lDesc: "न्यूनतम दस्तावेजों के साथ व्यक्तिगत या व्यावसायिक ऋण के लिए आवेदन करें।",
                 lBtn: "ऋण के लिए आवेदन करें",
+                wTitle: "व्यापार या व्यक्तिगत उपयोग के लिए वेबसाइट चाहिए?",
+                wDesc: "किफायती मूल्य पर प्रोफेशनल वेबसाइट बनाने के लिए हमसे संपर्क करें।",
+                wBtn: "व्हाट्सएप करें",
                 sHead: "नई सिफारिशें",
                 sBtn: "➕ उत्पाद की फोटो अपलोड करें",
-                cats: ["मोबाइल", "लैपटॉप", "घर", "कैमरा", "बाइक", "कार", "फর্नीचर"]
+                wa: "संपर्क करें",
+                cats: ["मोबाइल", "लैपटॉप", "घर", "कैমरा", "बाइक", "कार", "फর্नीचर"]
             }
         };
 
@@ -149,8 +174,12 @@
             document.getElementById('lTitle').innerText = l.lTitle;
             document.getElementById('lDesc').innerText = l.lDesc;
             document.getElementById('lBtn').innerText = l.lBtn;
+            document.getElementById('wTitle').innerText = l.wTitle;
+            document.getElementById('wDesc').innerText = l.wDesc;
+            document.getElementById('wBtn').innerText = l.wBtn;
             document.getElementById('sHead').innerText = l.sHead;
             document.getElementById('sBtnText').innerText = l.sBtn;
+            document.getElementById('waText').innerText = l.wa;
             
             for(let i=1; i<=7; i++) {
                 document.getElementById('c'+i).innerText = l.cats[i-1];
