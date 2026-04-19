@@ -3,216 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BongoBiz - India's Classified Marketplace</title>
+    <title>BongoBiz - Classified Marketplace</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #f2f4f5; color: var(--primary); overflow-x: hidden; }
+        :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg); color: var(--primary); }
         
-        header { background: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
-        .logo-img { height: 50px; width: auto; object-fit: contain; }
-        
+        /* Header & Search */
+        header { background: #fff; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); gap: 10px; }
+        .logo-img { height: 45px; width: auto; }
+        .search-container { flex-grow: 1; max-width: 500px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; }
+        .search-container input { border: none; padding: 10px; width: 100%; outline: none; }
+        .search-container button { background: var(--primary); color: white; border: none; padding: 10px 15px; cursor: pointer; }
+
         .nav-right { display: flex; align-items: center; gap: 10px; }
-        .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; }
+        #userProfile { display: none; align-items: center; gap: 8px; font-size: 12px; font-weight: bold; }
+        #userProfile img { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
 
-        /* Hero */
-        .hero { 
-            background: linear-gradient(rgba(0, 47, 52, 0.7), rgba(0, 47, 52, 0.7)), 
-                        url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); 
-            background-size: cover; background-position: center; padding: 40px 20px; text-align: center; color: white;
-        }
+        /* Hero & Categories */
+        .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
+        .categories { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; overflow-x: auto; white-space: nowrap; }
+        .cat-card { text-align: center; cursor: pointer; min-width: 70px; font-size: 11px; font-weight: bold; }
+        .cat-icon { font-size: 22px; background: #f0f7ff; padding: 8px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
 
-        /* Categories - Fixed for Laptop Center */
-        .categories { 
-            display: flex; justify-content: center; align-items: center; gap: 15px; 
-            padding: 20px; background: white; border-bottom: 1px solid #ddd; 
-            overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch;
-        }
-        @media (max-width: 768px) { .categories { justify-content: flex-start; } }
+        /* Ads Grid */
+        .content { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .ad-card { background: white; border: 1px solid #ccc; border-radius: 4px; overflow: hidden; position: relative; transition: 0.3s; }
+        .ad-card:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .ad-img { width: 100%; height: 150px; object-fit: cover; }
+        .ad-info { padding: 10px; }
+        .ad-price { font-size: 18px; font-weight: 900; margin: 5px 0; }
+        .ad-title { font-size: 14px; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .delete-btn { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.8); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
 
-        .cat-card { text-align: center; min-width: 75px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; color: inherit; }
-        .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; transition: 0.3s; }
-        .cat-card:hover .cat-icon { background: var(--secondary); transform: scale(1.1); }
+        /* Modals */
+        #uploadModal, #myAdsModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-        /* Content */
-        .content { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
-        .poster-box { 
-            position: relative; color: white; border-radius: 12px; padding: 40px 20px; 
-            text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center;
-        }
-        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1; }
-        .poster-content { position: relative; z-index: 2; }
-        .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071'); }
-        .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070'); }
-
-        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
-        .btn-yellow { background: var(--secondary); color: var(--primary); }
-        .btn-wa { background: var(--wa-green); color: white; display: flex; align-items: center; gap: 8px; margin: 0 auto; width: fit-content; }
-
-        /* Modal */
-        #uploadModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
-        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-
-        /* Floating */
-        .float-wrap { position: fixed; bottom: 20px; right: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
-        .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 14px; }
+        /* Floating buttons */
+        .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
+        .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .wa-float { background: var(--wa-green); }
-        .sell-float { background: linear-gradient(135deg, #ffce32 0%, #ff9000 100%); color: #002f34; border: 2px solid white; }
+        .sell-float { background: #ffce32; color: #002f34; border: 2px solid white; }
     </style>
 </head>
 <body>
 
     <header>
         <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/120x40?text=BongoBiz'">
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Find Mobiles, Laptops and more...">
+            <button onclick="searchAds()">🔍</button>
+        </div>
+
         <div class="nav-right">
-            <select id="langSwitcher" class="lang-dropdown">
-                <option value="en">English</option>
-                <option value="bn">বাংলা</option>
-                <option value="hi">हिन्दी</option>
-            </select>
             <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
             <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
+            
+            <div id="userProfile">
+                <img id="userImg" src="" alt="user">
+                <button onclick="showMyAds()" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">My Ads</button>
+                <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer;">Logout</button>
+            </div>
         </div>
     </header>
 
-    <div class="hero">
-        <h2 id="hTitle">India's Own Classified Marketplace</h2>
-        <p id="hSub">Buy, Sell & Apply for Loans</p>
-    </div>
-
     <div class="categories">
-        <div class="cat-card"><div class="cat-icon">📱</div><div id="c1">Mobile</div></div>
-        <div class="cat-card"><div class="cat-icon">💻</div><div id="c2">Laptop</div></div>
-        <div class="cat-card"><div class="cat-icon">📷</div><div id="c3">Camera</div></div>
-        <div class="cat-card"><div class="cat-icon">❄️</div><div id="c4">AC & Fridge</div></div>
-        <div class="cat-card"><div class="cat-icon">🪑</div><div id="c5">Furniture</div></div>
-        <div class="cat-card"><div class="cat-icon">🚲</div><div id="c6">Bike</div></div>
-        <div class="cat-card"><div class="cat-icon">🏠</div><div id="c7">Property</div></div>
+        <div class="cat-card" onclick="filterCat('Mobile')"><div class="cat-icon">📱</div><div>Mobile</div></div>
+        <div class="cat-card" onclick="filterCat('Laptop')"><div class="cat-icon">💻</div><div>Laptop</div></div>
+        <div class="cat-card" onclick="filterCat('Camera')"><div class="cat-icon">📷</div><div>Camera</div></div>
+        <div class="cat-card" onclick="filterCat('Electronics')"><div class="cat-icon">❄️</div><div>Electronics</div></div>
+        <div class="cat-card" onclick="filterCat('Furniture')"><div class="cat-icon">🪑</div><div>Furniture</div></div>
+        <div class="cat-card" onclick="filterCat('Bike')"><div class="cat-icon">🚲</div><div>Bike</div></div>
     </div>
 
     <div class="content">
-        <div class="poster-box loan-poster">
-            <div class="poster-content">
-                <h3 id="lTitle">Need Financial Assistance?</h3>
-                <p id="lDesc">Apply for Personal or Business loans easily.</p>
-                <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</a>
-            </div>
+        <h3 id="viewTitle">Fresh Recommendations</h3>
+        <div class="ads-grid" id="adsGrid">
+            <p style="grid-column: 1/-1; text-align: center;">Loading ads...</p>
         </div>
+    </div>
 
-        <div class="poster-box web-poster">
-            <div class="poster-content">
-                <h3 id="wTitle">Professional Website for Business?</h3>
-                <p id="wDesc">Build your digital identity with AI solutions.</p>
-                <a href="https://wa.me/917585999923?text=Hi, I want a website." class="btn-action btn-wa" id="wBtn">WhatsApp Us</a>
-            </div>
-        </div>
-
-        <div style="text-align:center; padding:40px; color:#999; background:white; border-radius:10px;">
-            <h3 id="sHead">Fresh Recommendations</h3>
-            <p>Ads will appear here once approved.</p>
+    <div id="myAdsModal">
+        <div class="modal-content">
+            <span onclick="closeMyAds()" style="float:right; cursor:pointer; font-weight:bold;">&times; Close</span>
+            <h3>Manage My Ads</h3>
+            <div id="myAdsList"></div>
         </div>
     </div>
 
     <div id="uploadModal">
         <div class="modal-content">
-            <span onclick="closeModal()" style="float:right; cursor:pointer; font-size:20px;">&times;</span>
+            <span onclick="closeModal()" style="float:right; cursor:pointer;">&times;</span>
             <h3>Post Your Ad</h3>
-            <input type="text" id="itemName" placeholder="Product Name (e.g. iPhone 13)">
+            <input type="text" id="itemName" placeholder="What are you selling?">
             <input type="number" id="itemPrice" placeholder="Price (৳)">
             <select id="itemCat">
                 <option value="Mobile">Mobile</option>
                 <option value="Laptop">Laptop</option>
                 <option value="Camera">Camera</option>
-                <option value="Electronics">AC & Fridge</option>
+                <option value="Electronics">Electronics</option>
                 <option value="Furniture">Furniture</option>
                 <option value="Bike">Bike</option>
-                <option value="Property">Property</option>
             </select>
-            <textarea id="itemDesc" rows="3" placeholder="Product Description (পণ্যটি কেমন, কতদিন ব্যবহার করেছেন ইত্যাদি লিখুন)"></textarea>
+            <textarea id="itemDesc" rows="3" placeholder="Description (Optional)"></textarea>
             <input type="file" id="fileInput" accept="image/*">
-            <button onclick="processUpload()" id="uploadBtn" class="btn-action btn-yellow" style="width:100%; margin-top:10px;">Submit Ad</button>
-            <p id="status" style="font-size:12px; text-align:center; color: #00a49f;"></p>
+            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:12px; border:none; border-radius:4px; cursor:pointer;">Submit Ad</button>
+            <p id="status" style="text-align:center; font-size:12px;"></p>
         </div>
     </div>
 
     <div class="float-wrap">
-        <a href="https://wa.me/917585999923" class="f-btn wa-float"><span id="waText">Contact Us</span></a>
-        <a href="javascript:void(0)" onclick="openModal()" class="f-btn sell-float"><span id="sBtnText">➕ Sell Now</span></a>
+        <a href="https://wa.me/917585999923" class="f-btn wa-float">Contact Us</a>
+        <a href="javascript:void(0)" onclick="openModal()" class="f-btn sell-float">➕ Sell Now</a>
     </div>
 
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
+        let allAds = [];
+        let userEmail = "";
 
-        const langData = {
-            en: { title: "India's Own Classified Marketplace", sub: "Buy, Sell & Apply for Loans", lBtn: "APPLY FOR LOAN", sBtn: "➕ Sell Now", wa: "Contact Us", cats: ["Mobile", "Laptop", "Camera", "AC & Fridge", "Furniture", "Bike", "Property"] },
-            bn: { title: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", sub: "কেনা-বেচা এবং লোনের আবেদন করুন", lBtn: "লোনের আবেদন", sBtn: "➕ বিক্রি করুন", wa: "যোগাযোগ", cats: ["মোবাইল", "ল্যাপটপ", "ক্যামেরা", "এসি-ফ্রিজ", "ফার্নিচার", "বাইক", "প্রপার্টি"] },
-            hi: { title: "भारत का अपना क्लासिफाइड मार्केटप्लेस", sub: "खरीदें, बेचें और लोन पाएं", lBtn: "लोन आवेदन", sBtn: "➕ बेचें", wa: "संपर्क करें", cats: ["मोबाइल", "लैपटॉप", "कैमरा", "एसी-फ्रिज", "फर्नीचर", "बाइक", "प्रॉपर्टी"] }
-        };
-
-        document.getElementById('langSwitcher').addEventListener('change', (e) => {
-            const l = langData[e.target.value];
-            document.getElementById('hTitle').innerText = l.title;
-            document.getElementById('hSub').innerText = l.sub;
-            document.getElementById('lBtn').innerText = l.lBtn;
-            document.getElementById('sBtnText').innerText = l.sBtn;
-            document.getElementById('waText').innerText = l.wa;
-            for(let i=1; i<=7; i++) document.getElementById('c'+i).innerText = l.cats[i-1];
-        });
-
-        function openModal() { document.getElementById('uploadModal').style.display='flex'; }
-        function closeModal() { document.getElementById('uploadModal').style.display='none'; }
-
-        async function processUpload() {
-            const file = document.getElementById('fileInput').files[0];
-            const name = document.getElementById('itemName').value;
-            const price = document.getElementById('itemPrice').value;
-            const desc = document.getElementById('itemDesc').value;
-            const cat = document.getElementById('itemCat').value;
-
-            if(!file || !name || !price) return alert("Please fill all basic info!");
-            
-            const btn = document.getElementById('uploadBtn');
-            const status = document.getElementById('status');
-            btn.disabled = true;
-            btn.innerText = "Processing...";
-            status.innerText = "Uploading Image to Server...";
-            
+        // ১. ডেটা লোড করা
+        async function fetchAds() {
             try {
-                const fd = new FormData(); fd.append('image', file);
-                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
-                const imgData = await imgRes.json();
-                
-                if(imgData.success) {
-                    status.innerText = "Saving data to SheetDB...";
-                    await fetch(SHEETDB_URL, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ data: [{ 
-                            Name: name, 
-                            Price: price, 
-                            Category: cat,
-                            Description: desc,
-                            Image: imgData.data.url,
-                            Date: new Date().toLocaleString()
-                        }]})
-                    });
-                    alert("Ad Posted Successfully! It will be live after review.");
-                    location.reload();
-                }
-            } catch (err) {
-                alert("Error! Please try again.");
-                console.error(err);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Submit Ad";
+                const res = await fetch(SHEETDB_URL);
+                allAds = await res.json();
+                renderAds(allAds);
+            } catch (e) { console.error("Error fetching data"); }
+        }
+
+        // ২. অ্যাড রেন্ডার করা (UI তে দেখানো)
+        function renderAds(data) {
+            const grid = document.getElementById('adsGrid');
+            grid.innerHTML = data.length ? "" : "<p>No ads found.</p>";
+            data.reverse().forEach(ad => {
+                grid.innerHTML += `
+                    <div class="ad-card">
+                        <img src="${ad.Image || 'https://via.placeholder.com/150'}" class="ad-img">
+                        <div class="ad-info">
+                            <div class="ad-price">৳ ${ad.Price}</div>
+                            <div class="ad-title">${ad.Name}</div>
+                            <div style="font-size:10px; color:#888;">${ad.Category} • ${ad.Date}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // ৩. সার্চ ফিচার
+        function searchAds() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAds.filter(ad => 
+                ad.Name.toLowerCase().includes(query) || 
+                ad.Category.toLowerCase().includes(query)
+            );
+            document.getElementById('viewTitle').innerText = "Search Results";
+            renderAds(filtered);
+        }
+
+        // ৪. ক্যাটাগরি ফিল্টার
+        function filterCat(cat) {
+            const filtered = allAds.filter(ad => ad.Category === cat);
+            document.getElementById('viewTitle').innerText = cat + " Category";
+            renderAds(filtered);
+        }
+
+        // ৫. লগইন ও প্রোফাইল
+        function handleCredentialResponse(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            userEmail = payload.email;
+            document.querySelector(".g_id_signin").style.display = "none";
+            document.getElementById('userProfile').style.display = "flex";
+            document.getElementById('userImg').src = payload.picture;
+        }
+
+        // ৬. My Ads সেকশন
+        function showMyAds() {
+            if(!userEmail) return alert("Login First!");
+            const myAds = allAds.filter(ad => ad.Email === userEmail);
+            const list = document.getElementById('myAdsList');
+            list.innerHTML = myAds.length ? "" : "<p>You haven't posted any ads yet.</p>";
+            myAds.forEach(ad => {
+                list.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding:10px 0;">
+                        <span>${ad.Name} (৳${ad.Price})</span>
+                        <button onclick="deletePost('${ad.Name}')" style="background:red; color:white; border:none; padding:5px; border-radius:4px; cursor:pointer;">Delete</button>
+                    </div>`;
+            });
+            document.getElementById('myAdsModal').style.display = 'flex';
+        }
+
+        async function deletePost(name) {
+            if(confirm("Are you sure?")) {
+                await fetch(`${SHEETDB_URL}/Name/${name}`, { method: 'DELETE' });
+                alert("Deleted!");
+                location.reload();
             }
         }
 
-        function handleCredentialResponse(response) {
-            console.log("Logged In Success");
+        // ৭. আপলোড প্রসেস
+        async function processUpload() {
+            if(!userEmail) return alert("Please Login with Google first!");
+            const file = document.getElementById('fileInput').files[0];
+            if(!file) return alert("Select an image");
+            
+            const btn = document.getElementById('uploadBtn');
+            btn.disabled = true; btn.innerText = "Uploading Image...";
+
+            const fd = new FormData(); fd.append('image', file);
+            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+            const imgData = await imgRes.json();
+
+            if(imgData.success) {
+                btn.innerText = "Saving Ad...";
+                await fetch(SHEETDB_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ data: [{ 
+                        Email: userEmail,
+                        Name: document.getElementById('itemName').value, 
+                        Price: document.getElementById('itemPrice').value, 
+                        Category: document.getElementById('itemCat').value,
+                        Description: document.getElementById('itemDesc').value,
+                        Image: imgData.data.url,
+                        Date: new Date().toLocaleDateString()
+                    }]})
+                });
+                location.reload();
+            }
         }
+
+        function openModal() { document.getElementById('uploadModal').style.display='flex'; }
+        function closeModal() { document.getElementById('uploadModal').style.display='none'; }
+        function closeMyAds() { document.getElementById('myAdsModal').style.display='none'; }
+
+        window.onload = fetchAds;
     </script>
 </body>
 </html>
