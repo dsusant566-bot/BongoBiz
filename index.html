@@ -31,22 +31,25 @@
         .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
         .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1; }
         .poster-content { position: relative; z-index: 2; }
+        
+        /* ব্যানারের ছবি ও ডিজাইন */
         .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071'); }
+        .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070'); }
 
-        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; text-align: center;}
+        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
         .btn-yellow { background: var(--secondary); color: var(--primary); }
+        .btn-wa { background: var(--wa-green); color: white; display: flex; align-items: center; gap: 8px; margin: 0 auto; width: fit-content; text-transform: uppercase; }
 
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; transition: 0.3s; cursor: pointer; }
+        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
         .ad-card img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
         .ad-info { padding: 10px; }
         .ad-price { font-size: 18px; font-weight: 900; }
 
+        /* পপ-আপ স্টাইল */
         #uploadModal, #myAdsModal, #detailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
-
-        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
 
         .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
         .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
@@ -71,9 +74,8 @@
             <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
             <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
             <div id="userProfile">
-                <img id="userImg" src="" alt="user Profile">
+                <img id="userImg" src="">
                 <button onclick="showMyAds()" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">My Ads</button>
-                <button onclick="location.reload()" style="background:none; border:none; color:red; cursor:pointer; font-size:11px;">Logout</button>
             </div>
         </div>
     </header>
@@ -101,25 +103,32 @@
                 <a href="https://forms.gle/1T8UoZ7W4Z43x93XA" target="_blank" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</a>
             </div>
         </div>
+
+        <div class="poster-box web-poster">
+            <div class="poster-content">
+                <h3 id="wTitle">Professional Website for Business?</h3>
+                <p id="wDesc">Build your digital identity with AI solutions.</p>
+                <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action btn-wa" id="wBtn">WhatsApp Us</a>
+            </div>
+        </div>
+
         <h3 id="viewTitle">Fresh Recommendations</h3>
-        <div class="ads-grid" id="adsGrid">Loading ads...</div>
+        <div class="ads-grid" id="adsGrid">Loading data...</div>
     </div>
 
     <div id="detailModal">
         <div class="modal-content">
             <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
-            <img id="detImg" style="width:100%; height:220px; object-fit:cover; border-radius:8px;">
+            <img id="detImg" style="width:100%; height:200px; object-fit:cover; border-radius:8px; background:#eee;">
             <h2 id="detPrice" style="color:var(--primary); margin:15px 0;"></h2>
             <h3 id="detTitle" style="margin-bottom:5px;"></h3>
-            <p id="detDesc" style="color:#555; line-height:1.6; background:#f9f9f9; padding:10px; border-radius:5px;"></p>
+            <p id="detDesc" style="color:#555; line-height:1.5; background:#f9f9f9; padding:10px; border-radius:5px;"></p>
             <hr>
-            <p><strong>Seller:</strong> <span id="detEmail"></span></p>
-            <a id="detCall" href="" class="btn-action btn-yellow" style="display:block; width:100%; box-sizing:border-box; margin-bottom:10px;">📞 Call Seller</a>
-            <a id="detWA" href="" target="_blank" class="btn-action" style="display:block; width:100%; box-sizing:border-box; background:var(--wa-green); color:white;">💬 WhatsApp</a>
+            <p><strong>Seller Email:</strong> <span id="detEmail"></span></p>
+            <a id="detCall" href="" class="btn-action btn-yellow" style="display:block; text-align:center; margin-bottom:10px;">📞 Call Seller</a>
+            <a id="detWA" href="" target="_blank" class="btn-action" style="display:flex; justify-content:center; gap:10px; background:var(--wa-green); color:white;">💬 WhatsApp</a>
         </div>
     </div>
-
-    <div id="myAdsModal"><div class="modal-content"><span class="close-x" onclick="closeMyAds()">&times;</span><h3>My Ads</h3><div id="myAdsList"></div></div></div>
 
     <div id="uploadModal">
         <div class="modal-content">
@@ -127,20 +136,22 @@
             <h3>Post Your Ad</h3>
             <input type="text" id="itemName" placeholder="Product Name">
             <input type="number" id="itemPrice" placeholder="Price (৳)">
-            <input type="tel" id="itemPhone" placeholder="Phone Number">
+            <input type="tel" id="itemPhone" placeholder="Your Phone Number">
             <select id="itemCat">
                 <option value="Mobile">Mobile</option><option value="Laptop">Laptop</option><option value="Camera">Camera</option>
                 <option value="Electronics">Electronics</option><option value="Furniture">Furniture</option><option value="Bike">Bike</option><option value="Property">Property</option>
             </select>
-            <textarea id="itemDesc" rows="3" placeholder="Description"></textarea>
+            <textarea id="itemDesc" rows="3" placeholder="Product Details..."></textarea>
             <input type="file" id="fileInput" accept="image/*">
-            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:12px; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Submit Ad</button>
+            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Submit Ad</button>
         </div>
     </div>
 
+    <div id="myAdsModal"><div class="modal-content"><span class="close-x" onclick="closeMyAds()">&times;</span><h3>My Ads</h3><div id="myAdsList"></div></div></div>
+
     <div class="float-wrap">
-        <a href="https://wa.me/917585999923" class="f-btn wa-float">Contact Us</a>
-        <a href="javascript:void(0)" onclick="openModal('uploadModal')" class="f-btn sell-float" id="sellBtn">➕ Sell Now</a>
+        <a href="https://wa.me/917585999923" class="f-btn wa-float"><span id="waText">Contact Us</span></a>
+        <a href="javascript:void(0)" onclick="openModal('uploadModal')" class="f-btn sell-float" id="sellBtn"><span id="sBtnText">➕ Sell Now</span></a>
     </div>
 
     <script>
@@ -153,33 +164,32 @@
                 const res = await fetch(SHEETDB_URL);
                 allAds = await res.json();
                 renderAds(allAds);
-            } catch (e) { document.getElementById('adsGrid').innerHTML = "Error loading data."; }
+            } catch (e) { document.getElementById('adsGrid').innerHTML = "Check Connection."; }
         }
 
         function renderAds(data) {
-            const grid = document.getElementById('adsGrid');
-            grid.innerHTML = data.length ? "" : "<p>No ads found.</p>";
+            const grid = document.getElementById('adsGrid'); grid.innerHTML = "";
             data.reverse().forEach(ad => {
                 const name = ad.Name || ad.name || "Untitled";
                 const price = ad.Price || ad.price || "0";
-                const imgSrc = ad.Image || ad.image || 'https://via.placeholder.com/150';
+                const img = ad.Image || ad.image || ad.image_url || 'https://via.placeholder.com/150';
                 const card = document.createElement('div');
                 card.className = 'ad-card';
                 card.onclick = () => showDetails(ad);
-                card.innerHTML = `<img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/150'"><div class="ad-info"><div class="ad-price">৳ ${price}</div><div class="ad-title">${name}</div></div>`;
+                card.innerHTML = `<img src="${img}"><div class="ad-info"><div class="ad-price">৳ ${price}</div><div class="ad-title">${name}</div></div>`;
                 grid.appendChild(card);
             });
         }
 
         function showDetails(ad) {
-            document.getElementById('detImg').src = ad.Image || ad.image || '';
-            document.getElementById('detPrice').innerText = "৳ " + (ad.Price || ad.price || '0');
-            document.getElementById('detTitle').innerText = ad.Name || ad.name || 'Untitled';
-            document.getElementById('detDesc').innerText = ad.Description || ad.description || 'No description provided.';
-            document.getElementById('detEmail').innerText = ad.Email || ad.email || 'Anonymous';
-            const phone = ad.Phone || ad.phone || '';
+            document.getElementById('detImg').src = ad.Image || ad.image || ad.image_url || "";
+            document.getElementById('detPrice').innerText = "৳ " + (ad.Price || ad.price || "0");
+            document.getElementById('detTitle').innerText = ad.Name || ad.name || "Untitled";
+            document.getElementById('detDesc').innerText = ad.Description || ad.description || "No details provided.";
+            document.getElementById('detEmail').innerText = ad.Email || ad.email || "N/A";
+            const phone = ad.Phone || ad.phone || "";
             document.getElementById('detCall').href = "tel:" + phone;
-            document.getElementById('detWA').href = `https://wa.me/${phone}?text=Hi, I am interested in ${ad.Name || 'Product'}`;
+            document.getElementById('detWA').href = `https://wa.me/${phone}?text=Hi, interested in your ${ad.Name || 'Product'} on BongoBiz.`;
             openModal('detailModal');
         }
 
@@ -190,70 +200,59 @@
             document.getElementById('userProfile').style.display = "flex";
             document.getElementById('userImg').src = payload.picture;
             document.getElementById('sellBtn').style.display = "flex";
-            fetchAds(); // লগইন করার পর ডেটা রিফ্রেশ
         }
 
         async function processUpload() {
             const file = document.getElementById('fileInput').files[0];
-            const name = document.getElementById('itemName').value;
-            const price = document.getElementById('itemPrice').value;
             const phone = document.getElementById('itemPhone').value;
-            if(!file || !name || !price || !phone) return alert("Fill Name, Price, Phone & Image!");
+            if(!file || !phone) return alert("Photo & Phone Number required!");
             const btn = document.getElementById('uploadBtn'); btn.disabled = true; btn.innerText = "Processing...";
-            
             const fd = new FormData(); fd.append('image', file);
-            try {
-                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
-                const imgData = await imgRes.json();
-                if(imgData.success) {
-                    await fetch(SHEETDB_URL, {
-                        method: 'POST', headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ data: [{ 
-                            Email: userEmail, Name: name, Price: price, Category: document.getElementById('itemCat').value,
-                            Description: document.getElementById('itemDesc').value, Image: imgData.data.url, 
-                            Phone: phone, Date: new Date().toLocaleDateString()
-                        }]})
-                    });
-                    location.reload();
-                }
-            } catch(e) { alert("Failed"); btn.disabled = false; btn.innerText = "Submit Ad"; }
+            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+            const imgData = await imgRes.json();
+            if(imgData.success) {
+                await fetch(SHEETDB_URL, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ data: [{ 
+                        Email: userEmail, Name: document.getElementById('itemName').value, 
+                        Price: document.getElementById('itemPrice').value, Category: document.getElementById('itemCat').value,
+                        Description: document.getElementById('itemDesc').value, Image: imgData.data.url, 
+                        Phone: phone, Date: new Date().toLocaleDateString()
+                    }]})
+                });
+                location.reload();
+            }
         }
-
-        const langData = {
-            en: { hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", vT: "Fresh Recommendations", cats: ["Mobile", "Laptop", "Camera", "Electronics", "Furniture", "Bike", "Property"] },
-            bn: { hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে লোনের আবেদন করুন।", lB: "লোনের আবেদন", vT: "নতুন বিজ্ঞাপন", cats: ["মোবাইল", "ল্যাপটপ", "ক্যামেরা", "ইলেকট্রনিক্স", "ফার্নিচার", "বাইক", "প্রপার্টি"] },
-            hi: { hT: "भारत का अपना क्लासिफाइड मार्केटप्लेस", hS: "खरीदें, बेचें और लोन पाएं", lT: "ऋण चाहिए?", lD: "आसानी से आवेदन करें।", lB: "ऋण आवेदन", vT: "नई सिफारिशें", cats: ["मोबाइल", "लैपटॉप", "कैमरा", "इलेक्ट्रॉनिक्स", "फर्नीचर", "बाइक", "प्रॉपर्टी"] }
-        };
 
         document.getElementById('langSwitcher').addEventListener('change', (e) => {
-            const val = e.target.value; const l = langData[val];
-            document.getElementById('hTitle').innerText = l.hT;
-            document.getElementById('hSub').innerText = l.hS;
-            document.getElementById('lTitle').innerText = l.lT;
-            document.getElementById('lDesc').innerText = l.lD;
-            document.getElementById('lBtn').innerText = l.lB;
-            document.getElementById('viewTitle').innerText = l.vT;
-            for(let i=1; i<=7; i++) {
-                const catElement = document.getElementById('c'+i);
-                if(catElement) catElement.innerText = l.cats[i-1];
-            }
+            const val = e.target.value;
+            const banners = {
+                en: ["Need Financial Assistance?", "Apply for loans.", "Professional Website for Business?", "Build your digital identity."], 
+                bn: ["লোন প্রয়োজন?", "সহজে লোনের আবেদন করুন।", "বিজনেসের ওয়েবসাইট প্রয়োজন?", "আপনার ডিজিটাল পরিচয় তৈরি করুন।"], 
+                hi: ["लोन चाहिए?", "आसानी से आवेदन करें।", "बिज़नेस के लिए वेबसाइट चाहिए?", "अपनी डिजिटल पहचान बनाएं।"]
+            };
+            document.getElementById('lTitle').innerText = banners[val][0];
+            document.getElementById('lDesc').innerText = banners[val][1];
+            document.getElementById('wTitle').innerText = banners[val][2];
+            document.getElementById('wDesc').innerText = banners[val][3];
+            document.getElementById('viewTitle').innerText = (val === 'bn' ? "নতুন বিজ্ঞাপন" : "Fresh Recommendations");
         });
 
-        function searchAds() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            renderAds(allAds.filter(ad => (ad.Name||ad.name||"").toLowerCase().includes(q)));
-        }
-        function filterCat(cat) { renderAds(allAds.filter(ad => (ad.Category||ad.category) === cat)); }
-        function openModal(id) { document.getElementById(id).style.display='flex'; }
-        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function showMyAds() {
             const myAds = allAds.filter(ad => (ad.Email || ad.email || "").toLowerCase() === userEmail);
-            const list = document.getElementById('myAdsList'); list.innerHTML = myAds.length ? "" : "No ads posted yet.";
-            myAds.forEach(ad => { list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee;"><span>${ad.Name || ad.name}</span><button onclick="deleteAd('${ad.Name || ad.name}')" style="color:red;border:none;background:none;cursor:pointer;font-weight:bold;">Delete</button></div>`; });
+            const list = document.getElementById('myAdsList'); list.innerHTML = myAds.length ? "" : "No ads.";
+            myAds.forEach(ad => { list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee;"><span>${ad.Name}</span><button onclick="deleteAd('${ad.Name}')" style="color:red;border:none;background:none;cursor:pointer;">Delete</button></div>`; });
             openModal('myAdsModal');
         }
         async function deleteAd(name) { if(confirm("Delete?")) { await fetch(`${SHEETDB_URL}/Name/${name}`, { method: 'DELETE' }); location.reload(); } }
         function closeMyAds() { document.getElementById('myAdsModal').style.display='none'; }
+        function searchAds() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderAds(allAds.filter(ad => (ad.Name || ad.name || "").toLowerCase().includes(q)));
+        }
+        function filterCat(cat) { renderAds(allAds.filter(ad => (ad.Category||ad.category) === cat)); }
         window.onload = fetchAds;
     </script>
 </body>
