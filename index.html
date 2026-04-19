@@ -9,21 +9,24 @@
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: #f2f4f5; color: var(--primary); }
         
         /* Header */
-        header { background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-img { height: 50px; width: auto; object-fit: contain; }
+        header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
+        .logo-box { display: flex; align-items: center; gap: 15px; }
+        
+        /* লোগো সাইজ বাড়িয়ে ৮০ পিক্সেল করা হয়েছে */
+        .logo-img { height: 80px; width: auto; object-fit: contain; }
+        
         .location-text { font-size: 14px; font-weight: bold; color: #555; }
-        .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
+        .lang-dropdown select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; font-weight: bold; }
 
-        /* Hero Section with Professional Poster Look */
+        /* Hero Section */
         .hero { 
             background: linear-gradient(rgba(0, 47, 52, 0.75), rgba(0, 47, 52, 0.75)), 
                         url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070&auto=format&fit=crop'); 
             background-size: cover; background-position: center;
-            color: white; padding: 90px 20px; text-align: center; 
+            color: white; padding: 100px 20px; text-align: center; 
         }
-        .hero h2 { margin: 0; font-size: 40px; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .hero p { margin: 15px 0 0; font-size: 22px; font-weight: 500; opacity: 0.9; }
+        .hero h2 { margin: 0; font-size: 42px; font-weight: 800; text-shadow: 2px 4px 8px rgba(0,0,0,0.6); }
+        .hero p { margin: 15px 0 0; font-size: 22px; font-weight: 500; text-shadow: 1px 2px 4px rgba(0,0,0,0.5); }
 
         /* Categories */
         .categories { display: flex; justify-content: center; gap: 20px; padding: 30px; background: white; border-bottom: 1px solid #ddd; overflow-x: auto; }
@@ -33,35 +36,34 @@
 
         .content { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 
-        /* Modern Poster Boxes */
+        /* Poster Boxes */
         .poster-box { 
-            position: relative; color: white; border-radius: 20px; padding: 70px 40px; 
+            position: relative; color: white; border-radius: 20px; padding: 80px 40px; 
             text-align: center; margin-bottom: 40px; overflow: hidden; background-size: cover; background-position: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
         }
-        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 1; }
+        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.65); z-index: 1; }
         .poster-content { position: relative; z-index: 2; }
         
         .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop'); }
         .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop'); }
 
-        .poster-box h3 { font-size: 34px; margin: 0 0 15px; font-weight: 800; letter-spacing: 0.5px; }
-        .poster-box p { font-size: 19px; margin-bottom: 35px; font-weight: 400; opacity: 0.9; }
+        .poster-box h3 { font-size: 36px; margin: 0 0 15px; font-weight: 800; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); }
+        .poster-box p { font-size: 20px; margin-bottom: 35px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
 
         /* Buttons */
         .btn-action { padding: 18px 50px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; transition: 0.3s; display: inline-block; border: none; cursor: pointer; text-transform: uppercase; }
         .btn-yellow { background: var(--secondary); color: var(--primary); }
         .btn-wa { background: var(--wa-green); color: white; display: flex; align-items: center; gap: 10px; margin: 0 auto; width: fit-content; }
-        .btn-action:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
 
-        .section-head { font-size: 26px; font-weight: bold; margin-bottom: 30px; border-left: 6px solid var(--secondary); padding-left: 15px; color: var(--primary); }
+        .section-head { font-size: 26px; font-weight: bold; margin-bottom: 30px; border-left: 6px solid var(--secondary); padding-left: 15px; }
 
-        /* Floating Action Buttons */
+        /* Floating Buttons */
         .float-wrap { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
         .f-btn { padding: 18px 28px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 12px; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border: 2px solid white; transition: 0.3s; }
         .wa-float { background: var(--wa-green); }
         .sell-float { background: linear-gradient(135deg, #ffce32 0%, #ff9000 100%); color: #002f34 !important; }
-        .f-btn:hover { transform: scale(1.08); }
 
         footer { background: #fff; text-align: center; padding: 50px; border-top: 1px solid #ddd; color: #666; font-weight: 500; }
     </style>
@@ -70,13 +72,14 @@
 
     <header>
         <div class="logo-box">
-            <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/150x50?text=BongoBiz'">
+            <img src="logo.jpg.jpeg" alt="BongoBiz" class="logo-img" onerror="this.src='https://via.placeholder.com/200x80?text=BongoBiz'">
             <div class="location-text" id="locText">Kolkata • West Bengal • India</div>
         </div>
         <div class="lang-dropdown">
             <select id="langSwitcher">
                 <option value="en">English</option>
                 <option value="bn">বাংলা (Bengali)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
             </select>
         </div>
     </header>
@@ -109,7 +112,7 @@
             <div class="poster-content">
                 <h3 id="wTitle">Professional Website for Your Business?</h3>
                 <p id="wDesc">Build your digital identity with our expert AI & Web solutions.</p>
-                <a href="https://wa.me/917585999923?text=Hi, I am interested in building a website for my business." target="_blank" class="btn-action btn-wa" id="wBtn">
+                <a href="https://wa.me/917585999923?text=Hi, I am interested in building a website." target="_blank" class="btn-action btn-wa" id="wBtn">
                     <span>💬</span> WhatsApp Us
                 </a>
             </div>
@@ -135,7 +138,6 @@
     </footer>
 
     <script>
-        // Language Switcher Data
         const langData = {
             en: {
                 loc: "Kolkata • West Bengal • India",
@@ -166,6 +168,21 @@
                 sBtn: "➕ প্রোডাক্টের ফটো আপলোড করুন",
                 wa: "যোগাযোগ করুন",
                 cats: ["মোবাইল", "ল্যাপটপ", "বাড়ি", "ক্যামেরা", "বাইক", "গাড়ি", "ফার্নিচার"]
+            },
+            hi: {
+                loc: "कोलकाता • पश्चिम बंगाल • भारत",
+                title: "भारत का अपना क्लासिफाइड मार्केटप्लेस",
+                sub: "तुरंत खरीदें, बेचें और ऋण के लिए आवेदन करें",
+                lTitle: "ऋण की आवश्यकता है? तेजी से ऋण प्राप्त करें!",
+                lDesc: "न्यूनतम दस्तावेजों के साथ व्यक्तिगत या व्यावसायिक ऋण के लिए आवेदन करें।",
+                lBtn: "ऋण के लिए आवेदन करें",
+                wTitle: "व्यापार के लिए प्रोफेशनल वेबसाइट चाहिए?",
+                wDesc: "हमारे एआई और वेब समाधानों के साथ अपनी डिजिटल पहचान बनाएं।",
+                wBtn: "व्हाट्सएप करें",
+                sHead: "नई सिफारिशें",
+                sBtn: "➕ उत्पाद की फोटो अपलोड करें",
+                wa: "संपর্ক करें",
+                cats: ["मोबाइल", "लैपटॉप", "घर", "कैमरा", "बाइक", "कार", "फर्नीचर"]
             }
         };
 
