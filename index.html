@@ -16,7 +16,6 @@
         .nav-right { display: flex; align-items: center; gap: 10px; }
         .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; }
         
-        /* কোণার লগইন বাটনের স্টাইল (Deep Login) */
         .login-btn-box { display: flex; align-items: center; gap: 8px; background: #fff; border: 2.5px solid #002f34; padding: 4px 12px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
         .login-text-bold { font-size: 14px; font-weight: 900; color: #002f34; text-transform: uppercase; letter-spacing: 0.5px; }
 
@@ -79,7 +78,6 @@
             </div>
         </div>
     </header>
-
     <div class="hero">
         <h2 id="hTitle">India's Own Classified Marketplace</h2>
         <p id="hSub">Buy, Sell & Apply for Loans</p>
@@ -159,6 +157,8 @@
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
+        const LOGIN_SHEET_URL = "https://sheetdb.io/api/v1/ra14x7n0mlrk8";
+
         let allAds = []; let userEmail = ""; let currentAd = null; let editingAdName = null;
 
         async function fetchAds() { try { const res = await fetch(SHEETDB_URL); allAds = await res.json(); renderAds(allAds); } catch (e) { document.getElementById('adsGrid').innerHTML = "Error!"; } }
@@ -190,16 +190,21 @@
             document.getElementById('sellBtn').style.display = "flex"; 
             closeModal('loginPromptModal');
 
-            // Users Tracking
             const today = new Date().toLocaleDateString();
-            const check = await fetch(`${SHEETDB_URL}/search?Email=${userEmail}&sheet=Users`);
-            const exists = await check.json();
-            if (!exists.some(u => u.Date === today)) {
-                fetch(SHEETDB_URL + "?sheet=Users", { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: [{ Name: payload.name, Email: userEmail, Date: today }] }) });
-            }
+            try {
+                const check = await fetch(`${LOGIN_SHEET_URL}/search?Email=${userEmail}`);
+                const exists = await check.json();
+                if (!exists.some(u => u.Date === today)) {
+                    fetch(LOGIN_SHEET_URL, { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({ data: [{ Name: payload.name, Email: userEmail, Date: today }] }) 
+                    });
+                }
+            } catch (err) { console.error("Login tracking error", err); }
         }
 
-        const translations = { en: { search: "Search Mobiles, Laptops...", myAds: "My Ads", hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", wT: "Professional Website for Business?", wD: "Build your digital identity with AI solutions.", wB: "WhatsApp Us", vT: "Fresh Recommendations", sell: "➕ Sell Now", contact: "Contact Us", postT: "Post Your Ad", myAdsT: "My Ads", cats: ["Mobile", "Laptop", "Camera", "Electronics", "Furniture", "Bike", "Property"] }, bn: { search: "মোবাইল, ল্যাপটপ খুঁজুন...", myAds: "আমার বিজ্ঞাপন", hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে পার্সোনাল বা বিজনেস লোনের আবেদন করুন।", lB: "লোনের আবেদন", wT: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wD: "AI প্রযুক্তিতে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ করুন", vT: "নতুন বিজ্ঞাপন", sell: "➕ বিক্রি করুন", contact: "যোগাযোগ করুন", postT: "বিজ্ঞাপন দিন", myAdsT: "আমার বিজ্ঞাপন", cats: ["মোবাইল", "ল্যাপটপ", "ক্যামেরা", "ইলেকট্রনিক্স", "ফার্নিচার", "বাইক", "প্রপার্টি"] }, hi: { search: "मोबाइल, लैपटॉप खोजें...", myAds: "मेरे विज्ञापन", hT: "भारत का अपना क्लासिफाइड मार्केटप्लेस", hS: "खरीदें, बेचें और लोन पाएं", lT: "ऋण चाहिए?", lD: "पर्सनल या बिज़नेस लोन के लिए आसानी से आवेदन करें।", lB: "ऋण आवेदन", wT: "बिज़नेस वेबसाइट चाहिए?", wD: "AI के साथ अपनी डिजिटल पहचान बनाएं।", wB: "व्हाट्सएप करें", vT: "नई सिफारिशें", sell: "➕ बेचें", contact: "संपर्क करें", postT: "विज्ञापन दें", myAdsT: "मेरे विज्ञापन", cats: ["मोबाइल", "लैपटॉप", "कैमरा", "इलेक्ट्रॉनिक्स", "फर्नीचर", "बाइक", "प्रॉपर्टी"] } };
+        const translations = { en: { search: "Search Mobiles, Laptops...", myAds: "My Ads", hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", wT: "Professional Website for Business?", wD: "Build your digital identity with AI solutions.", wB: "WhatsApp Us", vT: "Fresh Recommendations", sell: "➕ Sell Now", contact: "Contact Us", postT: "Post Your Ad", myAdsT: "My Ads", cats: ["Mobile", "Laptop", "Camera", "Electronics", "Furniture", "Bike", "Property"] }, bn: { search: "মোবাইল, ল্যাপটপ খুঁজুন...", myAds: "আমার বিজ্ঞাপন", hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে পার্সোনাল বা বিজনেস লোনের আবেদন করুন।", lB: "লোনের আবেদন", wT: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wD: "AI প্রযুক্তিতে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ করুন", vT: "নতুন বিজ্ঞাপন", sell: "➕ বিক্রি করুন", contact: "যোগাযোগ করুন", postT: "বিজ্ঞাপন দিন", myAdsT: "আমার বিজ্ঞাপন", cats: ["মোবাইল", "ল্যাপটপ", "ক্যামেরা", "ইলেকট্রনিক্স", "ফার্নিচার", "বাইক", "প্রপার্টি"] }, hi: { search: "मोबाइल, लैपटॉप खोजें...", myAds: "मेरे विज्ञापन", hT: "भारत का अपना क्लासिफाइड मार्केटप्लेस", hS: "खरीदें, बेचें और लोन पाएं", lT: "ঋণ چاہیے?", lD: "पर्सनल या बिज़नेस लोन के लिए आसानी से आवेदन करें।", lB: "ঋণ আবেদন", wT: "बिज़नेस वेबसाइट चाहिए?", wD: "AI के साथ अपनी डिजिटल पहचान बनाएं।", wB: "व्हाट्सएप करें", vT: "नई सिफारिशें", sell: "➕ बेचें", contact: "संपর্ক करें", postT: "विज्ञापन दें", myAdsT: "मेरे विज्ञापन", cats: ["मोबाइल", "लैपटॉप", "कैमरा", "इलेक्ट्रॉनिक्स", "फर्नीचर", "बाइक", "प्रॉपर्टी"] } };
         document.getElementById('langSwitcher').addEventListener('change', (e) => { const lang = translations[e.target.value]; document.getElementById('searchInput').placeholder = lang.search; document.getElementById('myAdsBtn').innerText = lang.myAds; document.getElementById('hTitle').innerText = lang.hT; document.getElementById('hSub').innerText = lang.hS; document.getElementById('lTitle').innerText = lang.lT; document.getElementById('lDesc').innerText = lang.lD; document.getElementById('lBtn').innerText = lang.lB; document.getElementById('wTitle').innerText = lang.wT; document.getElementById('wDesc').innerText = lang.wD; document.getElementById('wBtn').innerText = lang.wB; document.getElementById('viewTitle').innerText = lang.vT; document.getElementById('sellBtn').innerText = lang.sell; document.getElementById('waFloatBtn').innerText = lang.contact; document.getElementById('postTitle').innerText = lang.postT; document.getElementById('myAdsTitle').innerText = lang.myAdsT; for(let i=1; i<=7; i++) document.getElementById('c'+i).innerText = lang.cats[i-1]; });
 
         async function processUpload() { const file = document.getElementById('fileInput').files[0]; const btn = document.getElementById('uploadBtn'); btn.disabled = true; btn.innerText = "Processing..."; let finalImageUrl = ""; if(file) { const fd = new FormData(); fd.append('image', file); const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd }); const imgData = await imgRes.json(); if(imgData.success) finalImageUrl = imgData.data.url; } else if(editingAdName) { finalImageUrl = allAds.find(a => a.Name === editingAdName).Image; }
