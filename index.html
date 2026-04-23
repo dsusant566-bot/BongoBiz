@@ -36,7 +36,7 @@
         .ad-card img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
         .ad-info { padding: 10px; }
         .ad-price { font-size: 18px; font-weight: 900; }
-        #uploadModal, #myAdsModal, #detailModal, #loanModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        #uploadModal, #detailModal, #loanModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
@@ -58,9 +58,12 @@
                 <option value="hi">हिन्दी</option>
             </select>
             <div id="loginSection">
-                <div class="login-btn-box" onclick="triggerGoogleLogin()">
+                <div class="login-btn-box" id="googleLoginBtn">
                     <span class="login-text-bold">LOGIN</span>
-                    <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+                    <div id="g_id_onload" 
+                         data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" 
+                         data-callback="handleCredentialResponse">
+                    </div>
                     <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
                 </div>
             </div>
@@ -86,7 +89,7 @@
             <div class="poster-content">
                 <h3 id="lTitle">Need Financial Assistance?</h3>
                 <p id="lDesc">Apply for Personal or Business loans easily.</p>
-                <button onclick="checkLoginAndOpen('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
+                <button onclick="openModal('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
             </div>
         </div>
 
@@ -103,19 +106,19 @@
     </div>
 
     <div id="loanModal" class="modal">
-    <div class="modal-content">
-        <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
-        <h3 style="margin-top:0;">Loan Application</h3>
-        <input type="text" id="loanName" placeholder="Full Name">
-        <input type="tel" id="loanPhone" placeholder="Phone Number">
-        <input type="email" id="loanEmail" placeholder="Email ID">
-        <input type="text" id="loanAddr" placeholder="Address">
-        <input type="text" id="loanOccu" placeholder="Occupation">
-        <input type="text" id="loanType" placeholder="Loan Type (e.g. Home, Personal)">
-        <input type="number" id="loanAmount" placeholder="Loan Amount">
-        <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">SUBMIT APPLICATION</button>
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
+            <h3 style="margin-top:0;">Loan Application</h3>
+            <input type="text" id="loanName" placeholder="Full Name">
+            <input type="tel" id="loanPhone" placeholder="Phone Number">
+            <input type="email" id="loanEmail" placeholder="Email ID">
+            <input type="text" id="loanAddr" placeholder="Address">
+            <input type="text" id="loanOccu" placeholder="Occupation">
+            <input type="text" id="loanType" placeholder="Loan Type (e.g. Home, Personal)">
+            <input type="number" id="loanAmount" placeholder="Loan Amount">
+            <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">SUBMIT APPLICATION</button>
+        </div>
     </div>
-</div>
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
@@ -142,7 +145,7 @@
 
     <div class="float-wrap">
         <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
-        <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" id="sellBtnStatic" style="background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
+        <button onclick="openModal('uploadModal')" class="f-btn" id="sellBtnStatic" style="display:none; background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
     </div>
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
@@ -162,7 +165,6 @@
             }); 
         }
 
-        // লগইন চেক এবং বাটন কন্ট্রোল লজিক
         function showDetails(ad) { 
             document.getElementById('detImg').src = ad.Image || ""; 
             document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); 
@@ -173,8 +175,7 @@
             // Call Button Logic
             document.getElementById('callBtn').onclick = () => {
                 if(!userEmail) {
-                    alert("দয়া করে আগে Google লগইন করুন!");
-                    triggerGoogleLogin();
+                    triggerGoogleLogin(); // অ্যালার্ট ছাড়াই লগইন ট্রিগার
                 } else {
                     window.location.href = "tel:" + ad.Phone;
                 }
@@ -183,8 +184,7 @@
             // WhatsApp Button Logic
             document.getElementById('waBtn').onclick = () => {
                 if(!userEmail) {
-                    alert("দয়া করে আগে Google লগইন করুন!");
-                    triggerGoogleLogin();
+                    triggerGoogleLogin(); // অ্যালার্ট ছাড়াই লগইন ট্রিগার
                 } else {
                     window.open(`https://wa.me/91${ad.Phone}?text=Hello, I am interested in: ${ad.Name}`, '_blank');
                 }
@@ -192,28 +192,27 @@
             openModal('detailModal'); 
         }
 
-        // লগইন না থাকলে মোডাল ওপেন আটকে দেওয়া
-        function checkLoginAndOpen(modalId) {
-            if(!userEmail) {
-                alert("দয়া করে আগে Google লগইন করুন!");
-                triggerGoogleLogin();
-            } else {
-                openModal(modalId);
-            }
-        }
-
-        // অটোমেটিক গুগল লগইন পপআপ ট্রিগার
+        // সরাসরি গুগলের লগইন পপআপ ট্রিগার করার চেষ্টা
         function triggerGoogleLogin() {
-            const loginBtn = document.querySelector('.g_id_signin div[role="button"]');
-            if(loginBtn) loginBtn.click();
+            const googleBtn = document.querySelector('div[role="button"]');
+            if(googleBtn) {
+                googleBtn.click();
+            } else {
+                alert("Please click on the LOGIN button at the top.");
+            }
         }
 
         async function handleCredentialResponse(response) { 
             const payload = JSON.parse(atob(response.credential.split('.')[1])); 
             userEmail = payload.email.toLowerCase(); 
+            
+            // UI আপডেট
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
+            
+            // লগইন সফল হলে Sell Now বাটন দেখানো
+            document.getElementById('sellBtnStatic').style.display = "flex";
             
             fetch(APPS_SCRIPT_URL, { 
                 method: 'POST', 
