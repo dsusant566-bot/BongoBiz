@@ -113,6 +113,7 @@
         <input type="text" id="loanAddr" placeholder="Address">
         <input type="text" id="loanOccu" placeholder="Occupation">
         <input type="text" id="loanType" placeholder="Loan Type (e.g. Home, Personal)">
+        <input type="number" id="loanAmount" placeholder="Loan Amount (e.g. 50000)">
 
         <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">SUBMIT APPLICATION</button>
     </div>
@@ -202,7 +203,8 @@
         email: document.getElementById('loanEmail').value || "",
         address: document.getElementById('loanAddr').value || "",
         occupation: document.getElementById('loanOccu').value || "",
-        loan_type: document.getElementById('loanType').value || ""
+        loan_type: document.getElementById('loanType').value || "",
+        loan_amount: document.getElementById('loanAmount').value || ""
     };
 
     try {
