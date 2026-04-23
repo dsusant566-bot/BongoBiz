@@ -243,21 +243,40 @@
             location.reload();
         }
 
-        const trans = {
-            en: { hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", viewTitle: "Fresh Recommendations", myAdsTitle: "Manage My Ads", c1: "Resale", c2: "Wholesale", c3: "Property", lTitle: "Need Financial Assistance?", lDesc: "Apply for Personal or Business loans easily.", lBtn: "APPLY FOR LOAN", waFloat: "WhatsApp Us", sellBtnStatic: "➕ Sell Now", myAdsBtn: "MY ADS" },
-            bn: { hTitle: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", viewTitle: "নতুন বিজ্ঞাপন", myAdsTitle: "আমার বিজ্ঞাপন", c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি", lTitle: "লোন প্রয়োজন?", lDesc: "লোনের আবেদন করুন সহজেই।", lBtn: "আবেদন করুন", waFloat: "হোয়াটস্যাপ", sellBtnStatic: "➕ বিক্রি করুন", myAdsBtn: "আমার অ্যাড" },
-            hi: { hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", viewTitle: "नई सिफारिशें", myAdsTitle: "मेरे विज्ञापन", c1: "रीसेल", c2: "थोक", c3: "संपत्ति", lTitle: "ऋण चाहिए?", lDesc: "ऋण के लिए आवेदन करें।", lBtn: "आवेदन करें", waFloat: "व्हाट्सएप", sellBtnStatic: "➕ अभी बेचें", myAdsBtn: "मेरे विज्ञापन" }
-        };
+       const translations = {
+    en: { 
+        hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", viewTitle: "Fresh Recommendations", sellBtnStatic: "➕ Sell Now", myAdsBtn: "MY ADS", c1: "Resale", c2: "Wholesale", c3: "Property", lTitle: "Need Financial Assistance?", lDesc: "Apply for Personal or Business loans easily.", lBtn: "APPLY FOR LOAN", wTitle: "Professional Website for Business?", wDesc: "Build your digital identity with AI solutions.", waFloat: "WhatsApp Us"
+    },
+    bn: { 
+        hTitle: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", viewTitle: "নতুন বিজ্ঞাপন", sellBtnStatic: "➕ বিক্রি করুন", myAdsBtn: "আমার অ্যাড", c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি", lTitle: "লোন প্রয়োজন?", lDesc: "পার্সোনাল বা বিজনেস লোনের আবেদন করুন সহজেই।", lBtn: "আবেদন করুন", wTitle: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wDesc: "AI সলিউশন দিয়ে আপনার ডিজিটাল পরিচয় গড়ে তুলুন।", waFloat: "হোয়াটস্যাপ", wBtnText: "হোয়াটস্যাপ করুন"
+    },
+    hi: { 
+        hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", viewTitle: "नई सिफारिशें", sellBtnStatic: "➕ अभी बेचें", myAdsBtn: "मेरे विज्ञापन", c1: "रीसेल", c2: "थोक", c3: "संपत्ति", lTitle: "ऋण चाहिए?", lDesc: "आसानी से व्यक्तिगत या व्यावसायिक ऋण के लिए आवेदन करें।", lBtn: "आवेदन करें", wTitle: "व्यापार के लिए वेबसाइट?", wDesc: "AI समाधान के साथ अपनी डिजिटल पहचान बनाएं।", waFloat: "व्हाट्सएप करें", wBtnText: "व्हाट्सएप करें"
+    }
+};
 
-        document.getElementById('langSwitcher').onchange = (e) => {
-            const l = trans[e.target.value];
-            Object.keys(l).forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = l[id]; });
-        };
+function changeLanguage(val) {
+    const l = translations[val];
+    const ids = ['hTitle', 'hSub', 'viewTitle', 'sellBtnStatic', 'myAdsBtn', 'c1', 'c2', 'c3', 'lTitle', 'lDesc', 'lBtn', 'wTitle', 'wDesc', 'waFloat'];
+    ids.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) { element.innerText = l[id]; }
+    });
+    const wBtn = document.getElementById('wBtn');
+    if(wBtn) {
+        if(val === 'bn') wBtn.innerText = "হোয়াটস্যাপ করুন";
+        else if(val === 'hi') wBtn.innerText = "व्हाट्सएप करें";
+        else wBtn.innerText = "WhatsApp Us";
+    }
+}
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLoginModal'); }
-        window.onload = () => { checkAutoLogin(); fetchAds(); };
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'uploadModal') location.reload(); }
+function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLoginModal'); }
+
+document.getElementById('langSwitcher').onchange = (e) => changeLanguage(e.target.value);
+
+window.onload = () => { checkAutoLogin(); fetchAds(); };
     </script>
     <footer style="background:white; padding:20px; text-align:center; border-top:2px solid #ffce32; margin-top:30px;">
         <p><b>BongoBiz</b>, Kolkata | Mob: 9733335466 | bongobiz.official@gmail.com</p>
