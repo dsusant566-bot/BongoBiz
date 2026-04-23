@@ -165,6 +165,18 @@
             }); 
         }
 
+        // গুগল লগইন পেজ সরাসরি পপআপ করার ফাংশন
+        function triggerGoogleLogin() {
+            // ব্রাউজারের উপরে 'Choose an Account' প্রম্পট দেখাবে
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // যদি প্রম্পট না আসে, তবে হিডেন বাটনে ক্লিক করে ডাইরেক্ট পেজ আনবে
+                    const btn = document.querySelector('.g_id_signin div[role="button"]');
+                    if(btn) btn.click();
+                }
+            });
+        }
+
         function showDetails(ad) { 
             document.getElementById('detImg').src = ad.Image || ""; 
             document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); 
@@ -173,37 +185,20 @@
             document.getElementById('detDesc').innerText = ad.Description || ""; 
 
             document.getElementById('callBtn').onclick = () => {
-                if(!userEmail) {
-                    triggerGoogleLogin(); 
-                } else {
-                    window.location.href = "tel:" + ad.Phone;
-                }
+                if(!userEmail) { triggerGoogleLogin(); } 
+                else { window.location.href = "tel:" + ad.Phone; }
             };
 
             document.getElementById('waBtn').onclick = () => {
-                if(!userEmail) {
-                    triggerGoogleLogin(); 
-                } else {
-                    window.open(`https://wa.me/91${ad.Phone}?text=Interest in ${ad.Name}`, '_blank');
-                }
+                if(!userEmail) { triggerGoogleLogin(); } 
+                else { window.open(`https://wa.me/91${ad.Phone}?text=Interest in ${ad.Name}`, '_blank'); }
             };
             openModal('detailModal'); 
         }
 
         function checkLoginAndOpen(modalId) {
-            if(!userEmail) {
-                triggerGoogleLogin(); 
-            } else {
-                openModal(modalId);
-            }
-        }
-
-        function triggerGoogleLogin() {
-            // সরাসরি গুগল প্রম্পট ট্রিগার করবে
-            google.accounts.id.prompt();
-            // ব্যাকআপ হিসেবে বাটন ক্লিক
-            const googleBtn = document.querySelector('.g_id_signin div[role="button"]');
-            if(googleBtn) googleBtn.click();
+            if(!userEmail) { triggerGoogleLogin(); } 
+            else { openModal(modalId); }
         }
 
         async function handleCredentialResponse(response) { 
