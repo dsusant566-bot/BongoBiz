@@ -199,6 +199,7 @@
         }
 
         async function submitLoan() {
+    // ইনপুট ফিল্ড থেকে ভ্যালু নেওয়া
     const loanData = {
         action: 'loan',
         name: document.getElementById('loanName').value,
@@ -208,7 +209,7 @@
         occupation: document.getElementById('loanOccu').value || "N/A",
         employment: document.getElementById('loanEmp').value || "N/A", 
         income: document.getElementById('loanInc').value || "0",
-        loan_type: document.getElementById('loanType').value
+        loan_type: document.getElementById('loanType').value // এখানে নিশ্চিত করুন ID-টা loanType
     };
 
     if(!loanData.name || !loanData.phone) { alert("নাম এবং ফোন নম্বর দিন!"); return; }
@@ -217,18 +218,16 @@
     btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
 
     try {
-        // এখানে আমরা JSON হিসেবে পাঠাচ্ছি কিন্তু mode: 'no-cors' রাখছি 
-        // তবে ডাটা যাতে না হারায় তাই স্ট্রিং করে পাঠাচ্ছি
         await fetch(APPS_SCRIPT_URL, { 
             method: 'POST', 
             mode: 'no-cors', 
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'text/plain' }, // এটি CORS Preflight এড়ায়
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(loanData) 
         });
         
         alert("আবেদনটি সফলভাবে জমা হয়েছে!");
         closeModal('loanModal');
+        // ফর্ম ক্লিয়ার করা
         document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
     } catch(e) { 
         alert("সমস্যা হয়েছে!"); 
