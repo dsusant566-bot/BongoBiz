@@ -58,7 +58,7 @@
                 <option value="hi">हिन्दी</option>
             </select>
             <div id="loginSection">
-                <div class="login-btn-box">
+                <div class="login-btn-box" onclick="triggerGoogleLogin()">
                     <span class="login-text-bold">LOGIN</span>
                     <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
                     <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
@@ -86,7 +86,7 @@
             <div class="poster-content">
                 <h3 id="lTitle">Need Financial Assistance?</h3>
                 <p id="lDesc">Apply for Personal or Business loans easily.</p>
-                <button onclick="openModal('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
+                <button onclick="checkLoginAndOpen('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
             </div>
         </div>
 
@@ -106,15 +106,13 @@
     <div class="modal-content">
         <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
         <h3 style="margin-top:0;">Loan Application</h3>
-        
         <input type="text" id="loanName" placeholder="Full Name">
         <input type="tel" id="loanPhone" placeholder="Phone Number">
         <input type="email" id="loanEmail" placeholder="Email ID">
         <input type="text" id="loanAddr" placeholder="Address">
         <input type="text" id="loanOccu" placeholder="Occupation">
         <input type="text" id="loanType" placeholder="Loan Type (e.g. Home, Personal)">
-        <input type="number" id="loanAmount" placeholder="Loan Amount (e.g. 50000)">
-
+        <input type="number" id="loanAmount" placeholder="Loan Amount">
         <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">SUBMIT APPLICATION</button>
     </div>
 </div>
@@ -144,9 +142,8 @@
 
     <div class="float-wrap">
         <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
-        <button onclick="openModal('uploadModal')" class="f-btn" id="sellBtn" style="display:none; background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
+        <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" id="sellBtnStatic" style="background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
     </div>
-
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
@@ -165,15 +162,50 @@
             }); 
         }
 
+        // লগইন চেক এবং বাটন কন্ট্রোল লজিক
         function showDetails(ad) { 
             document.getElementById('detImg').src = ad.Image || ""; 
             document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); 
             document.getElementById('detTitle').innerText = ad.Name || ""; 
             document.getElementById('detLocation').innerText = "📍 " + (ad.Address || "Kolkata"); 
             document.getElementById('detDesc').innerText = ad.Description || ""; 
-            document.getElementById('callBtn').onclick = () => window.location.href = "tel:" + ad.Phone;
-            document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/${ad.Phone}?text=Interest in ${ad.Name}`, '_blank');
+
+            // Call Button Logic
+            document.getElementById('callBtn').onclick = () => {
+                if(!userEmail) {
+                    alert("দয়া করে আগে Google লগইন করুন!");
+                    triggerGoogleLogin();
+                } else {
+                    window.location.href = "tel:" + ad.Phone;
+                }
+            };
+
+            // WhatsApp Button Logic
+            document.getElementById('waBtn').onclick = () => {
+                if(!userEmail) {
+                    alert("দয়া করে আগে Google লগইন করুন!");
+                    triggerGoogleLogin();
+                } else {
+                    window.open(`https://wa.me/91${ad.Phone}?text=Hello, I am interested in: ${ad.Name}`, '_blank');
+                }
+            };
             openModal('detailModal'); 
+        }
+
+        // লগইন না থাকলে মোডাল ওপেন আটকে দেওয়া
+        function checkLoginAndOpen(modalId) {
+            if(!userEmail) {
+                alert("দয়া করে আগে Google লগইন করুন!");
+                triggerGoogleLogin();
+            } else {
+                openModal(modalId);
+            }
+        }
+
+        // অটোমেটিক গুগল লগইন পপআপ ট্রিগার
+        function triggerGoogleLogin() {
+            const loginBtn = document.querySelector('.g_id_signin div[role="button"]');
+            if(loginBtn) loginBtn.click();
         }
 
         async function handleCredentialResponse(response) { 
@@ -182,7 +214,7 @@
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
-            document.getElementById('sellBtn').style.display = "flex"; 
+            
             fetch(APPS_SCRIPT_URL, { 
                 method: 'POST', 
                 mode: 'no-cors', 
@@ -190,41 +222,28 @@
             });
         }
 
-      async function submitLoan() {
-    const btn = document.getElementById('loanSubmitBtn');
-    btn.innerText = "পাঠানো হচ্ছে..."; 
-    btn.disabled = true;
+        async function submitLoan() {
+            const btn = document.getElementById('loanSubmitBtn');
+            btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
+            const loanData = {
+                action: 'loan',
+                name: document.getElementById('loanName').value || "",
+                phone: document.getElementById('loanPhone').value || "",
+                email: document.getElementById('loanEmail').value || "",
+                address: document.getElementById('loanAddr').value || "",
+                occupation: document.getElementById('loanOccu').value || "",
+                loan_type: document.getElementById('loanType').value || "",
+                loan_amount: document.getElementById('loanAmount').value || ""
+            };
+            try {
+                await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(loanData) });
+                alert("ধন্যবাদ! আপনার তথ্য জমা হয়েছে।");
+                closeModal('loanModal');
+                document.querySelectorAll('#loanModal input').forEach(i => i.value = "");
+            } catch(e) { alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); } 
+            finally { btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; }
+        }
 
-    // কাস্টমার যা লিখবে তাই যাবে, না লিখলে ব্ল্যাঙ্ক ("") যাবে
-    const loanData = {
-        action: 'loan',
-        name: document.getElementById('loanName').value || "",
-        phone: document.getElementById('loanPhone').value || "",
-        email: document.getElementById('loanEmail').value || "",
-        address: document.getElementById('loanAddr').value || "",
-        occupation: document.getElementById('loanOccu').value || "",
-        loan_type: document.getElementById('loanType').value || "",
-        loan_amount: document.getElementById('loanAmount').value || ""
-    };
-
-    try {
-        await fetch(APPS_SCRIPT_URL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: JSON.stringify(loanData) 
-        });
-        
-        alert("ধন্যবাদ! আপনার তথ্য জমা হয়েছে।");
-        closeModal('loanModal');
-        // ফর্ম ক্লিয়ার করা
-        document.querySelectorAll('#loanModal input').forEach(i => i.value = "");
-    } catch(e) { 
-        alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); 
-    } finally { 
-        btn.innerText = "SUBMIT APPLICATION"; 
-        btn.disabled = false; 
-    }
-}
         async function processUpload() { 
             const file = document.getElementById('fileInput').files[0]; 
             const btn = document.getElementById('uploadBtn'); btn.innerText = "Processing..."; btn.disabled = true;
@@ -243,6 +262,7 @@
             en: { search: "Search Products...", hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", wT: "Professional Website for Business?", wD: "Build your digital identity with AI solutions.", wB: "WhatsApp Us", vT: "Fresh Recommendations", cats: ["Resale", "Wholesale", "Property"] },
             bn: { search: "পণ্য খুঁজুন...", hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে পার্সোনাল বা বিজনেস লোনের আবেদন করুন।", lB: "লোনের আবেদন", wT: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wD: "AI প্রযুক্তিতে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ করুন", vT: "নতুন বিজ্ঞাপন", cats: ["রিসেল", "হোলসেল", "প্রপার্টি"] }
         };
+        
         document.getElementById('langSwitcher').addEventListener('change', (e) => {
             const lang = translations[e.target.value];
             document.getElementById('searchInput').placeholder = lang.search;
