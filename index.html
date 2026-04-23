@@ -36,7 +36,7 @@
         .ad-card img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
         .ad-info { padding: 10px; }
         .ad-price { font-size: 18px; font-weight: 900; }
-        #uploadModal, #detailModal, #loanModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        #uploadModal, #detailModal, #loanModal, #customLoginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
@@ -58,12 +58,9 @@
                 <option value="hi">हिन्दी</option>
             </select>
             <div id="loginSection">
-                <div class="login-btn-box" id="googleLoginBtn">
+                <div class="login-btn-box" onclick="triggerGoogleLogin()">
                     <span class="login-text-bold">LOGIN</span>
-                    <div id="g_id_onload" 
-                         data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" 
-                         data-callback="handleCredentialResponse">
-                    </div>
+                    <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
                     <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
                 </div>
             </div>
@@ -103,6 +100,17 @@
 
         <h3 id="viewTitle">Fresh Recommendations</h3>
         <div class="ads-grid" id="adsGrid">Loading data...</div>
+    </div>
+
+    <div id="customLoginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('customLoginModal')">&times;</span>
+            <h3 style="margin-top:20px;">Please Login with Google</h3>
+            <p>To Call, WhatsApp or Post Ads, please select your Google account.</p>
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <div class="g_id_signin" data-type="standard"></div>
+            </div>
+        </div>
     </div>
 
     <div id="loanModal" class="modal">
@@ -165,16 +173,9 @@
             }); 
         }
 
-        // গুগল লগইন পেজ সরাসরি পপআপ করার ফাংশন
+        // এটি লগইন উইন্ডো খোলার ফাংশন
         function triggerGoogleLogin() {
-            // ব্রাউজারের উপরে 'Choose an Account' প্রম্পট দেখাবে
-            google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // যদি প্রম্পট না আসে, তবে হিডেন বাটনে ক্লিক করে ডাইরেক্ট পেজ আনবে
-                    const btn = document.querySelector('.g_id_signin div[role="button"]');
-                    if(btn) btn.click();
-                }
-            });
+            openModal('customLoginModal');
         }
 
         function showDetails(ad) { 
@@ -184,11 +185,13 @@
             document.getElementById('detLocation').innerText = "📍 " + (ad.Address || "Kolkata"); 
             document.getElementById('detDesc').innerText = ad.Description || ""; 
 
+            // Call Button Logic
             document.getElementById('callBtn').onclick = () => {
                 if(!userEmail) { triggerGoogleLogin(); } 
                 else { window.location.href = "tel:" + ad.Phone; }
             };
 
+            // WhatsApp Button Logic
             document.getElementById('waBtn').onclick = () => {
                 if(!userEmail) { triggerGoogleLogin(); } 
                 else { window.open(`https://wa.me/91${ad.Phone}?text=Interest in ${ad.Name}`, '_blank'); }
@@ -204,9 +207,14 @@
         async function handleCredentialResponse(response) { 
             const payload = JSON.parse(atob(response.credential.split('.')[1])); 
             userEmail = payload.email.toLowerCase(); 
+            
+            // UI Update
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
+            
+            // Close login modal if open
+            closeModal('customLoginModal');
             
             fetch(APPS_SCRIPT_URL, { 
                 method: 'POST', 
