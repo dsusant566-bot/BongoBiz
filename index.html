@@ -14,7 +14,6 @@
         .search-container input { border: none; padding: 10px; width: 100%; outline: none; }
         .search-container button { background: var(--primary); color: white; border: none; padding: 10px 15px; cursor: pointer; }
         .nav-right { display: flex; align-items: center; gap: 10px; }
-        .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; }
         .login-btn-box { display: flex; align-items: center; gap: 8px; background: #fff; border: 2.5px solid #002f34; padding: 4px 12px; border-radius: 25px; cursor: pointer; transition: 0.3s; }
         .login-text-bold { font-size: 14px; font-weight: 900; color: #002f34; text-transform: uppercase; letter-spacing: 0.5px; }
         #userProfile { display: none; align-items: center; gap: 8px; font-size: 12px; }
@@ -55,7 +54,6 @@
             <select id="langSwitcher" class="lang-dropdown">
                 <option value="en">English</option>
                 <option value="bn">বাংলা</option>
-                <option value="hi">हिन्दी</option>
             </select>
             <div id="loginSection">
                 <div class="login-btn-box">
@@ -81,6 +79,7 @@
         <div class="cat-card" onclick="filterCat('Wholesale')"><div class="cat-icon">📦</div><div id="c2">Wholesale</div></div>
         <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c3">Property</div></div>
     </div>
+
     <div class="content">
         <div class="poster-box loan-poster">
             <div class="poster-content">
@@ -89,23 +88,13 @@
                 <button onclick="openModal('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
             </div>
         </div>
-
-        <div class="poster-box web-poster">
-            <div class="poster-content">
-                <h3 id="wTitle">Professional Website for Business?</h3>
-                <p id="wDesc">Build your digital identity with AI solutions.</p>
-                <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action btn-yellow" style="background:var(--wa-green); color:white;" id="wBtn">WhatsApp Us</a>
-            </div>
-        </div>
-
-        <h3 id="viewTitle">Fresh Recommendations</h3>
         <div class="ads-grid" id="adsGrid">Loading data...</div>
     </div>
 
     <div id="loanModal" class="modal">
         <div class="modal-content">
             <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
-            <h3 style="margin-top:0;">Loan Application</h3>
+            <h3>Loan Application</h3>
             <input type="text" id="loanName" placeholder="Full Name *">
             <input type="tel" id="loanPhone" placeholder="Phone Number *">
             <input type="email" id="loanEmail" placeholder="Email ID">
@@ -127,39 +116,9 @@
         </div>
     </div>
 
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
-            <img id="detImg" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-            <h2 id="detPrice" style="color:var(--primary); margin:15px 0; text-align:left;"></h2>
-            <h3 id="detTitle" style="text-align:left;"></h3>
-            <p id="detLocation" style="color: #666; text-align: left; font-size: 14px;"></p>
-            <p id="detDesc" style="text-align:left;"></p>
-            <hr>
-            <button id="callBtn" style="background:var(--secondary); color:black; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold; margin-bottom:10px;">📞 Call</button>
-            <button id="waBtn" style="background:var(--wa-green); color:white; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold;">💬 WhatsApp</button>
-        </div>
-    </div>
-
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <span class="close-x" onclick="closeModal('uploadModal')">&times;</span>
-            <h3>Post Your Ad</h3>
-            <select id="itemCat"><option value="Resale">Resale</option><option value="Wholesale">Wholesale</option><option value="Property">Property</option></select>
-            <input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><input type="text" id="itemAddress" placeholder="Location/Address"><textarea id="itemDesc" placeholder="Details"></textarea><input type="file" id="fileInput" accept="image/*"><button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px;">Submit Ad</button>
-        </div>
-    </div>
-
-    <div class="float-wrap">
-        <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
-        <button onclick="openModal('uploadModal')" class="f-btn" id="sellBtn" style="display:none; background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
-    </div>
-
     <script>
-        const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
+        const APPS_SCRIPT_URL = "আপনার_নতুন_ডিপ্লয়মেন্ট_ইউআরএল_এখানে_বসান"; // IMPORTANT: Change this!
         const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhi14LSxcRaSj_fxzZXvLGgP0hO7YAS6V_tZMNdZYApJ-vgKF_oDVdCKW9b9xr64nm/exec";
-        
         let allAds = []; let userEmail = "";
 
         async function fetchAds() { try { const res = await fetch(SHEETDB_URL); allAds = await res.json(); renderAds(allAds); } catch (e) { console.error("Error loading ads"); } }
@@ -167,21 +126,10 @@
         function renderAds(data) { 
             const grid = document.getElementById('adsGrid'); grid.innerHTML = ""; 
             data.filter(ad => ad.Status !== 'Deleted').reverse().forEach(ad => { 
-                const card = document.createElement('div'); card.className = 'ad-card'; card.onclick = () => showDetails(ad); 
-                card.innerHTML = `<img src="${ad.Image || ''}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price || '0'}</div><div class="ad-title">${ad.Name || 'Untitled'}</div><div class="ad-location">📍 ${ad.Address || 'N/A'}</div></div>`; 
+                const card = document.createElement('div'); card.className = 'ad-card'; 
+                card.innerHTML = `<img src="${ad.Image || ''}"><div class="ad-info"><div class="ad-price">Rs ${ad.Price || '0'}</div><div class="ad-title">${ad.Name || 'Untitled'}</div></div>`; 
                 grid.appendChild(card); 
             }); 
-        }
-
-        function showDetails(ad) { 
-            document.getElementById('detImg').src = ad.Image || ""; 
-            document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); 
-            document.getElementById('detTitle').innerText = ad.Name || ""; 
-            document.getElementById('detLocation').innerText = "📍 " + (ad.Address || "Kolkata"); 
-            document.getElementById('detDesc').innerText = ad.Description || ""; 
-            document.getElementById('callBtn').onclick = () => window.location.href = "tel:" + ad.Phone;
-            document.getElementById('waBtn').onclick = () => window.open(`https://wa.me/${ad.Phone}?text=Interest in ${ad.Name}`, '_blank');
-            openModal('detailModal'); 
         }
 
         async function handleCredentialResponse(response) { 
@@ -190,107 +138,45 @@
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
-            document.getElementById('sellBtn').style.display = "flex"; 
+            // লগইন ডেটা পাঠানো
             fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'login', name: payload.name, email: userEmail }) });
         }
 
+        // লোন সাবমিট করার ফাংশন (সংশোধিত)
         async function submitLoan() {
-    // এখানে প্রতিটি ফিল্ডের আইডি আপনার HTML ফর্মের সাথে মিল থাকতে হবে
-    const name = document.getElementById('loanName').value;
-    const phone = document.getElementById('loanPhone').value;
-    const email = document.getElementById('loanEmail').value;
-    const address = document.getElementById('loanAddr').value;
-    const occupation = document.getElementById('loanOccu').value;
-    const employment = document.getElementById('loanEmp').value;
-    const income = document.getElementById('loanInc').value;
-    const loanType = document.getElementById('loanType').value;
+            const loanData = {
+                action: 'loan',
+                name: document.getElementById('loanName').value,
+                phone: document.getElementById('loanPhone').value,
+                email: document.getElementById('loanEmail').value || "N/A",
+                address: document.getElementById('loanAddr').value || "N/A",
+                occupation: document.getElementById('loanOccu').value || "N/A",
+                employment: document.getElementById('loanEmp').value || "N/A", 
+                income: document.getElementById('loanInc').value || "0",
+                loan_type: document.getElementById('loanType').value
+            };
 
-    if(!name || !phone) { 
-        alert("নাম এবং ফোন নম্বর অবশ্যই দিতে হবে!"); 
-        return; 
-    }
+            if(!loanData.name || !loanData.phone) { alert("নাম এবং ফোন নম্বর দিন!"); return; }
 
-    const btn = document.getElementById('loanSubmitBtn');
-    btn.innerText = "পাঠানো হচ্ছে..."; 
-    btn.disabled = true;
+            const btn = document.getElementById('loanSubmitBtn');
+            btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
 
-    // এই অবজেক্টটি Apps Script-কে সব ডাটা পাঠিয়ে দেবে
-    const loanData = {
-        action: 'loan',
-        name: name,
-        phone: phone,
-        email: email || "N/A",
-        address: address || "N/A",
-        occupation: occupation || "N/A",
-        employment: employment || "N/A", 
-        income: income || "0",
-        loan_type: loanType || "Personal Loan"
-    };
-
-    try {
-        await fetch(APPS_SCRIPT_URL, { 
-            method: 'POST', 
-            mode: 'no-cors', 
-            body: JSON.stringify(loanData) 
-        });
-        
-        alert("ধন্যবাদ! আপনার আবেদনটি সফলভাবে জমা হয়েছে।");
-        closeModal('loanModal');
-        // ফর্ম রিসেট করা
-        document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
-    } catch(e) { 
-        alert("দুঃখিত, কোনো সমস্যা হয়েছে।"); 
-    } finally { 
-        btn.innerText = "SUBMIT APPLICATION"; 
-        btn.disabled = false; 
-    }
-}
-        async function processUpload() { 
-            const file = document.getElementById('fileInput').files[0]; 
-            const btn = document.getElementById('uploadBtn'); btn.innerText = "Processing..."; btn.disabled = true;
-            let finalImg = ""; 
-            if(file) { 
-                const fd = new FormData(); fd.append('image', file); 
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd }); 
-                const imgData = await res.json(); finalImg = imgData.data.url; 
-            } 
-            const payload = { Email: userEmail, Name: document.getElementById('itemName').value, Price: document.getElementById('itemPrice').value, Phone: document.getElementById('itemPhone').value, Address: document.getElementById('itemAddress').value, Description: document.getElementById('itemDesc').value, Category: document.getElementById('itemCat').value, Image: finalImg, Status: "Active" };
-            await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: [payload]}) });
-            alert("Done!"); location.reload(); 
+            try {
+                await fetch(APPS_SCRIPT_URL, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(loanData) 
+                });
+                alert("আবেদনটি সফলভাবে জমা হয়েছে!");
+                closeModal('loanModal');
+                document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
+            } catch(e) { alert("সমস্যা হয়েছে!"); } 
+            finally { btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; }
         }
-
-        const translations = { 
-            en: { search: "Search Products...", hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", wT: "Professional Website for Business?", wD: "Build your digital identity with AI solutions.", wB: "WhatsApp Us", vT: "Fresh Recommendations", cats: ["Resale", "Wholesale", "Property"] },
-            bn: { search: "পণ্য খুঁজুন...", hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে পার্সোনাল বা বিজনেস লোনের আবেদন করুন।", lB: "লোনের আবেদন", wT: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wD: "AI প্রযুক্তিতে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ করুন", vT: "নতুন বিজ্ঞাপন", cats: ["রিসেল", "হোলসেল", "প্রপার্টি"] }
-        };
-        document.getElementById('langSwitcher').addEventListener('change', (e) => {
-            const lang = translations[e.target.value];
-            document.getElementById('searchInput').placeholder = lang.search;
-            document.getElementById('hTitle').innerText = lang.hT;
-            document.getElementById('hSub').innerText = lang.hS;
-            document.getElementById('lTitle').innerText = lang.lT;
-            document.getElementById('lDesc').innerText = lang.lD;
-            document.getElementById('lBtn').innerText = lang.lB;
-            document.getElementById('wTitle').innerText = lang.wT;
-            document.getElementById('wDesc').innerText = lang.wD;
-            document.getElementById('wBtn').innerText = lang.wB;
-            document.getElementById('viewTitle').innerText = lang.vT;
-            for(let i=1; i<=3; i++) document.getElementById('c'+i).innerText = lang.cats[i-1];
-        });
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function filterCat(cat) { renderAds(allAds.filter(ad => ad.Category === cat)); }
-        function searchAds() { const q = document.getElementById('searchInput').value.toLowerCase(); renderAds(allAds.filter(ad => ad.Name.toLowerCase().includes(q))); }
         window.onload = fetchAds;
     </script>
-
-    <footer style="background: white; color: #002f34; padding: 20px; text-align: center; border-top: 2px solid #ffce32; margin-top: 20px;">
-        <div style="max-width: 1100px; margin: 0 auto;">
-            <h3 style="margin: 0;">About Us</h3>
-            <p><b>BongoBiz</b>, Addrs- Kolkata, India</p>
-            <p>Mob: <a href="tel:9733335466">9733335466</a> | Email: <a href="mailto:bongobiz.official@gmail.com">bongobiz.official@gmail.com</a></p>
-        </div>
-    </footer>
 </body>
 </html>
