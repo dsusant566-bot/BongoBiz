@@ -14,36 +14,25 @@
         .search-container input { border: none; padding: 10px; width: 100%; outline: none; }
         .search-container button { background: var(--primary); color: white; border: none; padding: 10px 15px; cursor: pointer; }
         .nav-right { display: flex; align-items: center; gap: 10px; }
-        .lang-dropdown select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; font-weight: bold; }
-        
-        .login-btn-box { display: flex; align-items: center; gap: 8px; background: #fff; border: 2.5px solid #002f34; padding: 4px 12px; border-radius: 25px; cursor: pointer; }
-        .login-text-bold { font-size: 14px; font-weight: 900; color: #002f34; text-transform: uppercase; }
         #userProfile { display: none; align-items: center; gap: 10px; font-size: 12px; }
         #userImg { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
         .logout-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; font-weight: bold; }
-
         .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
         .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; }
         .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; color: inherit; }
         .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
-        
-        .content { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
         .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
         .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1; }
         .poster-content { position: relative; z-index: 2; }
         .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071'); }
         .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070'); }
-        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
-        .btn-yellow { background: var(--secondary); color: var(--primary); }
-
-        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; position: relative; }
+        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; background: var(--secondary); color: var(--primary); }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; padding: 0 15px; }
+        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
         .ad-card img { width: 100%; height: 150px; object-fit: cover; }
-        
-        #uploadModal, #detailModal, #loanModal, #myAdsModal, #favModal, #customLoginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        #uploadModal, #detailModal, #loanModal, #myAdsModal, #customLoginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
         .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
-        
         .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
         .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
         .del-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-weight: bold; }
@@ -59,17 +48,14 @@
             <button onclick="searchAds()">🔍</button>
         </div>
         <div class="nav-right">
-            <select id="langSwitcher" class="lang-dropdown">
+            <select id="langSwitcher">
                 <option value="en">English</option>
                 <option value="bn">বাংলা</option>
                 <option value="hi">हिन्दी</option>
             </select>
             <div id="loginSection">
-                <div class="login-btn-box" onclick="triggerGoogleLogin()">
-                    <span class="login-text-bold">LOGIN</span>
-                    <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
-                    <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
-                </div>
+                <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+                <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
             </div>
             <div id="userProfile">
                 <img id="userImg" src="">
@@ -94,7 +80,7 @@
             <div class="poster-content">
                 <h3 id="lTitle">Need Financial Assistance?</h3>
                 <p id="lDesc">Apply for Personal or Business loans easily.</p>
-                <button onclick="openModal('loanModal')" class="btn-action btn-yellow" id="lBtn">APPLY FOR LOAN</button>
+                <button onclick="openModal('loanModal')" class="btn-action" id="lBtn">APPLY FOR LOAN</button>
             </div>
         </div>
 
@@ -102,28 +88,39 @@
             <div class="poster-content">
                 <h3 id="wTitle">Professional Website for Business?</h3>
                 <p id="wDesc">Build your digital identity with AI solutions.</p>
-                <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action btn-yellow" style="background:var(--wa-green); color:white;" id="wBtn">WhatsApp Us</a>
+                <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action" style="background:var(--wa-green); color:white;" id="wBtn">WhatsApp Us</a>
             </div>
         </div>
         <h3 id="viewTitle">Fresh Recommendations</h3>
         <div class="ads-grid" id="adsGrid">Loading data...</div>
     </div>
 
-    <div id="myAdsModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('myAdsModal')">&times;</span><h3 id="myAdsTitle">Manage My Ads</h3><div id="myAdsContainer"></div></div></div>
-    <div id="customLoginModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('customLoginModal')">&times;</span><h3>Please Login with Google</h3><div class="g_id_signin" data-type="standard"></div></div></div>
-    
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
+            <img id="detImg" style="width:100%; height:220px; object-fit:cover; border-radius:8px;">
+            <h2 id="detPrice" style="color:var(--primary); margin:15px 0; text-align:left;"></h2>
+            <h3 id="detTitle" style="text-align:left;"></h3>
+            <p id="detDesc" style="text-align:left; color:#555; font-size:14px;"></p>
+            <p id="detAddr" style="text-align:left; color:#888; font-size:12px;"></p>
+            <hr>
+            <button id="callBtn" style="background:var(--secondary); color:black; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold; margin-bottom:10px; cursor:pointer;">📞 Call</button>
+            <button id="waBtn" style="background:var(--wa-green); color:white; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold; cursor:pointer;">💬 WhatsApp</button>
+        </div>
+    </div>
+
     <div id="loanModal" class="modal">
         <div class="modal-content">
             <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
-            <h3 id="modalLoanTitle">Loan Application</h3>
+            <h3>Loan Application</h3>
             <input type="text" id="loanName" placeholder="Full Name">
-            <input type="tel" id="loanPhone" placeholder="Phone Number">
+            <input type="tel" id="loanPhone" placeholder="Phone">
             <input type="email" id="loanEmail" placeholder="Email ID">
             <input type="text" id="loanAddr" placeholder="Address">
             <input type="text" id="loanOccu" placeholder="Occupation">
             <input type="text" id="loanType" placeholder="Loan Type">
-            <input type="number" id="loanAmount" placeholder="Loan Amount">
-            <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">SUBMIT</button>
+            <input type="number" id="loanAmount" placeholder="Amount">
+            <button onclick="submitLoan()" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">SUBMIT</button>
         </div>
     </div>
 
@@ -133,11 +130,14 @@
             <h3 id="postTitle">Post Your Ad</h3>
             <input type="hidden" id="editOldName">
             <select id="itemCat"><option value="Resale">Resale</option><option value="Wholesale">Wholesale</option><option value="Property">Property</option></select>
-            <input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><input type="text" id="itemAddress" placeholder="Location/Address"><textarea id="itemDesc" placeholder="Details"></textarea>
+            <input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><input type="text" id="itemAddress" placeholder="Location"><textarea id="itemDesc" placeholder="Details"></textarea>
             <div id="imgSection"><input type="file" id="fileInput" accept="image/*"></div>
-            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px;">Submit</button>
+            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Submit</button>
         </div>
     </div>
+
+    <div id="myAdsModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('myAdsModal')">&times;</span><h3 id="myAdsTitle">Manage My Ads</h3><div id="myAdsContainer"></div></div></div>
+    <div id="customLoginModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('customLoginModal')">&times;</span><h3>Please Login with Google</h3><div class="g_id_signin" data-type="standard"></div></div></div>
 
     <div class="float-wrap">
         <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);" id="waFloat">WhatsApp Us</a>
@@ -149,7 +149,6 @@
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         let allAds = []; let userEmail = "";
 
-        // ১. অটো লগইন এবং লগআউট ফিক্স
         function checkAutoLogin() {
             const saved = localStorage.getItem('bongoUser');
             if(saved) {
@@ -172,15 +171,25 @@
             });
         }
 
-        // ২. ডিলিট এবং এডিট বাটন ফিক্স
+        function showDetails(name) {
+            const ad = allAds.find(a => a.Name === name);
+            if(!ad) return;
+            document.getElementById('detImg').src = ad.Image;
+            document.getElementById('detPrice').innerText = "Rs " + ad.Price;
+            document.getElementById('detTitle').innerText = ad.Name;
+            document.getElementById('detDesc').innerText = ad.Description;
+            document.getElementById('detAddr').innerText = "📍 " + (ad.Address || "Kolkata");
+            
+            document.getElementById('callBtn').onclick = () => userEmail ? window.location.href="tel:"+ad.Phone : openModal('customLoginModal');
+            document.getElementById('waBtn').onclick = () => userEmail ? window.open("https://wa.me/91"+ad.Phone) : openModal('customLoginModal');
+            
+            openModal('detailModal');
+        }
+
         function showMyAds() {
             const container = document.getElementById('myAdsContainer'); container.innerHTML = "";
             allAds.filter(ad => ad.Email === userEmail && ad.Status !== 'Deleted').forEach(ad => {
-                container.innerHTML += `<div style="border-bottom:1px solid #ddd; padding:10px; text-align:left;">
-                    <b>${ad.Name}</b> (Rs ${ad.Price}) <br>
-                    <button class="edit-btn" onclick="openEditForm('${ad.Name}')">Edit</button>
-                    <button class="del-btn" onclick="deleteAd('${ad.Name}')">Delete</button>
-                </div>`;
+                container.innerHTML += `<div style="border-bottom:1px solid #ddd; padding:10px; text-align:left;"><b>${ad.Name}</b> (Rs ${ad.Price}) <br><button class="edit-btn" onclick="openEditForm('${ad.Name}')">Edit</button><button class="del-btn" onclick="deleteAd('${ad.Name}')">Delete</button></div>`;
             });
             openModal('myAdsModal');
         }
@@ -210,17 +219,15 @@
                     const imgData = await res.json(); imgUrl = imgData.data.url;
                 }
             }
-            const payload = {
-                action: oldName ? 'editAd' : 'uploadAd', email: userEmail, Email: userEmail,
-                oldName: oldName, newName: document.getElementById('itemName').value,
-                newPrice: document.getElementById('itemPrice').value, newPhone: document.getElementById('itemPhone').value,
-                newAddress: document.getElementById('itemAddress').value, newDesc: document.getElementById('itemDesc').value,
-                Name: document.getElementById('itemName').value, Price: document.getElementById('itemPrice').value,
-                Phone: document.getElementById('itemPhone').value, Address: document.getElementById('itemAddress').value,
-                Description: document.getElementById('itemDesc').value, Category: document.getElementById('itemCat').value, Image: imgUrl
-            };
+            const payload = { action: oldName ? 'editAd' : 'uploadAd', email: userEmail, Email: userEmail, oldName: oldName, newName: document.getElementById('itemName').value, newPrice: document.getElementById('itemPrice').value, newPhone: document.getElementById('itemPhone').value, newAddress: document.getElementById('itemAddress').value, newDesc: document.getElementById('itemDesc').value, Name: document.getElementById('itemName').value, Price: document.getElementById('itemPrice').value, Phone: document.getElementById('itemPhone').value, Address: document.getElementById('itemAddress').value, Description: document.getElementById('itemDesc').value, Category: document.getElementById('itemCat').value, Image: imgUrl };
             await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             location.reload();
+        }
+
+        async function submitLoan() {
+            const data = { action:'loan', name:document.getElementById('loanName').value, phone:document.getElementById('loanPhone').value, email:document.getElementById('loanEmail').value, address:document.getElementById('loanAddr').value, occupation:document.getElementById('loanOccu').value, loan_type:document.getElementById('loanType').value, loan_amount:document.getElementById('loanAmount').value };
+            await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', body:JSON.stringify(data) });
+            alert("Submitted!"); location.reload();
         }
 
         async function deleteAd(name) {
@@ -236,11 +243,10 @@
             location.reload();
         }
 
-        // ৩. ফুল ল্যাঙ্গুয়েজ ফিক্স (সব জায়গায়)
         const trans = {
-            en: { hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", viewTitle: "Fresh Recommendations", myAdsTitle: "Manage My Ads", c1: "Resale", c2: "Wholesale", c3: "Property", lTitle: "Need Financial Assistance?", lDesc: "Apply for Personal or Business loans easily.", lBtn: "APPLY FOR LOAN", wTitle: "Professional Website for Business?", wDesc: "Build your digital identity with AI solutions.", waFloat: "WhatsApp Us", sellBtnStatic: "➕ Sell Now", myAdsBtn: "MY ADS" },
-            bn: { hTitle: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", viewTitle: "নতুন বিজ্ঞাপন", myAdsTitle: "আমার বিজ্ঞাপন", c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি", lTitle: "লোন প্রয়োজন?", lDesc: "পার্সোনাল বা বিজনেস লোনের আবেদন করুন সহজেই।", lBtn: "আবেদন করুন", wTitle: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wDesc: "AI সলিউশন দিয়ে আপনার ডিজিটাল পরিচয় গড়ে তুলুন।", waFloat: "আমাদের হোয়াটস্যাপ করুন", sellBtnStatic: "➕ বিক্রি করুন", myAdsBtn: "আমার অ্যাড" },
-            hi: { hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", viewTitle: "नई सिफारिशें", myAdsTitle: "मेरे विज्ञापन", c1: "रीसेल", c2: "थोक", c3: "संपत्ति", lTitle: "ऋण चाहिए?", lDesc: "आसानी से व्यक्तिगत या व्यावसायिक ऋण के लिए आवेदन करें।", lBtn: "आवेदन करें", wTitle: "व्यापार के लिए वेबसाइट?", wDesc: "AI समाधान के साथ अपनी डिजिटल पहचान बनाएं।", waFloat: "हमें व्हाट्सएप करें", sellBtnStatic: "➕ अभी बेचें", myAdsBtn: "मेरे विज्ञापन" }
+            en: { hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", viewTitle: "Fresh Recommendations", myAdsTitle: "Manage My Ads", c1: "Resale", c2: "Wholesale", c3: "Property", lTitle: "Need Financial Assistance?", lDesc: "Apply for Personal or Business loans easily.", lBtn: "APPLY FOR LOAN", waFloat: "WhatsApp Us", sellBtnStatic: "➕ Sell Now", myAdsBtn: "MY ADS" },
+            bn: { hTitle: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", viewTitle: "নতুন বিজ্ঞাপন", myAdsTitle: "আমার বিজ্ঞাপন", c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি", lTitle: "লোন প্রয়োজন?", lDesc: "লোনের আবেদন করুন সহজেই।", lBtn: "আবেদন করুন", waFloat: "হোয়াটস্যাপ", sellBtnStatic: "➕ বিক্রি করুন", myAdsBtn: "আমার অ্যাড" },
+            hi: { hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", viewTitle: "नई सिफारिशें", myAdsTitle: "मेरे विज्ञापन", c1: "रीसेल", c2: "थोक", c3: "संपत्ति", lTitle: "ऋण चाहिए?", lDesc: "ऋण के लिए आवेदन करें।", lBtn: "आवेदन करें", waFloat: "व्हाट्सएप", sellBtnStatic: "➕ अभी बेचें", myAdsBtn: "मेरे विज्ञापन" }
         };
 
         document.getElementById('langSwitcher').onchange = (e) => {
@@ -249,7 +255,7 @@
         };
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'uploadModal') location.reload(); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLoginModal'); }
         window.onload = () => { checkAutoLogin(); fetchAds(); };
     </script>
