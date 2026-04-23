@@ -195,44 +195,58 @@
         }
 
         async function submitLoan() {
+    // ইনপুট ফিল্ড থেকে ভ্যালু সংগ্রহ
     const name = document.getElementById('loanName').value;
     const phone = document.getElementById('loanPhone').value;
-    
-    if(!name || !phone) { alert("নাম এবং ফোন নম্বর অবশ্যই দিতে হবে!"); return; }
+    const email = document.getElementById('loanEmail').value;
+    const address = document.getElementById('loanAddr').value;
+    const occupation = document.getElementById('loanOccu').value;
+    const employment = document.getElementById('loanEmp').value;
+    const income = document.getElementById('loanInc').value;
+    const loanType = document.getElementById('loanType').value;
+
+    if(!name || !phone) { 
+        alert("নাম এবং ফোন নম্বর অবশ্যই দিতে হবে!"); 
+        return; 
+    }
 
     const btn = document.getElementById('loanSubmitBtn');
-    btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
+    btn.innerText = "পাঠানো হচ্ছে..."; 
+    btn.disabled = true;
 
+    // Apps Script এ পাঠানোর জন্য ডাটা অবজেক্ট
     const loanData = {
         action: 'loan',
         name: name,
         phone: phone,
-        email: document.getElementById('loanEmail').value,
-        address: document.getElementById('loanAddr').value,
-        occupation: document.getElementById('loanOccu').value,
-        employment: document.getElementById('loanEmp').value, 
-        income: document.getElementById('loanInc').value,
-        loan_type: document.getElementById('loanType').value
+        email: email || "N/A",
+        address: address || "N/A",
+        occupation: occupation || "N/A",
+        employment: employment || "N/A", 
+        income: income || "0",
+        loan_type: loanType || "Personal Loan"
     };
 
     try {
+        // Apps Script এ ডাটা পাঠানো
         await fetch(APPS_SCRIPT_URL, { 
             method: 'POST', 
             mode: 'no-cors', 
             body: JSON.stringify(loanData) 
         });
         
-        alert("ধন্যবাদ! আপনার আবেদনটি সফলভাবে আমাদের কাছে পৌঁছেছে।");
+        alert("ধন্যবাদ! আপনার আবেদনটি সফলভাবে জমা হয়েছে।");
         closeModal('loanModal');
         // ফর্ম ক্লিয়ার করা
         document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
     } catch(e) { 
-        alert("দুঃখিত, আবেদনটি পাঠানো যায়নি।"); 
+        console.error(e);
+        alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); 
     } finally { 
-        btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; 
+        btn.innerText = "SUBMIT APPLICATION"; 
+        btn.disabled = false; 
     }
 }
-
         async function processUpload() { 
             const file = document.getElementById('fileInput').files[0]; 
             const btn = document.getElementById('uploadBtn'); btn.innerText = "Processing..."; btn.disabled = true;
