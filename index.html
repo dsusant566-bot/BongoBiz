@@ -199,43 +199,43 @@
         }
 
         async function submitLoan() {
-            const name = document.getElementById('loanName').value;
-            const phone = document.getElementById('loanPhone').value;
-            
-            if(!name || !phone) { alert("নাম এবং ফোন নম্বর অবশ্যই দিতে হবে!"); return; }
+    const loanData = {
+        action: 'loan',
+        name: document.getElementById('loanName').value,
+        phone: document.getElementById('loanPhone').value,
+        email: document.getElementById('loanEmail').value || "N/A",
+        address: document.getElementById('loanAddr').value || "N/A",
+        occupation: document.getElementById('loanOccu').value || "N/A",
+        employment: document.getElementById('loanEmp').value || "N/A", 
+        income: document.getElementById('loanInc').value || "0",
+        loan_type: document.getElementById('loanType').value
+    };
 
-            const btn = document.getElementById('loanSubmitBtn');
-            btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
+    if(!loanData.name || !loanData.phone) { alert("নাম এবং ফোন নম্বর দিন!"); return; }
 
-            const loanData = {
-                action: 'loan',
-                name: name,
-                phone: phone,
-                email: document.getElementById('loanEmail').value || "N/A",
-                address: document.getElementById('loanAddr').value || "N/A",
-                occupation: document.getElementById('loanOccu').value || "N/A",
-                employment: document.getElementById('loanEmp').value || "N/A", 
-                income: document.getElementById('loanInc').value || "0",
-                loan_type: document.getElementById('loanType').value || "Personal Loan"
-            };
+    const btn = document.getElementById('loanSubmitBtn');
+    btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
 
-            try {
-                await fetch(APPS_SCRIPT_URL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify(loanData) 
-                });
-                
-                alert("ধন্যবাদ! আপনার আবেদনটি সফলভাবে আমাদের কাছে পৌঁছেছে।");
-                closeModal('loanModal');
-                document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
-            } catch(e) { 
-                alert("দুঃখিত, আবেদনটি পাঠানো যায়নি।"); 
-            } finally { 
-                btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; 
-            }
-        }
-
+    try {
+        // এখানে আমরা JSON হিসেবে পাঠাচ্ছি কিন্তু mode: 'no-cors' রাখছি 
+        // তবে ডাটা যাতে না হারায় তাই স্ট্রিং করে পাঠাচ্ছি
+        await fetch(APPS_SCRIPT_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'text/plain' }, // এটি CORS Preflight এড়ায়
+            body: JSON.stringify(loanData) 
+        });
+        
+        alert("আবেদনটি সফলভাবে জমা হয়েছে!");
+        closeModal('loanModal');
+        document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
+    } catch(e) { 
+        alert("সমস্যা হয়েছে!"); 
+    } finally { 
+        btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; 
+    }
+}
         async function processUpload() { 
             const file = document.getElementById('fileInput').files[0]; 
             const btn = document.getElementById('uploadBtn'); btn.innerText = "Processing..."; btn.disabled = true;
