@@ -195,7 +195,7 @@
         }
 
         async function submitLoan() {
-    // ইনপুট ফিল্ড থেকে ভ্যালু সংগ্রহ
+    // এখানে প্রতিটি ফিল্ডের আইডি আপনার HTML ফর্মের সাথে মিল থাকতে হবে
     const name = document.getElementById('loanName').value;
     const phone = document.getElementById('loanPhone').value;
     const email = document.getElementById('loanEmail').value;
@@ -214,7 +214,7 @@
     btn.innerText = "পাঠানো হচ্ছে..."; 
     btn.disabled = true;
 
-    // Apps Script এ পাঠানোর জন্য ডাটা অবজেক্ট
+    // এই অবজেক্টটি Apps Script-কে সব ডাটা পাঠিয়ে দেবে
     const loanData = {
         action: 'loan',
         name: name,
@@ -228,7 +228,6 @@
     };
 
     try {
-        // Apps Script এ ডাটা পাঠানো
         await fetch(APPS_SCRIPT_URL, { 
             method: 'POST', 
             mode: 'no-cors', 
@@ -237,11 +236,10 @@
         
         alert("ধন্যবাদ! আপনার আবেদনটি সফলভাবে জমা হয়েছে।");
         closeModal('loanModal');
-        // ফর্ম ক্লিয়ার করা
+        // ফর্ম রিসেট করা
         document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
     } catch(e) { 
-        console.error(e);
-        alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); 
+        alert("দুঃখিত, কোনো সমস্যা হয়েছে।"); 
     } finally { 
         btn.innerText = "SUBMIT APPLICATION"; 
         btn.disabled = false; 
