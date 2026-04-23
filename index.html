@@ -81,6 +81,7 @@
         <div class="cat-card" onclick="filterCat('Wholesale')"><div class="cat-icon">📦</div><div id="c2">Wholesale</div></div>
         <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c3">Property</div></div>
     </div>
+
     <div class="content">
         <div class="poster-box loan-poster">
             <div class="poster-content">
@@ -122,7 +123,7 @@
             <input type="email" id="loanEmail" placeholder="Email ID">
             <input type="text" id="loanAddr" placeholder="Address">
             <input type="text" id="loanOccu" placeholder="Occupation">
-            <input type="text" id="loanType" placeholder="Loan Type (e.g. Home, Personal)">
+            <input type="text" id="loanType" placeholder="Loan Type">
             <input type="number" id="loanAmount" placeholder="Loan Amount">
             <button onclick="submitLoan()" id="loanSubmitBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer; margin-top:10px;">SUBMIT APPLICATION</button>
         </div>
@@ -155,14 +156,20 @@
         <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
         <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" id="sellBtnStatic" style="background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
     </div>
+
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
-        const SHEETDB_URL = "https://sheetdb.io/api/v1/cioz6pe7gyldq";
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQ3R1NXFF-78MEoIHOV5xlOVH6gkqqJIvD0DnxoLqA_09zqRs7G0ZMfUqQ_10YHmi9/exec";
+        const APPS_SCRIPT_URL = "আপনার_নতুন_DEPLOYMENT_URL_এখানে_বসান";
         
         let allAds = []; let userEmail = "";
 
-        async function fetchAds() { try { const res = await fetch(SHEETDB_URL); allAds = await res.json(); renderAds(allAds); } catch (e) { console.error("Error loading ads"); } }
+        async function fetchAds() { 
+            try { 
+                const res = await fetch(APPS_SCRIPT_URL); 
+                allAds = await res.json(); 
+                renderAds(allAds); 
+            } catch (e) { console.error("Error loading ads"); } 
+        }
         
         function renderAds(data) { 
             const grid = document.getElementById('adsGrid'); grid.innerHTML = ""; 
@@ -173,11 +180,6 @@
             }); 
         }
 
-        // এটি লগইন উইন্ডো খোলার ফাংশন
-        function triggerGoogleLogin() {
-            openModal('customLoginModal');
-        }
-
         function showDetails(ad) { 
             document.getElementById('detImg').src = ad.Image || ""; 
             document.getElementById('detPrice').innerText = "Rs " + (ad.Price || "0"); 
@@ -185,13 +187,11 @@
             document.getElementById('detLocation').innerText = "📍 " + (ad.Address || "Kolkata"); 
             document.getElementById('detDesc').innerText = ad.Description || ""; 
 
-            // Call Button Logic
             document.getElementById('callBtn').onclick = () => {
                 if(!userEmail) { triggerGoogleLogin(); } 
                 else { window.location.href = "tel:" + ad.Phone; }
             };
 
-            // WhatsApp Button Logic
             document.getElementById('waBtn').onclick = () => {
                 if(!userEmail) { triggerGoogleLogin(); } 
                 else { window.open(`https://wa.me/91${ad.Phone}?text=Interest in ${ad.Name}`, '_blank'); }
@@ -204,16 +204,14 @@
             else { openModal(modalId); }
         }
 
+        function triggerGoogleLogin() { openModal('customLoginModal'); }
+
         async function handleCredentialResponse(response) { 
             const payload = JSON.parse(atob(response.credential.split('.')[1])); 
             userEmail = payload.email.toLowerCase(); 
-            
-            // UI Update
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
-            
-            // Close login modal if open
             closeModal('customLoginModal');
             
             fetch(APPS_SCRIPT_URL, { 
@@ -228,20 +226,19 @@
             btn.innerText = "পাঠানো হচ্ছে..."; btn.disabled = true;
             const loanData = {
                 action: 'loan',
-                name: document.getElementById('loanName').value || "",
-                phone: document.getElementById('loanPhone').value || "",
-                email: document.getElementById('loanEmail').value || "",
-                address: document.getElementById('loanAddr').value || "",
-                occupation: document.getElementById('loanOccu').value || "",
-                loan_type: document.getElementById('loanType').value || "",
-                loan_amount: document.getElementById('loanAmount').value || ""
+                name: document.getElementById('loanName').value,
+                phone: document.getElementById('loanPhone').value,
+                email: document.getElementById('loanEmail').value,
+                address: document.getElementById('loanAddr').value,
+                occupation: document.getElementById('loanOccu').value,
+                loan_type: document.getElementById('loanType').value,
+                loan_amount: document.getElementById('loanAmount').value
             };
             try {
                 await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(loanData) });
                 alert("ধন্যবাদ! আপনার তথ্য জমা হয়েছে।");
                 closeModal('loanModal');
-                document.querySelectorAll('#loanModal input').forEach(i => i.value = "");
-            } catch(e) { alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); } 
+            } catch(e) { alert("Error!"); } 
             finally { btn.innerText = "SUBMIT APPLICATION"; btn.disabled = false; }
         }
 
@@ -254,30 +251,16 @@
                 const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd }); 
                 const imgData = await res.json(); finalImg = imgData.data.url; 
             } 
-            const payload = { Email: userEmail, Name: document.getElementById('itemName').value, Price: document.getElementById('itemPrice').value, Phone: document.getElementById('itemPhone').value, Address: document.getElementById('itemAddress').value, Description: document.getElementById('itemDesc').value, Category: document.getElementById('itemCat').value, Image: finalImg, Status: "Active" };
-            await fetch(SHEETDB_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ data: [payload]}) });
+            const payload = { 
+                action: 'uploadAd',
+                Email: userEmail, Name: document.getElementById('itemName').value, 
+                Price: document.getElementById('itemPrice').value, Phone: document.getElementById('itemPhone').value, 
+                Address: document.getElementById('itemAddress').value, Description: document.getElementById('itemDesc').value, 
+                Category: document.getElementById('itemCat').value, Image: finalImg 
+            };
+            await fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             alert("Done!"); location.reload(); 
         }
-
-        const translations = { 
-            en: { search: "Search Products...", hT: "India's Own Classified Marketplace", hS: "Buy, Sell & Apply for Loans", lT: "Need Financial Assistance?", lD: "Apply for Personal or Business loans easily.", lB: "APPLY FOR LOAN", wT: "Professional Website for Business?", wD: "Build your digital identity with AI solutions.", wB: "WhatsApp Us", vT: "Fresh Recommendations", cats: ["Resale", "Wholesale", "Property"] },
-            bn: { search: "পণ্য খুঁজুন...", hT: "ভারতের নিজস্ব ক্লাসিফাইড মার্কেটপ্লেস", hS: "কেনা-বেচা এবং লোনের আবেদন করুন", lT: "লোন প্রয়োজন?", lD: "সহজে পার্সোনাল বা বিজনেস লোনের আবেদন করুন।", lB: "লোনের আবেদন", wT: "বিজনেসের ওয়েবসাইট প্রয়োজন?", wD: "AI প্রযুক্তিতে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wB: "হোয়াটসঅ্যাপ করুন", vT: "নতুন বিজ্ঞাপন", cats: ["রিসেল", "হোলসেল", "প্রপার্টি"] }
-        };
-        
-        document.getElementById('langSwitcher').addEventListener('change', (e) => {
-            const lang = translations[e.target.value];
-            document.getElementById('searchInput').placeholder = lang.search;
-            document.getElementById('hTitle').innerText = lang.hT;
-            document.getElementById('hSub').innerText = lang.hS;
-            document.getElementById('lTitle').innerText = lang.lT;
-            document.getElementById('lDesc').innerText = lang.lD;
-            document.getElementById('lBtn').innerText = lang.lB;
-            document.getElementById('wTitle').innerText = lang.wT;
-            document.getElementById('wDesc').innerText = lang.wD;
-            document.getElementById('wBtn').innerText = lang.wB;
-            document.getElementById('viewTitle').innerText = lang.vT;
-            for(let i=1; i<=3; i++) document.getElementById('c'+i).innerText = lang.cats[i-1];
-        });
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
