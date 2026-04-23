@@ -198,41 +198,39 @@
             });
         }
 
-       async function submitLoan() {
+      async function submitLoan() {
+    // বাটনটিকে ডিসেবল করা যাতে বারবার ক্লিক না হয়
+    const btn = document.getElementById('loanSubmitBtn');
+    btn.innerText = "পাঠানো হচ্ছে..."; 
+    btn.disabled = true;
+
+    // কোনো কড়াকড়ি নেই, সব ফিল্ড থেকে যা আছে তাই নেওয়া হচ্ছে
     const loanData = {
         action: 'loan',
-        name: document.getElementById('loanName').value,
-        phone: document.getElementById('loanPhone').value,
+        name: document.getElementById('loanName').value || "N/A",
+        phone: document.getElementById('loanPhone').value || "N/A",
         email: document.getElementById('loanEmail').value || "N/A",
         address: document.getElementById('loanAddr').value || "N/A",
         occupation: document.getElementById('loanOccu').value || "N/A",
         employment: document.getElementById('loanEmp').value || "N/A", 
         income: document.getElementById('loanInc').value || "0",
-        loan_type: document.getElementById('loanType').value 
+        loan_type: document.getElementById('loanType').value || "N/A"
     };
 
-    if(!loanData.name || !loanData.phone) { 
-        alert("নাম এবং ফোন নম্বর দিন!"); 
-        return; 
-    }
-
-    const btn = document.getElementById('loanSubmitBtn');
-    btn.innerText = "পাঠানো হচ্ছে..."; 
-    btn.disabled = true;
-
     try {
+        // ডাটা পাঠানো হচ্ছে
         await fetch(APPS_SCRIPT_URL, { 
             method: 'POST', 
             mode: 'no-cors', 
             body: JSON.stringify(loanData) 
         });
         
-        alert("আবেদনটি সফলভাবে জমা হয়েছে!");
+        alert("ধন্যবাদ! আপনার তথ্য জমা হয়েছে।");
         closeModal('loanModal');
-        // ফর্ম রিসেট
+        // ফর্ম রিসেট করা
         document.querySelectorAll('#loanModal input, #loanModal select').forEach(i => i.value = "");
     } catch(e) { 
-        alert("সমস্যা হয়েছে!"); 
+        alert("দুঃখিত, কোনো একটি সমস্যা হয়েছে।"); 
     } finally { 
         btn.innerText = "SUBMIT APPLICATION"; 
         btn.disabled = false; 
