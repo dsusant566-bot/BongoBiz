@@ -145,7 +145,7 @@
 
     <div class="float-wrap">
         <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
-        <button onclick="openModal('uploadModal')" class="f-btn" id="sellBtnStatic" style="display:none; background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
+        <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" id="sellBtnStatic" style="background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
     </div>
     <script>
         const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
@@ -172,47 +172,46 @@
             document.getElementById('detLocation').innerText = "📍 " + (ad.Address || "Kolkata"); 
             document.getElementById('detDesc').innerText = ad.Description || ""; 
 
-            // Call Button Logic
             document.getElementById('callBtn').onclick = () => {
                 if(!userEmail) {
-                    triggerGoogleLogin(); // অ্যালার্ট ছাড়াই লগইন ট্রিগার
+                    triggerGoogleLogin(); 
                 } else {
                     window.location.href = "tel:" + ad.Phone;
                 }
             };
 
-            // WhatsApp Button Logic
             document.getElementById('waBtn').onclick = () => {
                 if(!userEmail) {
-                    triggerGoogleLogin(); // অ্যালার্ট ছাড়াই লগইন ট্রিগার
+                    triggerGoogleLogin(); 
                 } else {
-                    window.open(`https://wa.me/91${ad.Phone}?text=Hello, I am interested in: ${ad.Name}`, '_blank');
+                    window.open(`https://wa.me/91${ad.Phone}?text=Interest in ${ad.Name}`, '_blank');
                 }
             };
             openModal('detailModal'); 
         }
 
-        // সরাসরি গুগলের লগইন পপআপ ট্রিগার করার চেষ্টা
-        function triggerGoogleLogin() {
-            const googleBtn = document.querySelector('div[role="button"]');
-            if(googleBtn) {
-                googleBtn.click();
+        function checkLoginAndOpen(modalId) {
+            if(!userEmail) {
+                triggerGoogleLogin(); 
             } else {
-                alert("Please click on the LOGIN button at the top.");
+                openModal(modalId);
             }
+        }
+
+        function triggerGoogleLogin() {
+            // সরাসরি গুগল প্রম্পট ট্রিগার করবে
+            google.accounts.id.prompt();
+            // ব্যাকআপ হিসেবে বাটন ক্লিক
+            const googleBtn = document.querySelector('.g_id_signin div[role="button"]');
+            if(googleBtn) googleBtn.click();
         }
 
         async function handleCredentialResponse(response) { 
             const payload = JSON.parse(atob(response.credential.split('.')[1])); 
             userEmail = payload.email.toLowerCase(); 
-            
-            // UI আপডেট
             document.getElementById("loginSection").style.display = "none"; 
             document.getElementById('userProfile').style.display = "flex"; 
             document.getElementById('userImg').src = payload.picture; 
-            
-            // লগইন সফল হলে Sell Now বাটন দেখানো
-            document.getElementById('sellBtnStatic').style.display = "flex";
             
             fetch(APPS_SCRIPT_URL, { 
                 method: 'POST', 
