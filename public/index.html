@@ -360,7 +360,7 @@ window.onload = () => {
         })
         .then(data => {
             console.log("সব ডাটা যা পাওয়া গেল:", data);
-            const container = document.getElementById('adsContainer');
+            const container = document.getElementById('myadsContainer');
             if (!container) return; // কনসোল এরর এড়াতে
             const matchingAds = data.filter(item => {
                 // আপনার শিটের ছবি অনুযায়ী ডাটা ক্লিন করা হচ্ছে
