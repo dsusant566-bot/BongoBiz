@@ -362,34 +362,25 @@ window.onload = () => {
             console.log("সব ডাটা যা পাওয়া গেল:", data);
             const container = document.getElementById('myadsContainer');
             if (!container) return; // কনসোল এরর এড়াতে
-            const matchingAds = data.filter(item => {
-                // আপনার শিটের ছবি অনুযায়ী ডাটা ক্লিন করা হচ্ছে
-                let itemCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
-                let targetCat = (selectedCategory || "").toLowerCase().trim();
-                let status = (item.Status || "").toString().trim();
-                
-                // শুধুমাত্র Resale ক্যাটাগরি এবং Active স্ট্যাটাস মিলানো হচ্ছে
-                return itemCat === targetCat && status === "Active";
-            });
+            const matchingAds = data; // আপাতত ফিল্টার ছাড়াই সব ৯টি ডাটা দেখাবে
+            console.log("সব ডাটা ডিসপ্লেতে পাঠানো হচ্ছে:", matchingAds);
+            
             if (matchingAds.length > 0) {
-                console.log("Filtered Ads to display:", matchingAds);
                 try {
                     displayAds(matchingAds);
                 } catch (e) {
                     console.error("Display function error:", e);
                     container.innerHTML = matchingAds.map(ad => `
-                        <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px; display:inline-block; width:200px; vertical-align:top;">
+                        <div style="border:1px solid #ccc; padding:10px; margin:10px; display:inline-block; width:200px; vertical-align:top; border-radius:8px;">
                             <img src="${ad.Image}" style="width:100%; border-radius:5px;">
-                            <h4 style="margin:10px 0 5px 0;">${ad.Name || 'No Title'}</h4>
+                            <h4 style="margin:10px 0;">${ad.Name || 'No Title'}</h4>
                             <p style="color:green; font-weight:bold;">Price: Rs ${ad.Price}</p>
                         </div>
                     `).join('');
                 }
             } else {
-                console.log("No ads matched for category:", targetCat);
-                container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
+                container.innerHTML = `<h3 style="text-align:center; padding:50px;">কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        })
         .catch(err => {
             console.error("Fetch error:", err);
             const container = document.getElementById('adsContainer');
