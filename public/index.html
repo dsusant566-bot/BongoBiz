@@ -21,7 +21,7 @@
         #userImg { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
         .logout-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; font-weight: bold; }
         .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
-        .categories { display: flex; justify-content: space-around; /* আইকনগুলো সমান দূরত্বে পাশাপাশি থাকবে */ align-items: center; padding: 10px; background: white; overflow-x: auto; /* মোবাইলে স্ক্রল করা যাবে */ }
+        .categories { display: flex; justify-content: center; gap: 15px; padding: 15px; background: white; flex-wrap: nowrap; overflow-x: auto; }
         .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; color: inherit; }
         .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
         .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
@@ -84,16 +84,10 @@
         <p id="hSub">Buy, Sell & Apply for Loans</p>
     </div>
 
-<div class="cat-card" onclick="window.open('index.html?cat=Resale', '_blank')">
-    <div class="cat-icon">🛍️</div><div id="c1">Resale</div>
-</div>
-
-<div class="cat-card" onclick="window.open('index.html?cat=Wholesale', '_blank')">
-    <div class="cat-icon">📦</div><div id="c2">Wholesale</div>
-</div>
-
-<div class="cat-card" onclick="window.open('index.html?cat=Property', '_blank')">
-    <div class="cat-icon">🏠</div><div id="c3">Property</div>
+<div class="categories">
+  <div class="cat-card" onclick="window.open('index.html?cat=Resale', '_blank')"><div class="cat-icon">🛍️</div><div>Resale</div></div>
+  <div class="cat-card" onclick="window.open('index.html?cat=Wholesale', '_blank')"><div class="cat-icon">📦</div><div>Wholesale</div></div>
+  <div class="cat-card" onclick="window.open('index.html?cat=Property', '_blank')"><div class="cat-icon">🏠</div><div>Property</div></div>
 </div>
     <div class="content">
         <div class="poster-box loan-poster">
@@ -352,24 +346,23 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // ১. যদি ক্যাটাগরি পেজ হয়, তবে ব্যানার এবং ক্যাটাগরি সেকশন হাইড করে দাও
-        document.querySelector('.hero-section').style.display = 'none'; 
-        document.querySelector('.categories').style.display = 'none';
+        // ১. হিরো সেকশন এবং ক্যাটাগরি আইকন হাইড করা
+        if(document.querySelector('.hero')) document.querySelector('.hero').style.display = 'none';
+        if(document.querySelector('.categories')) document.querySelector('.categories').style.display = 'none';
         
-        // ২. ডাটা ফিল্টার করে শুধু অ্যাড দেখাও
+        // ২. ডাটা ফিল্টার করা
         google.script.run.withSuccessHandler(function(data) {
             const matchingAds = data.filter(item => item.Category === selectedCategory);
-            
             const container = document.getElementById('adsContainer'); 
+            
             if (matchingAds.length > 0) {
                 displayAds(matchingAds); 
             } else {
-                container.innerHTML = "<h3 style='text-align:center; margin-top:50px;'>এই ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>";
+                container.innerHTML = `<h3 style="text-align:center; padding:50px;">${selectedCategory} ক্যাটাগরিতে কোনো বিজ্ঞাপন নেই।</h3>`;
             }
         }).getAllData(); 
     } else {
-        // নরমাল হোমপেজ হলে আগের মতোই সব দেখাবে
-        fetchAds(); 
+        fetchAds(); // হোমপেজের জন্য সব অ্যাড
     }
 };
     </script>
