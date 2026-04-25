@@ -370,19 +370,17 @@ window.onload = () => {
                 
                 return itemCat === targetCat && status === "Active";
             });
-
             if (matchingAds.length > 0) {
                 console.log("Filtered Ads to display:", matchingAds);
                 try {
                     displayAds(matchingAds);
                 } catch (e) {
                     console.error("Display function error:", e);
-                    // যদি মেইন ফাংশন কাজ না করে তবে এটি সরাসরি অ্যাড দেখাবে
                     container.innerHTML = matchingAds.map(ad => `
-                        <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px;">
-                            <img src="${ad.Image}" style="width:100%; max-width:200px; border-radius:5px;">
-                            <h4>${ad.Name || 'No Title'}</h4>
-                            <p>Price: Rs ${ad.Price}</p>
+                        <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px; display:inline-block; width:200px; vertical-align:top;">
+                            <img src="${ad.Image}" style="width:100%; border-radius:5px;">
+                            <h4 style="margin:10px 0 5px 0;">${ad.Name || 'No Title'}</h4>
+                            <p style="color:green; font-weight:bold;">Price: Rs ${ad.Price}</p>
                         </div>
                     `).join('');
                 }
