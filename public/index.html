@@ -346,49 +346,50 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // ১. ব্যানার এবং পোস্টারগুলো হাইড করা
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
-
-        // ২. ডাটা আনা (আপনার Apps Script URL এখানে বসান)
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcdFTeJ-u3kUdBK7Zx-ks-3oWe3jXZxjI6oBFpC0yBP8W_9aFfrxyY53PiAJUqKPYI/exec?key=BongoBiz_Secure_2024"; 
-
-        fetch(SCRIPT_URL)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(data => {
-            console.log("সব ডাটা যা পাওয়া গেল:", data);
-            const container = document.getElementById('myadsContainer');
-            if (!container) return; // কনসোল এরর এড়াতে
-            const matchingAds = data; // আপাতত ফিল্টার ছাড়াই সব ৯টি ডাটা দেখাবে
-            console.log("সব ডাটা ডিসপ্লেতে পাঠানো হচ্ছে:", matchingAds);
-            
-            if (matchingAds.length > 0) {
-                try {
-                    displayAds(matchingAds);
-                } catch (e) {
-                    console.error("Display function error:", e);
-                    container.innerHTML = matchingAds.map(ad => `
-                        <div style="border:1px solid #ccc; padding:10px; margin:10px; display:inline-block; width:200px; vertical-align:top; border-radius:8px;">
-                            <img src="${ad.Image}" style="width:100%; border-radius:5px;">
-                            <h4 style="margin:10px 0;">${ad.Name || 'No Title'}</h4>
-                            <p style="color:green; font-weight:bold;">Price: Rs ${ad.Price}</p>
-                        </div>
-                    `).join('');
-                }
-            } else {
-                container.innerHTML = `<h3 style="text-align:center; padding:50px;">কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
-            }
-        .catch(err => {
-            console.error("Fetch error:", err);
-            const container = document.getElementById('adsContainer');
-            if (container) container.innerHTML = "বিজ্ঞাপন লোড হতে সমস্যা হচ্ছে। লিঙ্ক চেক করুন।";
-        });
-    } else {
-        fetchAds(); 
     }
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcdFTeJ-u3kUdBK7Zx-ks-3oWe3jXZxjI6oBFpC0yBP8W_9aFfrxyY53PiAJUqKPYI/exec?key=BongoBiz_Secure_2024"; 
+
+    fetch(SCRIPT_URL)
+    .then(response => response.json())
+    .then(data => {
+        console.log("ডাটা পাওয়া গেছে:", data);
+        const container = document.getElementById('adsContainer') || document.getElementById('myAdsContainer');
+        if (!container) return;
+
+        let matchingAds;
+        if (selectedCategory) {
+            matchingAds = data.filter(item => {
+                let itemCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
+                let targetCat = selectedCategory.toLowerCase().trim();
+                let status = (item.Status || "").toString().trim();
+                return itemCat === targetCat && status === "Active";
+            });
+        } else {
+            matchingAds = data.filter(item => (item.Status || "").toString().trim() === "Active");
+        }
+
+        if (matchingAds.length > 0) {
+            try {
+                displayAds(matchingAds);
+            } catch (e) {
+                container.innerHTML = matchingAds.map(ad => `
+                    <div style="border:1px solid #ddd; padding:10px; margin:10px; display:inline-block; width:200px; vertical-align:top; border-radius:8px; background:#fff;">
+                        <img src="${ad.Image}" style="width:100%; height:150px; object-fit:cover; border-radius:5px;">
+                        <h4 style="margin:10px 0 5px; font-size:16px;">${ad.Name || 'No Title'}</h4>
+                        <p style="color:#28a745; font-weight:bold; margin:0;">Rs ${ad.Price}</p>
+                    </div>
+                `).join('');
+            }
+        } else {
+            container.innerHTML = `<h3 style="text-align:center; padding:50px;">কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
+        }
+    })
+    .catch(err => {
+        console.error("Fetch error:", err);
+    });
 };
     </script>
     <footer style="background:white; padding:20px; text-align:center; border-top:2px solid #ffce32; margin-top:30px;">
