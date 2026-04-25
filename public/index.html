@@ -274,10 +274,36 @@ async function submitLoan() {
         }
 
         function handleCredentialResponse(response) {
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
-            localStorage.setItem('bongoUser', JSON.stringify({ email: payload.email.toLowerCase(), picture: payload.picture }));
-            location.reload();
-        }
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    console.log("User Logged In:", payload.name);
+
+    // ইউজারকে ব্রাউজারে সেভ করা
+    localStorage.setItem('bongoUser', JSON.stringify({
+        name: payload.name,
+        email: payload.email.toLowerCase(),
+        picture: payload.picture
+    }));
+
+    // গুগল শিটে ডাটা পাঠানো (লগইন ট্র্যাকিং)
+    fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+            action: "login",
+            name: payload.name,
+            email: payload.email.toLowerCase()
+        })
+    })
+    .then(() => {
+        console.log("Login synced with Sheets");
+        location.reload(); 
+    })
+    .catch(err => {
+        console.error("Sync Error:", err);
+        location.reload();
+    });
+}
 
        const translations = {
     en: { 
