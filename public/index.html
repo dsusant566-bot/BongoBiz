@@ -352,22 +352,23 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // যদি ক্যাটাগরি থাকে (যেমন: Resale/Wholesale/Property)
+        // ১. যদি ক্যাটাগরি পেজ হয়, তবে ব্যানার এবং ক্যাটাগরি সেকশন হাইড করে দাও
+        document.querySelector('.hero-section').style.display = 'none'; 
+        document.querySelector('.categories').style.display = 'none';
+        
+        // ২. ডাটা ফিল্টার করে শুধু অ্যাড দেখাও
         google.script.run.withSuccessHandler(function(data) {
-            // আপনার গুগল শীটের কলামের নাম 'Category' অনুযায়ী ফিল্টার হবে
             const matchingAds = data.filter(item => item.Category === selectedCategory);
             
+            const container = document.getElementById('adsContainer'); 
             if (matchingAds.length > 0) {
-                // আপনার প্রজেক্টের অ্যাড দেখানোর ফাংশন (displayAds) কল হবে
                 displayAds(matchingAds); 
             } else {
-                // কোনো অ্যাড না থাকলে এই মেসেজ দেখাবে
-                const container = document.getElementById('adsContainer') || document.body;
                 container.innerHTML = "<h3 style='text-align:center; margin-top:50px;'>এই ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>";
             }
         }).getAllData(); 
     } else {
-        // যদি ক্যাটাগরি না থাকে (সাধারণ হোমপেজ), তবে আগের মতো সব দেখাবে
+        // নরমাল হোমপেজ হলে আগের মতোই সব দেখাবে
         fetchAds(); 
     }
 };
