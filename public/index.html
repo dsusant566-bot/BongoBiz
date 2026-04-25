@@ -341,27 +341,26 @@ function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLo
 document.getElementById('langSwitcher').onchange = (e) => changeLanguage(e.target.value);
 const urlParams = new URLSearchParams(window.location.search);
 const selectedCategory = urlParams.get('cat');
-const APP_KEY = "BongoBiz_Secure_2024"; // আপনার অ্যাপস স্ক্রিপ্টের সিকিউরিটি চাবি
 
 window.onload = () => { 
     checkAutoLogin(); 
     
- if (selectedCategory) {
+    if (selectedCategory) {
         // ১. ব্যানার এবং পোস্টারগুলো হাইড করা
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. ডাটা আনা এবং ফিল্টার করা
-        google.script.run.withSuccessHandler(function(data) {
-            console.log("Total Ads found:", data.length);
-            
+        // ২. আপনার Apps Script URL ব্যবহার করে ডাটা আনা
+        const SCRIPT_URL = "আপনার_ইউআরএল_এখানে_দিন?key=BongoBiz_Secure_2024"; 
+
+        fetch(SCRIPT_URL)
+        .then(response => response.json())
+        .then(data => {
             const container = document.getElementById('adsContainer');
-            
-            // ক্যাটাগরি ফিল্টার করা (বানান ভুল বা ছোট-বড় হাতের অক্ষরের সমস্যা এড়াতে)
             const matchingAds = data.filter(item => {
-                let sheetCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
+                let itemCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
                 let targetCat = selectedCategory.toLowerCase().trim();
-                return sheetCat === targetCat && item.Status === "Active";
+                return itemCat === targetCat && item.Status === "Active";
             });
 
             if (matchingAds.length > 0) {
@@ -369,7 +368,11 @@ window.onload = () => {
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        }).getAllData(); // সরাসরি কল করা হলো
+        })
+        .catch(err => {
+            console.error("Error:", err);
+            document.getElementById('adsContainer').innerHTML = "ডেটা লোড করতে সমস্যা হচ্ছে।";
+        });
     } else {
         fetchAds(); 
     }
