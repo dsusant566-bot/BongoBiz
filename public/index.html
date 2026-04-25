@@ -372,8 +372,22 @@ window.onload = () => {
             });
 
             if (matchingAds.length > 0) {
-                displayAds(matchingAds); 
+                console.log("Filtered Ads to display:", matchingAds);
+                try {
+                    displayAds(matchingAds);
+                } catch (e) {
+                    console.error("Display function error:", e);
+                    // যদি মেইন ফাংশন কাজ না করে তবে এটি সরাসরি অ্যাড দেখাবে
+                    container.innerHTML = matchingAds.map(ad => `
+                        <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px;">
+                            <img src="${ad.Image}" style="width:100%; max-width:200px; border-radius:5px;">
+                            <h4>${ad.Name || 'No Title'}</h4>
+                            <p>Price: Rs ${ad.Price}</p>
+                        </div>
+                    `).join('');
+                }
             } else {
+                console.log("No ads matched for category:", targetCat);
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
         })
