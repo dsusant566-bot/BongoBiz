@@ -363,11 +363,12 @@ window.onload = () => {
             const container = document.getElementById('adsContainer');
             if (!container) return; // কনসোল এরর এড়াতে
             const matchingAds = data.filter(item => {
-                // ক্যাটাগরি এবং স্ট্যাটাস চেক
+                // আপনার শিটের ছবি অনুযায়ী ডাটা ক্লিন করা হচ্ছে
                 let itemCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
                 let targetCat = (selectedCategory || "").toLowerCase().trim();
                 let status = (item.Status || "").toString().trim();
                 
+                // শুধুমাত্র Resale ক্যাটাগরি এবং Active স্ট্যাটাস মিলানো হচ্ছে
                 return itemCat === targetCat && status === "Active";
             });
             if (matchingAds.length > 0) {
