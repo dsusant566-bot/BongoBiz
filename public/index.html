@@ -346,14 +346,14 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // ১. ব্যানার এবং ক্যাটাগরি আইকন হাইড করা
+        // ১. ব্যানার এবং পোস্টারগুলো হাইড করা
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
-        banners.forEach(b => b.style.display = 'none');
+        banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. গুগল স্ক্রিপ্ট থেকে ডেটা এনে ফিল্টার করা
+        // ২. ডাটা ফিল্টার করা
         google.script.run.withSuccessHandler(function(data) {
             const matchingAds = data.filter(item => {
-                // শিটের 'Category' কলামের সাথে ছোট-বড় হাতের মিল চেক করা হচ্ছে
+                // শিটের 'Category' কলামের সাথে ইউআরএল-এর নামের মিল দেখা হচ্ছে
                 return item.Category && 
                        item.Category.toString().toLowerCase().trim() === selectedCategory.toLowerCase().trim();
             });
@@ -361,13 +361,14 @@ window.onload = () => {
             const container = document.getElementById('adsContainer'); 
             
             if (matchingAds.length > 0) {
-                // আপনার প্রজেক্টের আসল ডিসপ্লে ফাংশন
+                // আপনার প্রজেক্টের অ্যাড দেখানোর ফাংশন
                 displayAds(matchingAds); 
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        }).getAllData(); // আপনার Apps Script-এর ফাংশন
+        }).getAllData(); 
     } else {
+        // হোমপেজে সাধারণ ভাবে সব অ্যাড দেখাবে
         fetchAds(); 
     }
 };
