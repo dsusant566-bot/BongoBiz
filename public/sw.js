@@ -1,7 +1,7 @@
-self.addEventListener("install", (event) => {
-  console.log("BongoBiz Service Worker installed.");
+self.addEventListener('install', (event) => {
+  console.log('Service Worker installed');
 });
 
-self.addEventListener("fetch", (event) => {
-  // আপনার অ্যাপকে দ্রুত লোড হতে সাহায্য করবে
+self.addEventListener('fetch', (event) => {
+  // এটি ব্রাউজারকে সিগনাল দেয় যে অ্যাপটি অফলাইনেও কাজ করতে সক্ষম
 });
