@@ -346,23 +346,24 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // ১. হিরো সেকশন এবং ক্যাটাগরি আইকন হাইড করা
-        if(document.querySelector('.hero')) document.querySelector('.hero').style.display = 'none';
-        if(document.querySelector('.categories')) document.querySelector('.categories').style.display = 'none';
-        
+        // ১. ব্যানার এবং পোস্টারগুলো খুঁজে হাইড করা
+        const banners = document.querySelectorAll('.hero, .poster-box, .hero-section');
+        banners.forEach(b => b.style.display = 'none');
+
         // ২. ডাটা ফিল্টার করা
         google.script.run.withSuccessHandler(function(data) {
             const matchingAds = data.filter(item => item.Category === selectedCategory);
             const container = document.getElementById('adsContainer'); 
             
             if (matchingAds.length > 0) {
+                // এখানে আপনার আসল ডিসপ্লে ফাংশনের নাম দিন (যেমন displayAds)
                 displayAds(matchingAds); 
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">${selectedCategory} ক্যাটাগরিতে কোনো বিজ্ঞাপন নেই।</h3>`;
             }
         }).getAllData(); 
     } else {
-        fetchAds(); // হোমপেজের জন্য সব অ্যাড
+        fetchAds(); 
     }
 };
     </script>
