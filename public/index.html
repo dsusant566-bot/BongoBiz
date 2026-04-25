@@ -346,33 +346,30 @@ const APP_KEY = "BongoBiz_Secure_2024"; // আপনার অ্যাপস �
 window.onload = () => { 
     checkAutoLogin(); 
     
-    if (selectedCategory) {
+ if (selectedCategory) {
         // ১. ব্যানার এবং পোস্টারগুলো হাইড করা
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. সিকিউরিটি কি সহ ডাটা ফিল্টার করা
-        // আপনার Apps Script-এর doGet ফাংশনে key পাঠানো হচ্ছে
+        // ২. সিকিউরিটি চাবি সহ ডাটা ফিল্টার করা
         google.script.run.withSuccessHandler(function(data) {
             if (typeof data === 'string' && data.includes("Access Denied")) {
                 console.error("Security Key Error");
                 return;
             }
-
+            
             const matchingAds = data.filter(item => {
-                // ক্যাটাগরি বানান ছোট-বড় হাতের অক্ষরের মিল চেক করা
-                return item.Category && 
-                       item.Category.toString().toLowerCase().trim() === selectedCategory.toLowerCase().trim();
+                let itemCat = item.Category || item.Catagory || "";
+                return itemCat.toString().toLowerCase().trim() === selectedCategory.toLowerCase().trim();
             });
 
             const container = document.getElementById('adsContainer'); 
-            
             if (matchingAds.length > 0) {
                 displayAds(matchingAds); 
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        }).withParameters({key: APP_KEY}).getAllData(); // এখানে চাবি পাঠানো হলো
+        }).withParameters({key: "BongoBiz_Secure_2024"}).getAllData(); 
     } else {
         fetchAds(); 
     }
