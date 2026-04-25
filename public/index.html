@@ -1,4 +1,162 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BongoBiz - Classified Marketplace</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="manifest" href="manifest.json" >
+    <style>
+        :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg); color: var(--primary); }
+        header { background: #fff; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 5px rgba(0,0,0,0.1); gap: 10px; }
+        .logo-img { height: 45px; width: auto; }
+        .search-container { flex-grow: 1; max-width: 500px; display: flex; border: 2px solid var(--primary); border-radius: 4px; overflow: hidden; }
+        .search-container input { border: none; padding: 10px; width: 100%; outline: none; }
+        .search-container button { background: var(--primary); color: white; border: none; padding: 10px 15px; cursor: pointer; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        #userProfile { display: none; align-items: center; gap: 10px; font-size: 12px; }
+        #userImg { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
+        .logout-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
+        .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; }
+        .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; color: inherit; }
+        .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
+        .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
+        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1; }
+        .poster-content { position: relative; z-index: 2; }
+        .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071'); }
+        .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070'); }
+        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; background: var(--secondary); color: var(--primary); }
+        .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; padding: 0 15px; }
+        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
+        .ad-card img { width: 100%; height: 150px; object-fit: cover; }
+        #uploadModal, #detailModal, #loanModal, #myAdsModal, #customLoginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
+        .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
+        .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
+        .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
+        .del-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-weight: bold; }
+        .edit-btn { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-weight: bold; margin-right: 5px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+    </style>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('Service Worker registered with scope: ', registration.scope);
+      }, function(err) {
+        console.log('Service Worker registration failed: ', err);
+      });
+    });
+  }
+</script>
+</head>
+<body>
+    <header>
+        <img src="icon.png" alt="BongoBiz" class="logo-img">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search Products...">
+            <button onclick="searchAds()">🔍</button>
+        </div>
+        <div class="nav-right">
+            <select id="langSwitcher">
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+            <div id="loginSection">
+                <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+                <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
+            </div>
+            <div id="userProfile">
+                <img id="userImg" src="">
+                <button onclick="showMyAds()" id="myAdsBtn" style="background:none; border:none; color:blue; cursor:pointer; font-weight:900;">MY ADS</button>
+                <button class="logout-btn" onclick="logout()">LOGOUT</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1 id="hTitle">India's Own Classified Marketplace</h1>
+        <p id="hSub">Buy, Sell & Apply for Loans</p>
+    </div>
+
+    <div class="categories">
+        <div class="cat-card" onclick="filterCat('Resale')"><div class="cat-icon">🛍️</div><div id="c1">Resale</div></div>
+        <div class="cat-card" onclick="filterCat('Wholesale')"><div class="cat-icon">📦</div><div id="c2">Wholesale</div></div>
+        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c3">Property</div></div>
+    </div>
+    <div class="content">
+        <div class="poster-box loan-poster">
+            <div class="poster-content">
+                <h3 id="lTitle">Need Financial Assistance?</h3>
+                <p id="lDesc">Apply for Personal or Business loans easily.</p>
+                <button onclick="openModal('loanModal')" class="btn-action" id="lBtn">APPLY FOR LOAN</button>
+            </div>
+        </div>
+
+        <div class="poster-box web-poster">
+            <div class="poster-content">
+                <h3 id="wTitle">Professional Website for Business?</h3>
+                <p id="wDesc">Build your digital identity with AI solutions.</p>
+                <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action" style="background:var(--wa-green); color:white;" id="wBtn">WhatsApp Us</a>
+            </div>
+        </div>
+        <h3 id="viewTitle">Fresh Recommendations</h3>
+        <div class="ads-grid" id="adsGrid">Loading data...</div>
+    </div>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('detailModal')">&times;</span>
+            <img id="detImg" style="width:100%; height:220px; object-fit:cover; border-radius:8px;">
+            <h2 id="detPrice" style="color:var(--primary); margin:15px 0; text-align:left;"></h2>
+            <h3 id="detTitle" style="text-align:left;"></h3>
+            <p id="detDesc" style="text-align:left; color:#555; font-size:14px;"></p>
+            <p id="detAddr" style="text-align:left; color:#888; font-size:12px;"></p>
+            <hr>
+            <button id="callBtn" style="background:var(--secondary); color:black; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold; margin-bottom:10px; cursor:pointer;">📞 Call</button>
+            <button id="waBtn" style="background:var(--wa-green); color:white; width:100%; padding:15px; border:none; border-radius:50px; font-weight:bold; cursor:pointer;">💬 WhatsApp</button>
+        </div>
+    </div>
+
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('loanModal')">&times;</span>
+            <h3>Loan Application</h3>
+            <input type="text" id="loanName" placeholder="Full Name">
+            <input type="tel" id="loanPhone" placeholder="Phone">
+            <input type="email" id="loanEmail" placeholder="Email ID">
+            <input type="text" id="loanAddr" placeholder="Address">
+            <input type="text" id="loanOccu" placeholder="Occupation">
+            <input type="text" id="loanType" placeholder="Loan Type">
+            <input type="number" id="loanAmount" placeholder="Amount">
+            <button onclick="submitLoan()" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">SUBMIT</button>
+        </div>
+    </div>
+
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-x" onclick="closeModal('uploadModal')">&times;</span>
+            <h3 id="postTitle">Post Your Ad</h3>
+            <input type="hidden" id="editOldName">
+            <select id="itemCat"><option value="Resale">Resale</option><option value="Wholesale">Wholesale</option><option value="Property">Property</option></select>
+            <input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><input type="text" id="itemAddress" placeholder="Location"><textarea id="itemDesc" placeholder="Details"></textarea>
+            <div id="imgSection"><input type="file" id="fileInput" accept="image/*"></div>
+            <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Submit</button>
+        </div>
+    </div>
+
+    <div id="myAdsModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('myAdsModal')">&times;</span><h3 id="myAdsTitle">Manage My Ads</h3><div id="myAdsContainer"></div></div></div>
+    <div id="customLoginModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('customLoginModal')">&times;</span><h3>Please Login with Google</h3><div class="g_id_signin" data-type="standard"></div></div></div>
+
+    <div class="float-wrap">
+        <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);" id="waFloat">WhatsApp Us</a>
+        <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" id="sellBtnStatic" style="background:#ffce32; border:none; color:#002f34; cursor:pointer;">➕ Sell Now</button>
+    </div>
+
+    <script>
        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlFKFlfRkc0igAePdbXobZBsPgKM9SeDRTmSA2T7bRnohYQGtiqLHOqoG2Q5YwtXfJ/exec?key=BongoBiz_Secure_2024";
 const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
 let allAds = []; let userEmail = "";
