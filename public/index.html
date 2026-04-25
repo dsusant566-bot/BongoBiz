@@ -341,6 +341,7 @@ function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLo
 document.getElementById('langSwitcher').onchange = (e) => changeLanguage(e.target.value);
 const urlParams = new URLSearchParams(window.location.search);
 const selectedCategory = urlParams.get('cat');
+const APP_KEY = "BongoBiz_Secure_2024"; // আপনার অ্যাপস স্ক্রিপ্টের সিকিউরিটি চাবি
 
 window.onload = () => { 
     checkAutoLogin(); 
@@ -350,10 +351,16 @@ window.onload = () => {
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. ডাটা ফিল্টার করা
+        // ২. সিকিউরিটি কি সহ ডাটা ফিল্টার করা
+        // আপনার Apps Script-এর doGet ফাংশনে key পাঠানো হচ্ছে
         google.script.run.withSuccessHandler(function(data) {
+            if (typeof data === 'string' && data.includes("Access Denied")) {
+                console.error("Security Key Error");
+                return;
+            }
+
             const matchingAds = data.filter(item => {
-                // শিটের 'Category' কলামের সাথে ইউআরএল-এর নামের মিল দেখা হচ্ছে
+                // ক্যাটাগরি বানান ছোট-বড় হাতের অক্ষরের মিল চেক করা
                 return item.Category && 
                        item.Category.toString().toLowerCase().trim() === selectedCategory.toLowerCase().trim();
             });
@@ -361,14 +368,12 @@ window.onload = () => {
             const container = document.getElementById('adsContainer'); 
             
             if (matchingAds.length > 0) {
-                // আপনার প্রজেক্টের অ্যাড দেখানোর ফাংশন
                 displayAds(matchingAds); 
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        }).getAllData(); 
+        }).withParameters({key: APP_KEY}).getAllData(); // এখানে চাবি পাঠানো হলো
     } else {
-        // হোমপেজে সাধারণ ভাবে সব অ্যাড দেখাবে
         fetchAds(); 
     }
 };
