@@ -351,25 +351,25 @@ window.onload = () => {
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. সিকিউরিটি চাবি সহ ডাটা ফিল্টার করা
+        // ২. ডাটা আনা এবং ফিল্টার করা
         google.script.run.withSuccessHandler(function(data) {
-            if (typeof data === 'string' && data.includes("Access Denied")) {
-                console.error("Security Key Error");
-                return;
-            }
+            console.log("Total Ads found:", data.length);
             
+            const container = document.getElementById('adsContainer');
+            
+            // ক্যাটাগরি ফিল্টার করা (বানান ভুল বা ছোট-বড় হাতের অক্ষরের সমস্যা এড়াতে)
             const matchingAds = data.filter(item => {
-                let itemCat = item.Category || item.Catagory || "";
-                return itemCat.toString().toLowerCase().trim() === selectedCategory.toLowerCase().trim();
+                let sheetCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
+                let targetCat = selectedCategory.toLowerCase().trim();
+                return sheetCat === targetCat && item.Status === "Active";
             });
 
-            const container = document.getElementById('adsContainer'); 
             if (matchingAds.length > 0) {
                 displayAds(matchingAds); 
             } else {
                 container.innerHTML = `<h3 style="text-align:center; padding:50px;">'${selectedCategory}' ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
-        }).withParameters({key: "BongoBiz_Secure_2024"}).getAllData(); 
+        }).getAllData(); // সরাসরি কল করা হলো
     } else {
         fetchAds(); 
     }
