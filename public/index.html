@@ -159,7 +159,7 @@
     </div>
 
     <script>
-       const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwS9gbcIQG_L2wWzNhI2cr9iVJXOpZlEEYzfxqXg2kHIfU0Uvo6RAxPX7OOTlDegSY9/exec?key=BongoBiz_Secure_2024";
+       const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcdFTeJ-u3kUdBK7Zx-ks-3oWe3jXZxjI6oBFpC0yBP8W_9aFfrxyY53PiAJUqKPYI/exec?key=BongoBiz_Secure_2024";
 const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
 let allAds = []; let userEmail = "";
         function checkAutoLogin() {
@@ -350,17 +350,22 @@ window.onload = () => {
         const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => { if(b) b.style.display = 'none'; });
 
-        // ২. আপনার Apps Script URL ব্যবহার করে ডাটা আনা
-        const SCRIPT_URL = "আপনার_ইউআরএল_এখানে_দিন?key=BongoBiz_Secure_2024"; 
+        // ২. ডাটা আনা (আপনার Apps Script URL এখানে বসান)
+        const SCRIPT_URL = "এখানে_আপনার_অ্যাপস_স্ক্রিপ্ট_লিঙ্ক_দিন?key=BongoBiz_Secure_2024"; 
 
         fetch(SCRIPT_URL)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
         .then(data => {
             const container = document.getElementById('adsContainer');
+            if (!container) return; // কনসোল এরর এড়াতে
+
             const matchingAds = data.filter(item => {
-                let itemCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
+                let sheetCat = (item.Category || item.Catagory || "").toString().toLowerCase().trim();
                 let targetCat = selectedCategory.toLowerCase().trim();
-                return itemCat === targetCat && item.Status === "Active";
+                return sheetCat === targetCat && item.Status === "Active";
             });
 
             if (matchingAds.length > 0) {
@@ -370,8 +375,9 @@ window.onload = () => {
             }
         })
         .catch(err => {
-            console.error("Error:", err);
-            document.getElementById('adsContainer').innerHTML = "ডেটা লোড করতে সমস্যা হচ্ছে।";
+            console.error("Fetch error:", err);
+            const container = document.getElementById('adsContainer');
+            if (container) container.innerHTML = "বিজ্ঞাপন লোড হতে সমস্যা হচ্ছে। লিঙ্ক চেক করুন।";
         });
     } else {
         fetchAds(); 
