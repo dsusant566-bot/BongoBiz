@@ -346,23 +346,34 @@ window.onload = () => {
     checkAutoLogin(); 
     
     if (selectedCategory) {
-        // ১. ব্যানার এবং পোস্টারগুলো খুঁজে হাইড করা
-        const banners = document.querySelectorAll('.hero, .poster-box, .hero-section');
+        // ১. ব্যানার এবং পোস্টারগুলো হাইড করা
+        const banners = document.querySelectorAll('.hero, .poster-box, .categories, .hero-section');
         banners.forEach(b => b.style.display = 'none');
 
-        // ২. ডাটা ফিল্টার করা
+        // ২. গুগল অ্যাপস স্ক্রিপ্ট থেকে ডেটা আনা
         google.script.run.withSuccessHandler(function(data) {
-            const matchingAds = data.filter(item => item.Category === selectedCategory);
+            // আপনার গুগল শিটে কলামের নাম 'Category' (C বড় হাতের) আছে কি না নিশ্চিত করুন
+            const matchingAds = data.filter(item => {
+                // এটি ক্যাটাগরি ফিল্টার করবে ছোট-বড় হাতের অক্ষরের পার্থক্য থাকলেও
+                return item.Category && item.Category.trim().toLowerCase() === selectedCategory.trim().toLowerCase();
+            });
+
             const container = document.getElementById('adsContainer'); 
             
             if (matchingAds.length > 0) {
-                // এখানে আপনার আসল ডিসপ্লে ফাংশনের নাম দিন (যেমন displayAds)
-                displayAds(matchingAds); 
+                // আপনার প্রজেক্টের আসল রেন্ডার ফাংশনটি এখানে কল করুন
+                // যদি displayAds না চলে, তবে এখানে renderAds লিখে দেখুন
+                if (typeof displayAds === 'function') {
+                    displayAds(matchingAds); 
+                } else if (typeof renderAds === 'function') {
+                    renderAds(matchingAds);
+                }
             } else {
-                container.innerHTML = `<h3 style="text-align:center; padding:50px;">${selectedCategory} ক্যাটাগরিতে কোনো বিজ্ঞাপন নেই।</h3>`;
+                container.innerHTML = `<h3 style="text-align:center; padding:50px;">${selectedCategory} ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>`;
             }
         }).getAllData(); 
     } else {
+        // হোমপেজে সব অ্যাড লোড করা
         fetchAds(); 
     }
 };
