@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BongoBiz - Classified Marketplace</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="manifest" href="manifest.json" >
+    <link rel="manifest" href="manifest.json">
     <style>
         :root { --primary: #002f34; --secondary: #ffce32; --wa-green: #25d366; --bg: #f2f4f5; }
         body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; background-color: var(--bg); color: var(--primary); }
@@ -18,29 +18,32 @@
         #userProfile { display: none; align-items: center; gap: 10px; font-size: 12px; }
         #userImg { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #ddd; }
         .logout-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; font-weight: bold; }
-        .hero, .poster-box { transition: 0.3s; }
-        .hero { background: linear-gradient(rgba(0,47,52,0.7), rgba(0,47,52,0.7)), url('https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=2070'); background-size: cover; padding: 30px 20px; text-align: center; color: white; }
+        
+        /* Categories & Ads */
         .categories { display: flex; justify-content: center; gap: 15px; padding: 20px; background: white; overflow-x: auto; white-space: nowrap; border-bottom: 1px solid #ddd; }
         .cat-card { text-align: center; cursor: pointer; min-width: 75px; font-size: 11px; font-weight: bold; color: inherit; }
         .cat-icon { font-size: 24px; background: #f0f7ff; padding: 10px; border-radius: 50%; margin-bottom: 5px; display: inline-block; }
-        .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
-        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1; }
-        .poster-content { position: relative; z-index: 2; }
-        .loan-poster { background-image: url('https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071'); }
-        .web-poster { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070'); }
-        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; background: var(--secondary); color: var(--primary); }
         .ads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; padding: 0 15px; }
-        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-        .ad-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .ad-card { background: white; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; cursor: pointer; }
         .ad-card img { width: 100%; height: 150px; object-fit: cover; }
-        #uploadModal, #detailModal, #loanModal, #myAdsModal, #customLoginModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
-        .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; z-index: 10001; }
-        #categoryView { display: none; padding: 20px; } /* আলাদা উইন্ডোর মতো লুক */
-        .back-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
+        
+        /* Posters & Floating Buttons */
+        .poster-box { position: relative; color: white; border-radius: 12px; padding: 40px 20px; text-align: center; margin-bottom: 25px; overflow: hidden; background-size: cover; background-position: center; }
+        .poster-box::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1; }
+        .poster-content { position: relative; z-index: 2; }
+        .btn-action { padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; background: var(--secondary); color: var(--primary); }
         .float-wrap { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 2000; }
         .f-btn { padding: 12px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid white; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; position: relative; max-height: 85vh; overflow-y: auto; text-align: center; }
+        .close-x { position: absolute; top: 5px; right: 15px; font-size: 45px; color: red; cursor: pointer; font-weight: bold; }
+        
+        /* নতুন ক্যাটাগরি পেজ স্টাইল */
+        #categoryPage { display: none; padding-top: 10px; }
+        .back-nav { padding: 10px 20px; background: #fff; border-bottom: 1px solid #ddd; }
+        .back-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -51,102 +54,119 @@
             <button onclick="searchAds()">🔍</button>
         </div>
         <div class="nav-right">
-            <select id="langSwitcher">
-                <option value="en">English</option>
-                <option value="bn">বাংলা</option>
-                <option value="hi">हिन्दी</option>
-            </select>
             <div id="loginSection">
-                <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+                <div id="g_id_onload" 
+                    data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" 
+                    data-callback="handleCredentialResponse">
+                </div>
                 <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
             </div>
             <div id="userProfile">
                 <img id="userImg" src="">
-                <button onclick="showMyAds()" id="myAdsBtn" style="background:none; border:none; color:blue; cursor:pointer; font-weight:900;">MY ADS</button>
+                <button onclick="showMyAds()" style="background:none; border:none; color:blue; cursor:pointer; font-weight:bold;">MY ADS</button>
                 <button class="logout-btn" onclick="logout()">LOGOUT</button>
             </div>
         </div>
     </header>
 
-    <div id="mainContent">
-        <div class="hero">
-            <h1 id="hTitle">India's Own Classified Marketplace</h1>
-            <p id="hSub">Buy, Sell & Apply for Loans</p>
-        </div>
-
+    <div id="homePage">
         <div class="categories">
-            <div class="cat-card" onclick="filterCat('Resale')"><div class="cat-icon">🛍️</div><div id="c1">Resale</div></div>
-            <div class="cat-card" onclick="filterCat('Wholesale')"><div class="cat-icon">📦</div><div id="c2">Wholesale</div></div>
-            <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c3">Property</div></div>
+            <div class="cat-card" onclick="openCategory('Resale')"><div class="cat-icon">🛍️</div><div>Resale</div></div>
+            <div class="cat-card" onclick="openCategory('Wholesale')"><div class="cat-icon">📦</div><div>Wholesale</div></div>
+            <div class="cat-card" onclick="openCategory('Property')"><div class="cat-icon">🏠</div><div>Property</div></div>
         </div>
-
+        
         <div class="content">
-            <div class="poster-box loan-poster">
-                <div class="poster-content"><h3 id="lTitle">Need Financial Assistance?</h3><button onclick="openModal('loanModal')" class="btn-action">APPLY FOR LOAN</button></div>
-            </div>
-            <div class="poster-box web-poster">
-                <div class="poster-content"><h3 id="wTitle">Professional Website?</h3><a href="https://wa.me/917585999923" class="btn-action" style="background:var(--wa-green); color:white;">WhatsApp Us</a></div>
-            </div>
-            <h3 id="viewTitle" style="padding-left:15px;">Fresh Recommendations</h3>
+            <h3 style="padding: 0 20px;">Fresh Recommendations</h3>
             <div class="ads-grid" id="adsGrid">Loading...</div>
         </div>
     </div>
 
-    <div id="categoryView">
-        <button class="back-btn" onclick="closeCategoryView()">← Back to Home</button>
-        <h2 id="catDisplayTitle">Category Name</h2>
+    <div id="categoryPage">
+        <div class="back-nav">
+            <button class="back-btn" onclick="closeCategory()">← Back to Home</button>
+            <h2 id="catHeader" style="margin-top:10px;">Category</h2>
+        </div>
         <div class="ads-grid" id="catAdsGrid"></div>
     </div>
 
+    <div class="float-wrap">
+        <a href="https://wa.me/917585999923" class="f-btn" style="background:var(--wa-green);">WhatsApp Us</a>
+        <button onclick="checkLoginAndOpen('uploadModal')" class="f-btn" style="background:var(--secondary); border:none; color:var(--primary);">➕ Sell Now</button>
+    </div>
+
     <div id="detailModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('detailModal')">&times;</span><img id="detImg" style="width:100%; border-radius:8px;"><h2 id="detPrice"></h2><h3 id="detTitle"></h3><p id="detDesc"></p><button id="callBtn" class="btn-action" style="width:100%; margin-bottom:10px;">📞 Call</button><button id="waBtn" class="btn-action" style="background:var(--wa-green); color:white; width:100%;">💬 WhatsApp</button></div></div>
+    
     <div id="uploadModal" class="modal"><div class="modal-content"><span class="close-x" onclick="closeModal('uploadModal')">&times;</span><h3>Post Your Ad</h3><select id="itemCat"><option value="Resale">Resale</option><option value="Wholesale">Wholesale</option><option value="Property">Property</option></select><input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><textarea id="itemDesc" placeholder="Details"></textarea><input type="file" id="fileInput" accept="image/*"><button onclick="processUpload()" id="uploadBtn" class="btn-action" style="width:100%; background:var(--primary); color:white;">Submit</button></div></div>
 
     <script>
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlFKFlfRkc0igAePdbXobZBsPgKM9SeDRTmSA2T7bRnohYQGtiqLHOqoG2Q5YwtXfJ/exec?key=BongoBiz_Secure_2024";
-        const IMGBB_KEY = "7c835d074933c0fbda62c071556faba6";
         let allAds = []; let userEmail = "";
 
-        async function fetchAds() { 
-            const res = await fetch(APPS_SCRIPT_URL); 
-            allAds = await res.json(); 
-            renderAds(allAds); 
+        // ডাটা ফেচিং এবং রেন্ডারিং
+        async function fetchAds() {
+            try {
+                const res = await fetch(APPS_SCRIPT_URL);
+                allAds = await res.json();
+                renderAds(allAds, 'adsGrid');
+            } catch(e) { console.log("Error loading ads"); }
         }
 
-        function renderAds(data) {
-            const grid = document.getElementById('adsGrid'); grid.innerHTML = "";
-            data.filter(ad => ad.Status === 'Active').reverse().forEach(ad => {
+        function renderAds(data, containerId) {
+            const grid = document.getElementById(containerId);
+            grid.innerHTML = "";
+            const activeAds = data.filter(ad => ad.Status !== 'Deleted');
+            if(activeAds.length === 0) { grid.innerHTML = "No ads found."; return; }
+            activeAds.reverse().forEach(ad => {
                 grid.innerHTML += `<div class="ad-card" onclick="showDetails('${ad.Name}')"><img src="${ad.Image}"><div style="padding:10px;"><b>Rs ${ad.Price}</b><br>${ad.Name}</div></div>`;
             });
         }
 
-        // ক্যাটাগরি ফিল্টার: ব্যানার লুকিয়ে নতুন উইন্ডোর মতো দেখাবে
-        function filterCat(cat) {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('categoryView').style.display = 'block';
-            document.getElementById('catDisplayTitle').innerText = cat;
+        // ক্যাটাগরি পেজ ওপেন লজিক
+        function openCategory(catName) {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('categoryPage').style.display = 'block';
+            document.getElementById('catHeader').innerText = catName;
             
-            const grid = document.getElementById('catAdsGrid'); grid.innerHTML = "";
-            // এখানে স্পেলিং ম্যাচিং করা হচ্ছে
-            const filtered = allAds.filter(ad => ad.Category.trim() === cat && ad.Status === 'Active');
-            
-            if(filtered.length === 0) {
-                grid.innerHTML = "<h3>এই ক্যাটাগরিতে কোনো বিজ্ঞাপন নেই।</h3>";
-            } else {
-                filtered.reverse().forEach(ad => {
-                    grid.innerHTML += `<div class="ad-card" onclick="showDetails('${ad.Name}')"><img src="${ad.Image}"><div style="padding:10px;"><b>Rs ${ad.Price}</b><br>${ad.Name}</div></div>`;
-                });
-            }
+            // স্পেলিং ভুল থাকলেও যাতে খুঁজে পায় (case-insensitive & trim)
+            const filtered = allAds.filter(ad => 
+                ad.Category.toLowerCase().trim().includes(catName.toLowerCase()) && 
+                ad.Status !== 'Deleted'
+            );
+            renderAds(filtered, 'catAdsGrid');
             window.scrollTo(0,0);
         }
 
-        function closeCategoryView() {
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('categoryView').style.display = 'none';
+        function closeCategory() {
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('categoryPage').style.display = 'none';
         }
 
-        // বাকি ফাংশনগুলো (showDetails, login, upload) আপনার আগের কোড অনুযায়ী ঠিক থাকবে...
+        // লগইন লজিক
+        function handleCredentialResponse(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            userEmail = payload.email.toLowerCase();
+            localStorage.setItem('bongoUser', JSON.stringify({email: userEmail, picture: payload.picture}));
+            location.reload(); 
+        }
+
+        function checkAutoLogin() {
+            const saved = localStorage.getItem('bongoUser');
+            if(saved) {
+                const user = JSON.parse(saved);
+                userEmail = user.email;
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById('userProfile').style.display = "flex";
+                document.getElementById('userImg').src = user.picture;
+            }
+        }
+
+        function logout() { localStorage.removeItem('bongoUser'); location.reload(); }
+
+        // অন্যান্য ফাংশন (Detail, Modal, Search)
         function showDetails(name) {
             const ad = allAds.find(a => a.Name === name);
+            if(!ad) return;
             document.getElementById('detImg').src = ad.Image;
             document.getElementById('detPrice').innerText = "Rs " + ad.Price;
             document.getElementById('detTitle').innerText = ad.Name;
@@ -158,7 +178,9 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        window.onload = () => { fetchAds(); };
+        function checkLoginAndOpen(id) { userEmail ? openModal(id) : alert("Please login first"); }
+
+        window.onload = () => { checkAutoLogin(); fetchAds(); };
     </script>
 </body>
 </html>
