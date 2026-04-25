@@ -359,6 +359,7 @@ window.onload = () => {
             return response.json();
         })
         .then(data => {
+            console.log("সব ডাটা যা পাওয়া গেল:", data);
             const container = document.getElementById('adsContainer');
             if (!container) return; // কনসোল এরর এড়াতে
 
