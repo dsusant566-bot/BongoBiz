@@ -84,11 +84,17 @@
         <p id="hSub">Buy, Sell & Apply for Loans</p>
     </div>
 
-    <div class="categories">
-        <div class="cat-card" onclick="filterCat('Resale')"><div class="cat-icon">🛍️</div><div id="c1">Resale</div></div>
-        <div class="cat-card" onclick="filterCat('Wholesale')"><div class="cat-icon">📦</div><div id="c2">Wholesale</div></div>
-        <div class="cat-card" onclick="filterCat('Property')"><div class="cat-icon">🏠</div><div id="c3">Property</div></div>
-    </div>
+    <div class="cat-card" onclick="window.open('category.html?cat=Resale', '_blank')">
+    <div class="cat-icon">🛍️</div><div id="c1">Resale</div>
+</div>
+
+<div class="cat-card" onclick="window.open('category.html?cat=Wholesale', '_blank')">
+    <div class="cat-icon">📦</div><div id="c2">Wholesale</div>
+</div>
+
+<div class="cat-card" onclick="window.open('category.html?cat=Property', '_blank')">
+    <div class="cat-icon">🏠</div><div id="c3">Property</div>
+</div>
     <div class="content">
         <div class="poster-box loan-poster">
             <div class="poster-content">
@@ -339,11 +345,35 @@ function closeModal(id) { document.getElementById(id).style.display = 'none'; if
 function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLoginModal'); }
 
 document.getElementById('langSwitcher').onchange = (e) => changeLanguage(e.target.value);
+const urlParams = new URLSearchParams(window.location.search);
+const selectedCategory = urlParams.get('cat');
 
-window.onload = () => { checkAutoLogin(); fetchAds(); };
+window.onload = () => { 
+    checkAutoLogin(); 
+    
+    if (selectedCategory) {
+        // যদি ক্যাটাগরি থাকে (যেমন: Resale/Wholesale/Property)
+        google.script.run.withSuccessHandler(function(data) {
+            // আপনার গুগল শীটের কলামের নাম 'Category' অনুযায়ী ফিল্টার হবে
+            const matchingAds = data.filter(item => item.Category === selectedCategory);
+            
+            if (matchingAds.length > 0) {
+                // আপনার প্রজেক্টের অ্যাড দেখানোর ফাংশন (displayAds) কল হবে
+                displayAds(matchingAds); 
+            } else {
+                // কোনো অ্যাড না থাকলে এই মেসেজ দেখাবে
+                const container = document.getElementById('adsContainer') || document.body;
+                container.innerHTML = "<h3 style='text-align:center; margin-top:50px;'>এই ক্যাটাগরিতে কোনো বিজ্ঞাপন পাওয়া যায়নি।</h3>";
+            }
+        }).getAllData(); 
+    } else {
+        // যদি ক্যাটাগরি না থাকে (সাধারণ হোমপেজ), তবে আগের মতো সব দেখাবে
+        fetchAds(); 
+    }
+};
     </script>
     <footer style="background:white; padding:20px; text-align:center; border-top:2px solid #ffce32; margin-top:30px;">
-        <p><b>BongoBiz</b>, Kolkata | Mob: 9733335466 | bongobiz.official@gmail.com</p>
+        <p><b>BongoBiz</b>, Kolkata | Mob: 7585999923 | bongobiz.official@gmail.com</p>
     </footer>
 </body>
 </html>
