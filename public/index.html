@@ -54,11 +54,11 @@
             <button onclick="searchAds()">🔍</button>
         </div>
         <div class="nav-right">
-            <select id="langSwitcher">
-                <option value="en">English</option>
-                <option value="bn">বাংলা</option>
-                <option value="hi">हिन्दी</option>
-            </select>
+            <select id="langSwitcher" onchange="changeLanguage(this.value)">
+    <option value="en">English</option>
+    <option value="bn">বাংলা</option>
+    <option value="hi">हिन्दी</option>
+</select>
             <div id="loginSection">
                 <div id="g_id_onload" data-client_id="599156237689-a76oqncdc044plr147ll9dhkls98ta02.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
                 <div class="g_id_signin" data-type="icon" data-shape="circle"></div>
@@ -293,7 +293,56 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id === 'uploadModal') location.reload(); }
         function checkLoginAndOpen(id) { userEmail ? openModal(id) : openModal('customLoginModal'); }
-        window.onload = () => { checkAutoLogin(); fetchAds(); };
+        // ল্যাঙ্গুয়েজ ডেটা এবং ফাংশন
+const translations = {
+    en: { 
+        hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", 
+        viewTitle: "Fresh Recommendations", sellBtn: "➕ Sell Now", 
+        c1: "Resale", c2: "Wholesale", c3: "Property"
+    },
+    bn: { 
+        hTitle: "ভারতের নিজস্ব মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", 
+        viewTitle: "নতুন বিজ্ঞাপন", sellBtn: "➕ বিক্রি করুন", 
+        c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি"
+    },
+    hi: { 
+        hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", 
+        viewTitle: "नई सिफारिशें", sellBtn: "➕ अभी बेचें", 
+        c1: "रीसेल", c2: "थोक", c3: "संपत्ति"
+    }
+};
+
+function changeLanguage(val) {
+    const l = translations[val];
+    
+    // হোম পেজের টেক্সট পরিবর্তন
+    document.getElementById("hTitle").innerText = l.hTitle;
+    document.getElementById("hSub").innerText = l.hSub;
+    document.getElementById("viewTitle").innerText = l.viewTitle;
+    
+    // ক্যাটাগরি কার্ডের টেক্সট পরিবর্তন
+    document.getElementById("c1").innerText = l.c1;
+    document.getElementById("c2").innerText = l.c2;
+    document.getElementById("c3").innerText = l.c3;
+    
+    // ফ্লোটিং সেল বাটন পরিবর্তন
+    document.getElementById("sellBtnStatic").innerText = l.sellBtn;
+    
+    // ল্যাঙ্গুয়েজ মেমরিতে সেভ রাখা
+    localStorage.setItem('selectedLang', val);
+}
+
+// সেভ করা ল্যাঙ্গুয়েজ লোড করা
+function applySavedLanguage() {
+    const savedLang = localStorage.getItem('selectedLang') || 'en';
+    document.getElementById('langSwitcher').value = savedLang;
+    changeLanguage(savedLang);
+}
+       window.onload = () => { 
+    checkAutoLogin(); 
+    fetchAds(); 
+    applySavedLanguage(); // এই লাইনটি যোগ করুন
+};
     </script>
     <footer style="background:white; padding:20px; text-align:center; border-top:2px solid #ffce32; margin-top:30px;">
         <p><b>BongoBiz</b>, Kolkata | Mob: 9733335466 | bongobiz.official@gmail.com</p>
