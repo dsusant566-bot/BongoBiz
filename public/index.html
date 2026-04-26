@@ -233,6 +233,54 @@
             openModal('detailModal');
         }
 
+        function showMyAds() {
+    const container = document.getElementById('myAdsContainer');
+    container.innerHTML = "Loading your ads...";
+    
+    const myAds = allAds.filter(ad => 
+        (ad.Email === userEmail || ad.email === userEmail) && 
+        ad.Status !== 'Deleted'
+    );
+    
+    container.innerHTML = ""; 
+
+    if(myAds.length === 0) {
+        container.innerHTML = "<p style='padding:20px;'>আপনি এখনো কোনো বিজ্ঞাপন দেননি।</p>";
+    } else {
+        myAds.forEach(ad => {
+            container.innerHTML += `
+                <div style="border-bottom:1px solid #ddd; padding:15px; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b style="font-size:16px;">${ad.Name}</b><br>
+                        <span style="color:green; font-weight:bold;">Rs ${ad.Price}</span>
+                    </div>
+                    <div>
+                        <button class="edit-btn" onclick="openEditForm('${ad.Name}')" style="background:#007bff; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; margin-right:5px;">Edit</button>
+                        <button class="del-btn" onclick="deleteAd('${ad.Name}')" style="background:#ff4d4d; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">Delete</button>
+                    </div>
+                </div>`;
+        });
+    }
+    openModal('myAdsModal');
+}
+
+function openEditForm(name) {
+    const ad = allAds.find(a => a.Name === name);
+    if(!ad) return;
+
+    document.getElementById('editOldName').value = ad.Name;
+    document.getElementById('itemName').value = ad.Name;
+    document.getElementById('itemPrice').value = ad.Price;
+    document.getElementById('itemPhone').value = ad.Phone;
+    document.getElementById('itemAddress').value = ad.Address || ad.address || "";
+    document.getElementById('itemDesc').value = ad.Description;
+    document.getElementById('itemCat').value = ad.Category;
+    
+    document.getElementById('postTitle').innerText = "Edit Your Ad";
+    closeModal('myAdsModal'); 
+    openModal('uploadModal');
+}
+        
         async function processUpload() {
             const oldName = document.getElementById('editOldName').value;
             const uploadBtn = document.getElementById('uploadBtn');
