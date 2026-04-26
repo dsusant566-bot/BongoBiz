@@ -142,7 +142,10 @@
             <input type="hidden" id="editOldName">
             <select id="itemCat"><option value="Resale">Resale</option><option value="Wholesale">Wholesale</option><option value="Property">Property</option></select>
             <input type="text" id="itemName" placeholder="Product Name"><input type="number" id="itemPrice" placeholder="Price"><input type="tel" id="itemPhone" placeholder="Phone"><input type="text" id="itemAddress" placeholder="Location"><textarea id="itemDesc" placeholder="Details"></textarea>
-            <div id="imgSection"><input type="file" id="fileInput" accept="image/*"></div>
+            <div id="imgSection">
+    <input type="file" id="fileInput" accept="image/*" multiple>
+    <small style="display:block; color:gray;">সর্বোচ্চ ৩টি ছবি সিলেক্ট করুন</small>
+            </div>
             <button onclick="processUpload()" id="uploadBtn" style="background:var(--primary); color:white; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Submit</button>
         </div>
     </div>
@@ -211,18 +214,44 @@
             });
         }
 
-        function showDetails(name) {
-            const ad = allAds.find(a => a.Name === name);
-            if(!ad) return;
-            document.getElementById('detImg').src = ad.Image;
-            document.getElementById('detPrice').innerText = "Rs " + ad.Price;
-            document.getElementById('detTitle').innerText = ad.Name;
-            document.getElementById('detDesc').innerText = ad.Description;
-            document.getElementById('detAddr').innerText = "📍 " + (ad.Address || "Kolkata");
-            document.getElementById('callBtn').onclick = () => userEmail ? window.location.href="tel:"+ad.Phone : openModal('customLoginModal');
-            document.getElementById('waBtn').onclick = () => userEmail ? window.open("https://wa.me/91"+ad.Phone) : openModal('customLoginModal');
-            openModal('detailModal');
+       // ২১৪ থেকে ২২৫ নম্বর লাইনের বদলে এটি বসান
+function showDetails(name) {
+    const ad = allAds.find(a => a.Name === name);
+    if(!ad) return;
+
+    const mainImg = document.getElementById('detImg');
+    mainImg.src = ad.Image;
+
+    // অতিরিক্ত ছবি দেখানোর জন্য (যদি আগে থেকে HTML-এ extraImages ডিভ না থাকে তবে তৈরি করে নিন)
+    let extraDiv = document.getElementById('extraImages');
+    if(!extraDiv) {
+        extraDiv = document.createElement('div');
+        extraDiv.id = "extraImages";
+        extraDiv.style = "display:flex; gap:5px; margin-top:10px; justify-content:center;";
+        mainImg.after(extraDiv);
+    }
+    extraDiv.innerHTML = "";
+
+    [ad.Image, ad.Image2, ad.Image3].forEach(imgSrc => {
+        if(imgSrc && imgSrc !== "") {
+            const thumb = document.createElement('img');
+            thumb.src = imgSrc;
+            thumb.style = "width:50px; height:50px; object-fit:contain; border:1px solid #ddd; cursor:pointer; border-radius:4px;";
+            thumb.onclick = () => mainImg.src = imgSrc;
+            extraDiv.appendChild(thumb);
         }
+    });
+
+    document.getElementById('detPrice').innerText = "Rs " + ad.Price;
+    document.getElementById('detTitle').innerText = ad.Name;
+    document.getElementById('detDesc').innerText = ad.Description;
+    document.getElementById('detAddr').innerText = "📍 " + (ad.Address || "Kolkata");
+    
+    document.getElementById('callBtn').onclick = () => userEmail ? window.location.href="tel:"+ad.Phone : openModal('customLoginModal');
+    document.getElementById('waBtn').onclick = () => userEmail ? window.open("https://wa.me/91"+ad.Phone) : openModal('customLoginModal');
+    
+    openModal('detailModal');
+}
 
         function showMyAds() {
             const container = document.getElementById('myAdsContainer'); container.innerHTML = "";
@@ -245,20 +274,57 @@
             document.getElementById('postTitle').innerText = "Edit Your Ad";
             closeModal('myAdsModal'); openModal('uploadModal');
         }
+// ২৪৯ থেকে ২৬১ নম্বর লাইনের বদলে এটি বসান
+async function processUpload() {
+    const oldName = document.getElementById('editOldName').value;
+    const uploadBtn = document.getElementById('uploadBtn');
+    uploadBtn.disabled = true;
+    uploadBtn.innerText = "Processing...";
 
-        async function processUpload() {
-            const oldName = document.getElementById('editOldName').value;
-            const uploadBtn = document.getElementById('uploadBtn');
-            uploadBtn.disabled = true; uploadBtn.innerText = "Processing...";
-            let imgUrl = "";
-            if(!oldName) {
-                const file = document.getElementById('fileInput').files[0];
-                if(file) {
-                    const fd = new FormData(); fd.append('image', file);
-                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
-                    const imgData = await res.json(); imgUrl = imgData.data.url;
-                }
-            }
+    let imgUrls = ["", "", ""]; // ৩টি ছবির জন্য অ্যারে
+    const files = document.getElementById('fileInput').files;
+
+    if (!oldName && files.length > 0) {
+        for (let i = 0; i < Math.min(files.length, 3); i++) {
+            const fd = new FormData();
+            fd.append('image', files[i]);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: 'POST', body: fd });
+            const imgData = await res.json();
+            imgUrls[i] = imgData.data.url;
+        }
+    }
+
+    const payload = {
+        action: oldName ? 'editAd' : 'uploadAd',
+        email: userEmail,
+        oldName: oldName,
+        newName: document.getElementById('itemName').value,
+        newPrice: document.getElementById('itemPrice').value,
+        newPhone: document.getElementById('itemPhone').value,
+        newAddress: document.getElementById('itemAddress').value,
+        newDesc: document.getElementById('itemDesc').value,
+        Category: document.getElementById('itemCat').value,
+        Image: imgUrls[0],  // প্রথম ছবি
+        Image2: imgUrls[1], // দ্বিতীয় ছবি
+        Image3: imgUrls[2]  // তৃতীয় ছবি
+    };
+    // এরপর আপনার বাকি fetch কোড...
+
+    const payload = {
+        action: oldName ? 'editAd' : 'uploadAd',
+        email: userEmail,
+        oldName: oldName,
+        newName: document.getElementById('itemName').value,
+        newPrice: document.getElementById('itemPrice').value,
+        newPhone: document.getElementById('itemPhone').value,
+        newAddress: document.getElementById('itemAddress').value,
+        newDesc: document.getElementById('itemDesc').value,
+        Category: document.getElementById('itemCat').value,
+        Image: imgUrls[0],  // প্রথম ছবি
+        Image2: imgUrls[1], // দ্বিতীয় ছবি
+        Image3: imgUrls[2]  // তৃতীয় ছবি
+    };
+    // এরপর আপনার বাকি fetch কোড...
             const payload = {
                 action: oldName ? 'editAd' : 'uploadAd', email: userEmail, Email: userEmail,
                 oldName: oldName, newName: document.getElementById('itemName').value,
