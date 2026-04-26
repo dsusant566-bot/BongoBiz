@@ -87,16 +87,16 @@
             <div class="poster-box loan-poster">
                 <div class="poster-content">
                     <h3 id="lTitle">Need Financial Assistance?</h3>
-                    <p id="lDesc">Apply for Personal or Business loans easily.</p>
-                    <button onclick="openModal('loanModal')" class="btn-action" id="lBtn">APPLY FOR LOAN</button>
+<p id="lDesc">Apply for Personal or Business loans easily.</p>
+<button id="lBtn" onclick="openModal('loanModal')" class="btn-action">APPLY FOR LOAN</button>
                 </div>
             </div>
 
             <div class="poster-box web-poster">
                 <div class="poster-content">
                     <h3 id="wTitle">Professional Website for Business?</h3>
-                    <p id="wDesc">Build your digital identity with AI solutions.</p>
-                    <a href="https://wa.me/917585999923?text=Hi, I want a website." target="_blank" class="btn-action" style="background:var(--wa-green); color:white;" id="wBtn">WhatsApp Us</a>
+<p id="wDesc">Build your digital identity with AI solutions.</p>
+<a id="wBtn" href="https://wa.me/917585999923" target="_blank" class="btn-action">WhatsApp Us</a>
                 </div>
             </div>
             <h3 id="viewTitle">Fresh Recommendations</h3>
@@ -298,37 +298,46 @@ const translations = {
     en: { 
         hTitle: "India's Own Classified Marketplace", hSub: "Buy, Sell & Apply for Loans", 
         viewTitle: "Fresh Recommendations", sellBtn: "➕ Sell Now", 
-        c1: "Resale", c2: "Wholesale", c3: "Property"
+        c1: "Resale", c2: "Wholesale", c3: "Property", back: "← Back",
+        lTitle: "Need Financial Assistance?", lDesc: "Apply for Personal or Business loans easily.", lBtn: "APPLY FOR LOAN",
+        wTitle: "Professional Website for Business?", wDesc: "Build your digital identity with AI solutions.", wBtn: "WhatsApp Us"
     },
     bn: { 
         hTitle: "ভারতের নিজস্ব মার্কেটপ্লেস", hSub: "কেনা-বেচা এবং লোনের আবেদন করুন", 
         viewTitle: "নতুন বিজ্ঞাপন", sellBtn: "➕ বিক্রি করুন", 
-        c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি"
+        c1: "রিসেল", c2: "হোলসেল", c3: "প্রপার্টি", back: "← ফিরে যান",
+        lTitle: "লোন প্রয়োজন?", lDesc: "সহজেই ব্যক্তিগত বা ব্যবসায়িক লোনের জন্য আবেদন করুন।", lBtn: "আবেদন করুন",
+        wTitle: "বিজনেসের জন্য ওয়েবসাইট?", wDesc: "AI সলিউশন দিয়ে আপনার ডিজিটাল পরিচয় তৈরি করুন।", wBtn: "হোয়াটসঅ্যাপ করুন"
     },
     hi: { 
         hTitle: "भारत का अपना मार्केटप्लेस", hSub: "खरीदें, बेचें और ऋण आवेदन करें", 
         viewTitle: "नई सिफारिशें", sellBtn: "➕ अभी बेचें", 
-        c1: "रीसेल", c2: "थोक", c3: "संपत्ति"
+        c1: "रीसेल", c2: "थोक", c3: "संपत्ति", back: "← वापस",
+        lTitle: "ऋण की आवश्यकता है?", lDesc: "व्यक्तिगत या व्यावसायिक ऋण के लिए आसानी से आवेदन करें।", lBtn: "अभी आवेदन करें",
+        wTitle: "व्यापार के लिए वेबसाइट?", wDesc: "AI समाधान के साथ अपनी डिजिटल पहचान बनाएं।", wBtn: "व्हाट्सएप करें"
     }
 };
 
 function changeLanguage(val) {
     const l = translations[val];
     
-    // হোম পেজের টেক্সট পরিবর্তন
+    // আগের আইডিগুলো
     document.getElementById("hTitle").innerText = l.hTitle;
     document.getElementById("hSub").innerText = l.hSub;
     document.getElementById("viewTitle").innerText = l.viewTitle;
-    
-    // ক্যাটাগরি কার্ডের টেক্সট পরিবর্তন
     document.getElementById("c1").innerText = l.c1;
     document.getElementById("c2").innerText = l.c2;
     document.getElementById("c3").innerText = l.c3;
-    
-    // ফ্লোটিং সেল বাটন পরিবর্তন
     document.getElementById("sellBtnStatic").innerText = l.sellBtn;
+
+    // নতুন ব্যানার আইডিগুলো (যা আপনি ছবিতে দেখিয়েছেন)
+    document.getElementById("lTitle").innerText = l.lTitle;
+    document.getElementById("lDesc").innerText = l.lDesc;
+    document.getElementById("lBtn").innerText = l.lBtn;
+    document.getElementById("wTitle").innerText = l.wTitle;
+    document.getElementById("wDesc").innerText = l.wDesc;
+    document.getElementById("wBtn").innerText = l.wBtn;
     
-    // ল্যাঙ্গুয়েজ মেমরিতে সেভ রাখা
     localStorage.setItem('selectedLang', val);
 }
 
